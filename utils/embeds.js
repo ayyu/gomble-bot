@@ -6,8 +6,8 @@ module.exports = {
 		const buildSubset = async (choice) => {
 			const where = {predictionId, choice};
 			const pool = await Bet.sum('amount', {where}) ?? 0;
-			const count = await Bet.count('amount', {where}) ?? 0;
 			const max = await Bet.max('amount', {where}) ?? 0;
+			const count = await Bet.count({where}) ?? 0;
 			return {pool, max, count};
 		}
 		const believers = await buildSubset(true);
@@ -16,7 +16,7 @@ module.exports = {
 		const calcRatio = (subset, total) => (subset.pool == 0) ? 1 : total/subset.pool;
 		believers.ratio = calcRatio(believers, totalPool);
 		doubters.ratio = calcRatio(doubters, totalPool);
-		const subsetToString = s => `💰 ${s.pool}\n🏆 ${s.ratio}\n🧍 ${s.count}\n💪 ${s.max}`;
+		const subsetToString = s => `💰 ${s.pool}\n🏆 1:${s.ratio.toFixed(2)}\n🧍 ${s.count}\n💪 ${s.max}`;
 
 		const title = prediction.prompt;
 		const description = (prediction.open)

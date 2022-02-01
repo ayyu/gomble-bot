@@ -1,7 +1,7 @@
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
 const { User } = require('../../db/models');
 
-const price = 5000;
+const price = 10000;
 
 const data = new SlashCommandSubcommandBuilder()
   .setName('addemote')

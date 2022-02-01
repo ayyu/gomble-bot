@@ -10,7 +10,7 @@ const durations = [
 	'1 hour',
 ];
 
-const pricePerMS = 100;
+const pricePerMS = 1;
 const pricePerMin = ms('1 min') * pricePerMS;
 
 const data = new SlashCommandSubcommandBuilder()
