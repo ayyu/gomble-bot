@@ -11,6 +11,10 @@
     "discord",
     "bot"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ayyu/gomble-bot"
+  },
   "author": "ayyu",
   "license": "ISC",
   "dependencies": {
