@@ -3,7 +3,7 @@ const dotenv = require('dotenv');
 
 dotenv.config();
 
-dbURL = process.env.DATABASE_URL + '?sslmode=require'
+dbURL = process.env.DATABASE_URL
 
 module.exports = {
 	permsKV: new Keyv(dbURL, {namespace: 'perms'}),
