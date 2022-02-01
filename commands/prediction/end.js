@@ -38,7 +38,9 @@ module.exports = {
 		
 		const starter = await interaction.channel.fetchStarterMessage();
 		await starter.edit({embeds: [startEmbed]});
+		await starter.unpin();
 		await interaction.reply({embeds: [respEmbed]});
-		await closeThread(interaction, 'Prediction ended');
+		await interaction.channel.setLocked(true);
+		await interaction.channel.setArchived(true);
 	},
 };

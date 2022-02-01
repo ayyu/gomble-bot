@@ -22,7 +22,9 @@ module.exports = {
 
 		const starter = await interaction.channel.fetchStarterMessage();
 		await starter.edit({embeds: [startEmbed]});
+		await starter.unpin();
 		await interaction.reply(response);
-		await closeThread(interaction, 'Prediction cancelled');
+		await interaction.channel.setLocked(true);
+		await interaction.channel.setArchived(true);
 	},
 };
