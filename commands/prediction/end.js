@@ -1,6 +1,6 @@
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
 const { Bet, User, Prediction } = require('../../db/models');
-const { resultEmbed, updateStarterEmbed } = require('../../utils/embeds');
+const { startMessageEmbed, resultEmbed } = require('../../utils/embeds');
 const { requireThreaded, closeThread } = require('../../utils/threads');
 
 const data = new SlashCommandSubcommandBuilder()
@@ -20,9 +20,9 @@ module.exports = {
 		const prediction = await Prediction.findOne({where: {id: interaction.channel.id}});
 		const predictionId = prediction.id;
 
-		const embed = await resultEmbed(prediction, choice);
-		await updateStarterEmbed(interaction.channel, prediction, embed.title);
-		
+		const respEmbed = await resultEmbed(prediction, choice);
+		const startEmbed = await startMessageEmbed(prediction, resultEmbed.title);
+
 		const totalPool = await Bet.sum('amount', {where: {predictionId}});
 		const winningPool = await Bet.sum('amount', {where: {predictionId, choice}});
 		const winningBets = await Bet.findAll({
@@ -36,7 +36,9 @@ module.exports = {
 
 		await prediction.destroy();
 		
-		await interaction.reply({embeds: [embed]});
+		const starter = await interaction.channel.fetchStarterMessage();
+		await starter.edit({embeds: [startEmbed]});
+		await interaction.reply({embeds: [respEmbed]});
 		await closeThread(interaction, 'Prediction ended');
 	},
 };

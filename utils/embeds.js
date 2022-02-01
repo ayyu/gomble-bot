@@ -1,4 +1,4 @@
-const { Bet, Prediction } = require("../db/models");
+const { Bet } = require("../db/models");
 
 async function startMessageEmbed(prediction, description = null) {
 	const predictionId = prediction.id;
@@ -38,15 +38,7 @@ async function resultEmbed(prediction, choice) {
 	return {title, description};
 }
 
-async function updateStarterEmbed(thread, prediction = null, description = null) {
-	prediction = prediction ?? await Prediction.findOne({where: {id: thread.id}});
-	const starter = await thread.fetchStarterMessage();
-	const embed = await startMessageEmbed(prediction, description);
-	await starter.edit({embeds: [embed]});
-}
-
 module.exports = {
 	startMessageEmbed,
 	resultEmbed,
-	updateStarterEmbed,
 };

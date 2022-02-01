@@ -1,8 +1,8 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { requireThreaded } = require('../utils/threads')
-const { paymentMessage } = require('../utils/payment');
 const { Bet, User, Prediction } = require('../db/models');
-const { startMessageEmbed } = require('../utils/embeds')
+const { startMessageEmbed } = require('../utils/embeds');
+const { paymentMessage } = require('../utils/payment');
+const { requireThreaded } = require('../utils/threads');
 
 const data = new SlashCommandBuilder()
 	.setName('bet')
@@ -52,7 +52,6 @@ module.exports = {
 		const starter = await interaction.channel.fetchStarterMessage();
 		const embed = await startMessageEmbed(prediction);
 		await starter.edit({embeds: [embed]});
-		
 		await interaction.followUp(paymentMessage(amount, balance));
 	},
 };

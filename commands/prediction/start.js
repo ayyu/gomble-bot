@@ -1,7 +1,7 @@
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
 const { Prediction } = require('../../db/models');
-const { requireUnthreaded } = require('../../utils/threads')
-const { updateStarterEmbed } = require('../../utils/embeds')
+const { requireUnthreaded } = require('../../utils/threads');
+const { startMessageEmbed } = require('../../utils/embeds');
 
 const data = new SlashCommandSubcommandBuilder()
 	.setName('start')
@@ -34,7 +34,8 @@ module.exports = {
 			open: true,
 		});
 
-		await updateStarterEmbed(thread, prediction);
+		const embed = await startMessageEmbed(prediction);
+		await reply.edit({embeds: [embed]});
 		await reply.pin();
 	},
 };
