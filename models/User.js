@@ -27,7 +27,7 @@ module.exports = (sequelize) => {
 			allowNull: false,
 			validate: {
 				min: {
-					args: 1,
+					args: 0,
 					msg: `Balance can't be negative`,
 				},
 			}

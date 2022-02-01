@@ -23,8 +23,8 @@ module.exports = {
 
 		if (interval != null) await wagesKV.set('interval', interval);
 		if (amount != null) await wagesKV.set('amount', amount);
-		if (initial != null) await wagesKV.set('amount', initial);
+		if (initial != null) await wagesKV.set('initial', initial);
 
-		await interaction.reply(`Updated wage settings to ${amount} every ${interval}.\nNew users start at ${initial}`);
+		await interaction.reply(`Updated wage settings.`);
 	}
 };
