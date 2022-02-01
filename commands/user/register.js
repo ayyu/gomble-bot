@@ -1,6 +1,7 @@
+const dotenv = require('dotenv');
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
 const { User } = require('../../db/models');
-const dotenv = require('dotenv');
+const { wagesKV } = require('../../db/keyv');
 
 dotenv.config();
 
@@ -11,20 +12,13 @@ const data = new SlashCommandSubcommandBuilder()
 module.exports = {
 	data,
 	async execute(interaction) {
-		const target = interaction.member;
-		try {
-			await User.create({
-				id: target.id,
-				balance: parseInt(process.env.INITIAL_BALANCE),
-			});
-		} catch (error) {
-			error.errors.forEach(errorItem => {
-				if (errorItem.type == 'unique violation') {
-					error.message = `This user is already registered.`;
-				}
-			});
-			throw error;
-		}
-		await interaction.reply(`**Registered** ${target} for predictions.`);
+		const user = interaction.member;
+		const initialBalance = (await wagesKV.get('initial')) ?? 0;
+		const [, created] = await User.findOrCreate({
+			where: {id: user.id},
+			defaults: {balance: initialBalance}
+		});
+		if (!created) throw new Error(`This user is already registered.`);
+		await interaction.reply(`**Registered** ${user} for predictions.`);
 	},
 };
