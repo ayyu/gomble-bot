@@ -4,9 +4,8 @@ module.exports = {
 	async updateCommandPerms(guild) {
 		(await guild.commands.fetch()).forEach(async command => {
 			const name = command.name;
-			const hasPerm = await permsKV.has(name);
-			if (hasPerm) {
-				const permissions = await permsKV.get(name);
+			const permissions = await permsKV.get(name);
+			if (permissions != null) {
 				await guild.commands.permissions.add({
 					command: command.id,
 					permissions,

@@ -8,18 +8,22 @@ dotenv.config();
 
 async function paySlaves() {
 	try {
-		const hasAmount = await wagesKV.has('amount');
-		if (!hasAmount) await wagesKV.set('amount', 1);
-		const amount = await wagesKV.get('amount');
+		let amount = await wagesKV.get('amount');
+		if (amount == null) {
+			amount = 1;
+			await wagesKV.set('amount', amount);
+		}
 		await User.increment(
 			{balance: amount},
 			{where: {id: {[Op.not]: null}}},
 		);
 		console.log(`Paid ${amount} to all users.`);
 
-		const hasInterval = await wagesKV.has('interval');
-		if (!hasInterval) await wagesKV.set('interval', '1 min');
-		const interval = await wagesKV.get('interval');
+		let interval = await wagesKV.get('interval');
+		if (interval == null) {
+			interval = '1 min';
+			await wagesKV.set('interval', interval);
+		}
 		setTimeout(paySlaves, ms(interval));
 		console.log(`Next payment is in ${interval}.`);
 	} catch (error) {
