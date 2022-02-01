@@ -15,7 +15,7 @@ module.exports = {
 		const prediction = await Prediction.findOne({where: {id: interaction.channel.id}});
 		
 		const response = `This prediction has been cancelled. All bets have been refunded.`;
-		await updateStarterEmbed(interaction.channel, prediction, response)
+		await updateStarterEmbed(interaction.channel, prediction, response);
 
 		(await prediction.getBets()).forEach(async bet => await bet.refund());
 		await prediction.destroy();
