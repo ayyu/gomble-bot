@@ -3,4 +3,4 @@ const dotenv = require('dotenv');
 
 dotenv.config();
 
-module.exports = new Sequelize(proces.env.DATABASE_URL);
+module.exports = new Sequelize(process.env.DATABASE_URL);
