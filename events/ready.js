@@ -1,21 +1,18 @@
 const { User } = require('../db/models');
-const { currency } = require('../kv/connect');
-const { currency: currencyJSON } = require('../config.json');
 const { Op } = require('sequelize');
 const ms = require('ms');
+const dotenv = require('dotenv');
+
+dotenv.config();
 
 module.exports = {
 	name: 'ready',
 	once: true,
 	async execute(client) {
-		for (const property in currencyJSON) {
-			const value = await currency.get(property);
-			if (value == null) await currency.set(property, currencyJSON[property]);
-		}
-		const interval = await currency.get('interval');
+		const interval = process.env.WAGE_INTERVAL;
 		setInterval(async () => {
 			try {
-				const wage = await currency.get('wage');
+				const wage = parseInt(process.env.WAGE_PAY);
 				await User.increment(
 					{balance: wage},
 					{where: {id: {[Op.not]: null}}},

@@ -1,6 +1,8 @@
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
-const { User } = require('../../db/models')
-const { currency } = require('../../config.json')
+const { User } = require('../../db/models');
+const dotenv = require('dotenv');
+
+dotenv.config();
 
 const data = new SlashCommandSubcommandBuilder()
 	.setName('register')
@@ -13,7 +15,7 @@ module.exports = {
 		try {
 			await User.create({
 				id: target.id,
-				balance: currency.initial,
+				balance: parseInt(process.env.INITIAL_BALANCE),
 			});
 		} catch (error) {
 			error.errors.forEach(errorItem => {

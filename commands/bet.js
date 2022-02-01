@@ -33,6 +33,7 @@ module.exports = {
 			return;
 		}
 		
+		console.log(predictionId);
 		const prediction = await Prediction.findOne({where: {id: predictionId}});
 		let balance;
 		if (!prediction.open) throw new Error(`This prediction is closed for betting.`);

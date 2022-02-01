@@ -21,18 +21,17 @@ module.exports = {
 			content: `**Prediction**`,
 			fetchReply: true,
 		});
-		
-		const prediction = await Prediction.create({
-			id: reply.id,
-			prompt,
-			open: true,
-		});
-
-		await reply.edit({embeds: [await startMessageEmbed(prediction)]});
-		await reply.startThread({
+		const thread = await reply.startThread({
 			name: `${prompt}`,
 			autoArchiveDuration: 'MAX',
 			reason: 'New prediction started: ${exchangeName}',
 		});
+		
+		const prediction = await Prediction.create({
+			id: thread.id,
+			prompt,
+			open: true,
+		});
+		await reply.edit({embeds: [await startMessageEmbed(prediction)]});
 	},
 };

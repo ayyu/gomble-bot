@@ -1,7 +1,9 @@
 const path = require('path');
 const { Client, Collection, Intents } = require('discord.js');
 const { absForEach } = require('./utils/fs')
-const { token } = require('./config.json');
+const dotenv = require('dotenv');
+
+dotenv.config();
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 
@@ -40,4 +42,4 @@ client.on('interactionCreate', async interaction => {
 	}
 });
 
-client.login(token);
+client.login(process.env.DISCORD_TOKEN);
