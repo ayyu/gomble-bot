@@ -1,4 +1,5 @@
 const { Bet } = require("../db/models");
+const { openBetMsg, closeBetMsg } = require("./messages");
 
 async function startMessageEmbed(prediction, description = null) {
 	const predictionId = prediction.id;
@@ -18,9 +19,7 @@ async function startMessageEmbed(prediction, description = null) {
 	const subsetToString = s => `💰 ${s.pool}\n🏆 1:${s.ratio.toFixed(2)}\n🧍 ${s.count}\n💪 ${s.max}`;
 
 	const title = prediction.prompt;
-	if (description == null) description = description ?? (prediction.open)
-		? 'Betting is open. Place bets in the thread with \`/bet\`'
-		: 'Betting is closed.';
+	if (description == null) description = (prediction.open) ? openBetMsg : closeBetMsg;
 	const fields = [
 		{ name: 'Believers', inline: true, value: subsetToString(believers), },
 		{ name: 'Doubters', inline: true, value: subsetToString(doubters), },

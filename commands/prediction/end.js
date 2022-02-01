@@ -1,7 +1,8 @@
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
 const { Bet, User, Prediction } = require('../../db/models');
 const { startMessageEmbed, resultEmbed } = require('../../utils/embeds');
-const { requireThreaded, closeThread } = require('../../utils/threads');
+const { threadOnlyMsg } = require('../../utils/messages');
+const { requireThreaded } = require('../../utils/threads');
 
 const data = new SlashCommandSubcommandBuilder()
 	.setName('end')
@@ -14,7 +15,7 @@ const data = new SlashCommandSubcommandBuilder()
 module.exports = {
 	data,
 	async execute(interaction) {
-		if (!requireThreaded(interaction)) throw new Error(`You can only end a prediction in a betting thread.`);
+		if (!requireThreaded(interaction)) throw new Error(threadOnlyMsg);
 
 		const choice = interaction.options.getBoolean('result');
 		const prediction = await Prediction.findOne({where: {id: interaction.channel.id}});

@@ -1,7 +1,7 @@
 const ms = require('ms');
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
-const { paymentMessage } = require('../../utils/payment');
 const { User } = require('../../db/models');
+const { paymentMessage } = require('../../utils/messages');
 
 const durations = [
 	'1 minute',

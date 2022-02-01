@@ -1,6 +1,7 @@
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
 const { Prediction } = require('../../db/models');
 const { startMessageEmbed } = require('../../utils/embeds');
+const { openBetMsg, threadOnlyMsg } = require('../../utils/messages');
 const { requireThreaded } = require('../../utils/threads');
 
 const data = new SlashCommandSubcommandBuilder()
@@ -10,16 +11,15 @@ const data = new SlashCommandSubcommandBuilder()
 module.exports = {
 	data,
 	async execute(interaction) {
-		if (!requireThreaded(interaction)) throw new Error(`You can only open a prediction in a betting thread.`);
+		if (!requireThreaded(interaction)) throw new Error(threadOnlyMsg);
 
 		const prediction = await Prediction.findOne({where: {id: interaction.channel.id}});
 
-		const response = 'Betting is open. Place bets in the thread with \`/bet\`';
 		await prediction.update({'open': true});
 
+		await interaction.reply(openBetMsg);
 		const starter = await interaction.channel.fetchStarterMessage();
-		const embed = await startMessageEmbed(prediction, response);
+		const embed = await startMessageEmbed(prediction, openBetMsg);
 		await starter.edit({embeds: [embed]});
-		await interaction.reply(response);
 	},
 };

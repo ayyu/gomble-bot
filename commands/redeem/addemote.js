@@ -1,5 +1,6 @@
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
 const { User } = require('../../db/models');
+const { paymentMessage } = require('../../utils/messages');
 
 const price = 10000;
 

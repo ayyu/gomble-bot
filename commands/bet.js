@@ -1,7 +1,7 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { Bet, User, Prediction } = require('../db/models');
 const { startMessageEmbed } = require('../utils/embeds');
-const { paymentMessage } = require('../utils/payment');
+const { paymentMessage, closeBetMsg } = require('../utils/messages');
 const { requireThreaded } = require('../utils/threads');
 
 const data = new SlashCommandBuilder()
@@ -35,7 +35,7 @@ module.exports = {
 		
 		const prediction = await Prediction.findOne({where: {id: predictionId}});
 		let balance;
-		if (!prediction.open) throw new Error(`This prediction is closed for betting.`);
+		if (!prediction.open) throw new Error(closeBetMsg);
 		if (!bet) {  // new bet
 			if (choice == null) throw new Error(`You must choose an outcome for an initial bet.`);
 			balance = await user.spend(amount);
