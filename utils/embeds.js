@@ -1,4 +1,4 @@
-const { Bet } = require("../db/models");
+const { Bet, Prediction } = require("../db/models");
 
 module.exports = {
 	async startMessageEmbed(prediction, description = null) {
