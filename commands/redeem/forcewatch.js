@@ -18,16 +18,17 @@ const data = new SlashCommandSubcommandBuilder()
 module.exports = {
   data,
   async execute(interaction) {
+    const invoker = interaction.member;
     const target = interaction.options.getMember('user');
-		if (interaction.member.id == target.id) throw new Error(`Can't target yourself`);
-    const user = await User.findOne({where: {id: target.id}});
+		if (invoker.id == target.id) throw new Error(`Can't target yourself`);
+    const invokerModel = await User.findOne({where: {id: invoker.id}});
 
 		const show = interaction.options.getString('show');
     
     const price = await pricesKV.get(data.name) ?? 0;
-    const balance = await user.spend(price);
+    const balance = await invokerModel.spend(price);
 		
-    await interaction.reply(`${interaction.member} forces ${target} to watch ${show}`);
+    await interaction.reply(`${invoker} forces ${target} to watch ${show}`);
     await interaction.followUp(paymentMessage(price, balance));
   },
 };

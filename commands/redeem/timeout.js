@@ -26,15 +26,16 @@ const data = new SlashCommandSubcommandBuilder()
 module.exports = {
 	data,
 	async execute(interaction) {
+		const invoker = interaction.member;
 		const target = interaction.options.getMember('user');
-		if (interaction.member.id == target.id) throw new Error(`Can't target yourself`);
+		if (invoker.id == target.id) throw new Error(`Can't target yourself`);
 		if (!target.moderatable) throw new Error(`${target} is not a valid target.`);
-		const user = await User.findOne({where: {id: target.id}});
+		const invokerModel = await User.findOne({where: {id: invoker.id}});
 
 		const duration = interaction.options.getInteger('duration');
 		const pricePerMin = await pricesKV.get(data.name) ?? 0;
 		const msPerMin = ms('1 min');
-		const balance = await user.spend(Math.round(pricePerMin / msPerMin * duration));
+		const balance = await invokerModel.spend(Math.round(pricePerMin / msPerMin * duration));
 
 		await target.timeout(duration);
 		await interaction.reply(`${target} timed out for ${ms(duration, {long: true})}.`);
