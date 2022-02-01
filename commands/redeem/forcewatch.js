@@ -6,7 +6,7 @@ const { paymentMessage } = require('../../utils/messages');
 const data = new SlashCommandSubcommandBuilder()
   .setName('forcewatch')
   .setDescription(`Force a user to watch a show of your choice`)
-  .addStringOption(option => option
+  .addUserOption(option => option
     .setName('user')
     .setDescription('User to target')
     .setRequired(true))
