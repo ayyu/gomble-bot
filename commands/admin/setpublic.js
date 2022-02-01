@@ -4,10 +4,10 @@ const { basePublicPerms, updateCommandPerms } = require('../../utils/permissions
 
 const data = new SlashCommandSubcommandBuilder()
 	.setName('setpublic')
-	.setDescription('Sets a command to be accessible only to a specific role')
+	.setDescription('Sets a command to be accessible to all users')
 	.addStringOption(option => option
 		.setName('command')
-		.setDescription('Which command to be made private')
+		.setDescription('Which command to be made public')
 		.setRequired(true));
 
 module.exports = {
