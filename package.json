@@ -10,6 +10,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
+    "preinstall": "heroku config:set PGSSLMODE=no-verify",
     "postinstall": "node deploy-commands.js && node deploy-database.js"
   },
   "keywords": [
