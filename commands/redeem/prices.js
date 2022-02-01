@@ -9,7 +9,7 @@ module.exports = {
   data,
   async execute(interaction) {
 		const store = pricesKV.opts.store;
-		const rows = await store.query(`SELECT * FROM ${store.opts.table} WHERE key LIKE '${$store.namespace}:%'`);
+		const rows = await store.query(`SELECT * FROM ${store.opts.table} WHERE key LIKE '${store.namespace}:%'`);
 		console.log(rows);
   },
 };
