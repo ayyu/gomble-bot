@@ -1,7 +1,7 @@
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
 const { Prediction } = require('../../db/models');
 const { requireUnthreaded } = require('../../utils/threads')
-const { startMessageEmbed } = require('../../utils/embeds')
+const { updateStarterEmbed } = require('../../utils/embeds')
 
 const data = new SlashCommandSubcommandBuilder()
 	.setName('start')
@@ -21,6 +21,7 @@ module.exports = {
 			content: `**Prediction**`,
 			fetchReply: true,
 		});
+
 		const thread = await reply.startThread({
 			name: `${prompt}`,
 			autoArchiveDuration: 'MAX',
@@ -32,6 +33,8 @@ module.exports = {
 			prompt,
 			open: true,
 		});
-		await reply.edit({embeds: [await startMessageEmbed(prediction)]});
+
+		await updateStarterEmbed(thread, prediction);
+		await reply.pin();
 	},
 };

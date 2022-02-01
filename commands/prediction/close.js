@@ -11,9 +11,11 @@ module.exports = {
 	data,
 	async execute(interaction) {
 		if (!requireThreaded(interaction)) throw new Error(`You can only close a prediction in a betting thread.`);
+
 		const prediction = await Prediction.findOne({where: {id: interaction.channel.id}});
-		const response = `Betting is now closed for this prediction.`;
 		await prediction.update({'open': false});
+		
+		const response = `Betting is now closed for this prediction.`;
 		await updateStarterEmbed(interaction.channel, prediction, response);
 		await interaction.reply(response);
 	},

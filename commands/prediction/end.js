@@ -15,6 +15,7 @@ module.exports = {
 	data,
 	async execute(interaction) {
 		if (!requireThreaded(interaction)) throw new Error(`You can only end a prediction in a betting thread.`);
+
 		const choice = interaction.options.getBoolean('result');
 		const prediction = await Prediction.findOne({where: {id: interaction.channel.id}});
 		const predictionId = prediction.id;
@@ -35,13 +36,7 @@ module.exports = {
 
 		await prediction.destroy();
 		
-		const reason = 'Prediction ended';
-		const reply = await interaction.reply({
-			content: `**This prediction has ended.**`,
-			embeds: [embed],
-			fetchReply: true,
-		});
-		await reply.channel.setLocked(true, reason);
-		await reply.channel.setArchived(true, reason);
+		await interaction.reply(response);
+		await closeThread(interaction, 'Prediction ended');
 	},
 };
