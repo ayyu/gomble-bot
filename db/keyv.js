@@ -13,7 +13,7 @@ const store = new KeyvPostgres({
 });
 
 module.exports = {
-	permsKV: new Keyv(Object.assign({namespace: 'perms'}, store)),
-	wagesKV: new Keyv(Object.assign({namespace: 'wages'}, store)),
-	pricesKV: new Keyv(Object.assign({namespace: 'prices'}, store)),
+	permsKV: new Keyv({store, namespace: 'perms'}),
+	wagesKV: new Keyv({store, namespace: 'wages'}),
+	pricesKV: new Keyv({store, namespace: 'prices'}),
 }
