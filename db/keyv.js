@@ -4,13 +4,10 @@ const dotenv = require('dotenv');
 
 dotenv.config();
 
-const ssl = {
-	require: true,
-	rejectUnauthorized: false,
-};
+dbURL = process.env.DATABASE_URL + '?ssl=true'
 
 module.exports = {
-	permsKV: new Keyv(process.env.DATABASE_URL, {namespace: 'perms', ssl}),
-	wagesKV: new Keyv(process.env.DATABASE_URL, {namespace: 'perms', ssl}),
-	pricesKV: new Keyv(process.env.DATABASE_URL, {namespace: 'perms', ssl}),
+	permsKV: new Keyv(dbURL, {namespace: 'perms'}),
+	wagesKV: new Keyv(dbURL, {namespace: 'perms'}),
+	pricesKV: new Keyv(dbURL, {namespace: 'perms'}),
 }
