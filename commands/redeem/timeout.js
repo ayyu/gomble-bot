@@ -28,11 +28,12 @@ module.exports = {
 	async execute(interaction) {
 		const invoker = interaction.member;
 		const target = interaction.options.getMember('user');
+		const duration = interaction.options.getInteger('duration');
+
 		if (invoker.id == target.id) throw new Error(`Can't target yourself`);
 		if (!target.moderatable) throw new Error(`${target} is not a valid target.`);
-		const invokerModel = await User.findOne({where: {id: invoker.id}});
 
-		const duration = interaction.options.getInteger('duration');
+		const invokerModel = await User.findOne({where: {id: invoker.id}});
 		const pricePerMin = await pricesKV.get(data.name) ?? 0;
 		const msPerMin = ms('1 min');
 		const balance = await invokerModel.spend(Math.round(pricePerMin / msPerMin * duration));
