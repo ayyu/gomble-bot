@@ -1,7 +1,7 @@
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
-const { requireThreaded } = require('../../utils/threads');
-const { resultEmbed } = require('../../utils/embeds');
 const { Bet, User, Prediction } = require('../../db/models');
+const { requireThreaded } = require('../../utils/threads');
+const { resultEmbed, updateStarterEmbed } = require('../../utils/embeds');
 
 const data = new SlashCommandSubcommandBuilder()
 	.setName('end')
