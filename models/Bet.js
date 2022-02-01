@@ -20,7 +20,6 @@ module.exports = (sequelize) => {
 			allowNull: false,
 			validate: {
 				min: 1,
-				msg: `Amount must be at least 1`,
 			}
 		},
 		userId: {

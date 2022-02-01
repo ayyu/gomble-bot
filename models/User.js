@@ -23,13 +23,9 @@ module.exports = (sequelize) => {
 		},
 		balance: {
 			type: DataTypes.INTEGER,
-			defaultValue: 0,
 			allowNull: false,
 			validate: {
-				min: {
-					args: 0,
-					msg: `Balance can't be negative`,
-				},
+				min: 0,
 			}
 		}
 	}, {
