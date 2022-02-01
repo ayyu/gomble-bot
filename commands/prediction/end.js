@@ -36,7 +36,7 @@ module.exports = {
 
 		await prediction.destroy();
 		
-		await interaction.reply(response);
+		await interaction.reply({embeds: [embed]});
 		await closeThread(interaction, 'Prediction ended');
 	},
 };
