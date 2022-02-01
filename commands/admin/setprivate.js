@@ -26,7 +26,7 @@ module.exports = {
 		perms.push({id: role.id, type: 'ROLE', permission: true});
 
 		await permsKV.set(command, perms);
-		await interaction.reply(`Saved private role.`);
+		await interaction.reply(`Saved private command \`/${command}\` for ${role}`);
 
 		await updateCommandPerms(guild);
 		await interaction.followUp(`Updated command permissions.`);

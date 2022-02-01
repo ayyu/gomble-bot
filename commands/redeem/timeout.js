@@ -17,11 +17,11 @@ const data = new SlashCommandSubcommandBuilder()
 		.setName('user')
 		.setDescription('User to time out')
 		.setRequired(true))
-	.addStringOption(option => option
+	.addIntegerOption(option => option
 		.setName('duration')
 		.setDescription('How long to time out for')
 		.setRequired(true)
-		.addChoices(durations.map((duration) => [duration, duration])));
+		.addChoices(durations.map((duration) => [duration, ms(duration)])));
 
 module.exports = {
 	data,
@@ -31,9 +31,10 @@ module.exports = {
 		if (!target.moderatable) throw new Error(`${target} is not a valid target.`);
 		const user = await User.findOne({where: {id: target.id}});
 
-		const duration = ms(interaction.options.getString('duration'));
-		const price = await pricesKV.get(data.name) ?? 0;
-		const balance = await user.spend(price * duration);
+		const duration = interaction.options.getInteger('duration');
+		const pricePerMin = await pricesKV.get(data.name) ?? 0;
+		const msPerMin = ms('1 min');
+		const balance = await user.spend(Math.round(pricePerMin / msPerMin * duration));
 
 		await target.timeout(duration);
 		await interaction.reply(`${target} timed out for ${ms(duration, {long: true})}.`);

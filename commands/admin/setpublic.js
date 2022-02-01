@@ -18,7 +18,7 @@ module.exports = {
 		const command = interaction.options.getString('command');
 		
 		await permsKV.set(command, basePublicPerms(guild));
-		await interaction.reply(`Saved public command.`);
+		await interaction.reply(`Saved public command \`/${command}\`.`);
 
 		await updateCommandPerms(guild);
 		await interaction.followUp(`Updated command permissions.`);
