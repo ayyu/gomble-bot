@@ -17,9 +17,9 @@ module.exports = {
 		const response = `Betting is now closed for this prediction.`;
 		await prediction.update({'open': false});
 		
+		await interaction.reply(response);
 		const starter = await interaction.channel.fetchStarterMessage();
 		const embed = await startMessageEmbed(prediction, response);
 		await starter.edit({embeds: [embed]});
-		await interaction.reply(response);
 	},
 };

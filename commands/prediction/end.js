@@ -21,7 +21,7 @@ module.exports = {
 		const predictionId = prediction.id;
 
 		const respEmbed = await resultEmbed(prediction, choice);
-		const startEmbed = await startMessageEmbed(prediction, resultEmbed.title);
+		const startEmbed = await startMessageEmbed(prediction, respEmbed.title);
 
 		const totalPool = await Bet.sum('amount', {where: {predictionId}});
 		const winningPool = await Bet.sum('amount', {where: {predictionId, choice}});
@@ -36,10 +36,10 @@ module.exports = {
 
 		await prediction.destroy();
 		
+		await interaction.reply({embeds: [respEmbed]});
 		const starter = await interaction.channel.fetchStarterMessage();
 		await starter.edit({embeds: [startEmbed]});
 		await starter.unpin();
-		await interaction.reply({embeds: [respEmbed]});
 		await interaction.channel.setLocked(true);
 		await interaction.channel.setArchived(true);
 	},

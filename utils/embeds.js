@@ -18,7 +18,7 @@ async function startMessageEmbed(prediction, description = null) {
 	const subsetToString = s => `💰 ${s.pool}\n🏆 1:${s.ratio.toFixed(2)}\n🧍 ${s.count}\n💪 ${s.max}`;
 
 	const title = prediction.prompt;
-	description = description ?? (prediction.open)
+	if (description == null) description = description ?? (prediction.open)
 		? 'Betting is open. Place bets in the thread with \`/bet\`'
 		: 'Betting is closed.';
 	const fields = [

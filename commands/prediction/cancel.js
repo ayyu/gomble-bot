@@ -20,10 +20,10 @@ module.exports = {
 		(await prediction.getBets()).forEach(async bet => await bet.refund());
 		await prediction.destroy();
 
+		await interaction.reply(response);
 		const starter = await interaction.channel.fetchStarterMessage();
 		await starter.edit({embeds: [startEmbed]});
 		await starter.unpin();
-		await interaction.reply(response);
 		await interaction.channel.setLocked(true);
 		await interaction.channel.setArchived(true);
 	},
