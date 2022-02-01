@@ -1,6 +1,7 @@
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
 const { requireThreaded } = require('../../utils/threads')
 const { Prediction } = require('../../db/models');
+const { updateStarterEmbed } = require('../../utils/embeds');
 
 const data = new SlashCommandSubcommandBuilder()
 	.setName('cancel')
@@ -12,12 +13,16 @@ module.exports = {
 		if (!requireThreaded(interaction)) throw new Error(`You can only cancel a prediction in a betting thread.`);
 
 		const prediction = await Prediction.findOne({where: {id: interaction.channel.id}});
+		const response = `This prediction has been cancelled. All bets have been refunded.`;
+
+		await updateStarterEmbed(interaction.channel, prediction, response)
+
 		(await prediction.getBets()).forEach(async bet => await bet.refund());
 		await prediction.destroy();
 
 		const reason = 'Prediction cancelled';
 		const reply = await interaction.reply({
-			content: `This prediction has been cancelled. All bets have been refunded.`,
+			content: response,
 			fetchReply: true,
 		});
 		await reply.channel.setLocked(true, reason);

@@ -1,5 +1,6 @@
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
 const { Prediction } = require('../../db/models');
+const { updateStarterEmbed } = require('../../utils/embeds');
 const { requireThreaded } = require('../../utils/threads')
 
 const data = new SlashCommandSubcommandBuilder()
@@ -11,7 +12,9 @@ module.exports = {
 	async execute(interaction) {
 		if (!requireThreaded(interaction)) throw new Error(`You can only close a prediction in a betting thread.`);
 		const prediction = await Prediction.findOne({where: {id: interaction.channel.id}});
-		prediction.update({'open': false});
-		await interaction.reply(`Betting is now closed for this prediction.`);
+		const response = `Betting is now closed for this prediction.`;
+		await prediction.update({'open': false});
+		await updateStarterEmbed(interaction.channel, prediction, response);
+		await interaction.reply(response);
 	},
 };

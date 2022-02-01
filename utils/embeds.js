@@ -1,7 +1,7 @@
 const { Bet } = require("../db/models");
 
 module.exports = {
-	async startMessageEmbed(prediction) {
+	async startMessageEmbed(prediction, description = null) {
 		const predictionId = prediction.id;
 		const buildSubset = async (choice) => {
 			const where = {predictionId, choice};
@@ -19,7 +19,7 @@ module.exports = {
 		const subsetToString = s => `💰 ${s.pool}\n🏆 1:${s.ratio.toFixed(2)}\n🧍 ${s.count}\n💪 ${s.max}`;
 
 		const title = prediction.prompt;
-		const description = (prediction.open)
+		description = description ?? (prediction.open)
 			? 'Betting is open. Place bets in the thread with \`/bet\`'
 			: 'Betting is closed.';
 		const fields = [
@@ -36,5 +36,11 @@ module.exports = {
 		const title = `${winners} are correct`;
 		const description = `**${totalPool}** go to ${numWinners} users`;
 		return {title, description};
+	},
+	async updateStarterEmbed(thread, prediction = null, description = null) {
+		prediction = prediction ?? await Prediction.findOne({where: {id: thread.id}});
+		const starter = await thread.fetchStarterMessage();
+		const embed = await module.exports.startMessageEmbed(prediction, description);
+		await starter.edit({embeds: [embed]});
 	}
 }

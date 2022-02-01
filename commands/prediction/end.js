@@ -20,6 +20,7 @@ module.exports = {
 		const predictionId = prediction.id;
 
 		const embed = await resultEmbed(prediction, choice);
+		await updateStarterEmbed(interaction.channel, prediction, embed.title);
 		
 		const totalPool = await Bet.sum('amount', {where: {predictionId}});
 		const winningPool = await Bet.sum('amount', {where: {predictionId, choice}});
@@ -32,7 +33,7 @@ module.exports = {
 			await bet.user.earn(Math.round(bet.amount * totalPool / winningPool));
 		});
 
-		prediction.destroy();
+		await prediction.destroy();
 		
 		const reason = 'Prediction ended';
 		const reply = await interaction.reply({
