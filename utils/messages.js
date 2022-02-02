@@ -1,6 +1,9 @@
 module.exports = {
 	paymentMessage(amount, balance) {
-		return `You spent **${amount}**. Your new balance is **${balance}**.`
+		return {
+			content: `You spent **${amount}**. Your new balance is **${balance}**.`,
+			ephemeral: true,
+		};
 	},
 	openBetMsg: `Betting is open. Place bets in the thread with \`/bet\`.`,
 	closeBetMsg: `Betting is closed for this prediction.`,
