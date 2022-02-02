@@ -29,17 +29,18 @@ module.exports = {
 		const userId = interaction.member.id;
 		const predictionId = interaction.channel.id;
 		const bet = await Bet.findOne({where: {userId, predictionId}});
+		
+		const user = await User.findOne({where: {id: userId}});
+		if (!user) throw new Error(unregisteredMsg);
+		
+		const amount = allIn ? user.balance : interaction.options.getInteger('amount');
 		if (amount == null) {
 			await interaction.reply(bet
 				? `You have a bet of **${bet.amount}** on **${bet.choice}**`
 				: `No bet placed yet.`);
 			return;
 		}
-
-		const user = await User.findOne({where: {id: userId}});
-		if (!user) throw new Error(unregisteredMsg);
 		
-		const amount = allIn ? user.balance : interaction.options.getInteger('amount');
 		const prediction = await Prediction.findOne({where: {id: predictionId}});
 		if (!prediction.open) throw new Error(closeBetMsg);
 
