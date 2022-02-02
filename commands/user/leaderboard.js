@@ -27,7 +27,7 @@ module.exports = {
 			fields: top10Fields
 		};
 		const bottom10Embed = {
-			title: 'Bottm 10 jobbers',
+			title: 'Bottom 10 jobbers',
 			fields: bottom10Fields
 		};
 		await interaction.reply({embeds: [top10Embed, bottom10Embed]});
