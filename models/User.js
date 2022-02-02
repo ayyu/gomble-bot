@@ -15,6 +15,13 @@ module.exports = (sequelize) => {
 			await this.reload();
 			return this.balance;
 		}
+		async getMember(guildMemberManager) {
+			return await guildMemberManager.fetch({
+				id: this.id,
+				force: true,
+				cache: false,
+			});
+		}
 	}
 	User.init({
 		id: {
