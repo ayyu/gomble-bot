@@ -30,7 +30,7 @@ module.exports = {
 		for (const key in settings) {
 			if (settings[key] != null) {
 				await wagesKV.set(key, settings[key]);
-				await interaction.reply(`Updated ${key} to ${settings[key]}`);
+				await interaction.followUp(`Updated ${key} to ${settings[key]}`);
 			}
 		}
 	},
