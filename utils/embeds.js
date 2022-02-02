@@ -27,17 +27,6 @@ async function startMessageEmbed(prediction, description = null) {
 	return { title, description, fields };
 }
 
-async function resultEmbed(prediction, choice) {
-	const predictionId = prediction.id;
-	const winners = choice ? 'Believers' : 'Doubters';
-	const totalPool = await Bet.sum('amount', { where: { predictionId } });
-	const numWinners = await Bet.count('amount', { where: { predictionId, choice } });
-	const title = `${winners} are correct`;
-	const description = `**${totalPool}** go to ${numWinners} users`;
-	return { title, description };
-}
-
 module.exports = {
 	startMessageEmbed,
-	resultEmbed,
 };

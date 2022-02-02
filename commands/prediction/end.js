@@ -1,6 +1,6 @@
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
-const { Bet, User, Prediction } = require('../../db/models');
-const { startMessageEmbed, resultEmbed } = require('../../utils/embeds');
+const { Prediction } = require('../../db/models');
+const { startMessageEmbed } = require('../../utils/embeds');
 const { threadOnlyMsg } = require('../../utils/messages');
 const { requireThreaded } = require('../../utils/threads');
 
@@ -20,31 +20,31 @@ module.exports = {
 		const choice = interaction.options.getBoolean('result');
 
 		const prediction = await Prediction.findOne({ where: { id: interaction.channel.id } });
-		const predictionId = prediction.id;
+		const startEmbed = await startMessageEmbed(prediction);
 
-		const respEmbed = await resultEmbed(prediction, choice);
-		const startEmbed = await startMessageEmbed(prediction, respEmbed.title);
+		const [totalPool, payouts] = await prediction.end(choice);
+
+		const respEmbed = {
+			title: `${choice ? 'Believers' : 'Doubters'} win!`,
+			description: `**${totalPool}** go to ${Object.keys(payouts).length} winners`,
+		};
+		startEmbed.description = respEmbed.title;
 
 		await interaction.reply({ embeds: [respEmbed] });
+		for (const payee in payouts) {
+			let member;
+			try {
+				member = await interaction.guild.members.fetch(payee);
+			} catch (error) {
+				console.log(error);
+				member = 'Unknown Member';
+			}
+			await interaction.followUp(`${member} won **${payouts[payee]}**.`);
+		}
+
 		const starter = await interaction.channel.fetchStarterMessage();
 		await starter.edit({ embeds: [startEmbed] });
 		await starter.unpin();
-
-		const totalPool = await Bet.sum('amount', { where: { predictionId } });
-		const winningPool = await Bet.sum('amount', { where: { predictionId, choice } });
-		const winningBets = await Bet.findAll({
-			where: { predictionId, choice },
-			include: User,
-		});
-		for (const bet of winningBets) {
-			const member = await bet.user.getMember(interaction.guild.members) ?? 'Unknown member';
-			const payout = bet.amount / winningPool * totalPool;
-			await bet.user.earn(payout);
-			await interaction.followUp(`${member} won **${payout}**.`);
-		}
-
-		await prediction.destroy();
-
 		await interaction.channel.setLocked(true);
 		await interaction.channel.setArchived(true);
 	},

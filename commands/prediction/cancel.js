@@ -17,9 +17,7 @@ module.exports = {
 
 		const startEmbed = await startMessageEmbed(prediction, cancelBetMsg);
 
-		const bets = await prediction.getBets();
-		for (const bet of bets) await bet.refund();
-		await prediction.destroy();
+		prediction.cancel();
 
 		await interaction.reply(cancelBetMsg);
 		const starter = await interaction.channel.fetchStarterMessage();
