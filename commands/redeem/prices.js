@@ -10,7 +10,7 @@ module.exports = {
   data,
   async execute(interaction) {
 		const store = pricesKV.opts.store;
-		const prefix = `${store.namespace}:`;
+		const prefix = `prices:`;
 		const rows = await store.query(`SELECT * FROM ${store.opts.table} WHERE key LIKE '${prefix}%'`);
 		const pricelist = rows.map((row) => {
 			return {
