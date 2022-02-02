@@ -15,9 +15,14 @@ module.exports = (sequelize) => {
 			await this.reload();
 			return this.balance;
 		}
-		async getMember(interaction) {
-			const member = await interaction.guild.members.fetch({ user: this.id });
-			return member;
+		async getMember(members) {
+			try {
+				const member = await members.fetch({ user: this.id });
+				return member;
+			} catch (error) {
+				console.error(error);
+				return null;
+			}
 		}
 	}
 	User.init({

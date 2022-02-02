@@ -9,7 +9,7 @@
 	},
 	"rules": {
 		"arrow-spacing": ["warn", { "before": true, "after": true }],
-		"brace-style": [2, "stroustrup", { "allowSingleLine": true }],
+		"brace-style": [2, { "allowSingleLine": true }],
 		"comma-dangle": ["error", "always-multiline"],
 		"comma-spacing": "error",
 		"comma-style": "error",

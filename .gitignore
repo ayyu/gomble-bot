@@ -1,5 +1,6 @@
 node_modules
 .vscode
+.eslintrc.json
 *.sqlite
 *.txt
 .env
