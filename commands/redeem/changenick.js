@@ -25,7 +25,9 @@ module.exports = {
 		if (member.id == target.id) throw new Error(cantTargetSelfMsg);
 
 		const user = await User.findOne({where: {id: member.id}});
-		const price = await pricesKV.get(data.name) ?? 0;
+		let price = await pricesKV.get(data.name) ?? 0;
+		const hitlist = await configKV.get('hitlist') ?? [];
+		if (hitlist.includes(target.id)) price = Math.ceil(price/2);
 		
 		const balance = await user.spend(price);
 		try {
