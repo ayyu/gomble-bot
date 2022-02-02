@@ -19,8 +19,8 @@ module.exports = {
 			}
 		});
 		pricelist.sort((a, b) => {
-			const nameA = a.toLowerCase();
-			const nameB = b.toLowerCase();
+			const nameA = a.name.toLowerCase();
+			const nameB = b.name.toLowerCase();
 			if (nameA == nameB) return 0;
 			return (nameA > nameB) ? 1 : -1;
 		});

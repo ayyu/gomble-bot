@@ -12,7 +12,7 @@ const durations = [
 
 const data = new SlashCommandSubcommandBuilder()
 	.setName('timeout')
-	.setDescription(`Times out a user`)
+	.setDescription(`Times out a user. Price is per minute.`)
 	.addUserOption(option => option
 		.setName('user')
 		.setDescription('User to time out')
