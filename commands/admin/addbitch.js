@@ -15,6 +15,7 @@ module.exports = {
 		const target = interaction.options.getMember('user');
 
 		const bitches = await configKV.get('bitches') ?? new Set();
+		console.log(bitches);
 		bitches.add(target.id);
 		await configKV.set('bitches', bitches);
 
