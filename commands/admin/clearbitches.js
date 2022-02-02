@@ -2,7 +2,7 @@ const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
 const { configKV } = require('../../db/keyv');
 
 const data = new SlashCommandSubcommandBuilder()
-	.setName('removebitch')
+	.setName('clearbitches')
 	.setDescription('Remvoes a user from list of victims')
 	.addUserOption(option => option
 		.setName('user')
