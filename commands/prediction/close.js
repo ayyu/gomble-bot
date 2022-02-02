@@ -20,6 +20,6 @@ module.exports = {
 		const starter = await interaction.channel.fetchStarterMessage();
 		const embeds = starter.embeds;
 		if (embeds[0]) embeds[0].description = closeBetMsg;
-		await starter.edit({ embeds: embeds });
+		await starter.edit({ embeds });
 	},
 };
