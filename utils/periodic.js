@@ -6,7 +6,7 @@ async function payWages(guild) {
 	try {
 		let amount = await wagesKV.get('amount') ?? 0;
 		const boostMultiplier = await wagesKV.get('boost') ?? 1;
-		const boostAmount = Math.ceil(amount * boostMultiplier);
+		const boostAmount = amount * boostMultiplier;
 
 		const models = await User.findAll();
 		const members = await User.getMembers(models, guild.members);

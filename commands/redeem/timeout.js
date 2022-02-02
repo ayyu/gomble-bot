@@ -40,9 +40,10 @@ module.exports = {
 
 		let price = pricePerMin / msPerMin * duration;
 		const hitlist = await configKV.get('hitlist') ?? [];
-		if (hitlist.includes(target.id)) price /= 2;
+		const discountRate = await configKV.get('hitlistDiscount') ?? 0.5;
+		if (hitlist.includes(target.id)) price *= discountRate;
 
-		const balance = await user.spend(Math.ceil(price));
+		const balance = await user.spend(price);
 		try {
 			await target.timeout(duration);
 		} catch (error) {

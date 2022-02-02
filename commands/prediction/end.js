@@ -38,7 +38,7 @@ module.exports = {
 		});
 		for (const bet of winningBets) {
 			const member = await bet.user.getMember(interaction.guild.members) ?? 'Unknown member';
-			const payout = Math.round(bet.amount / winningPool * totalPool);
+			const payout = bet.amount / winningPool * totalPool;
 			await bet.user.earn(payout);
 			await interaction.followUp(`${member} won **${payout}**.`);
 		}

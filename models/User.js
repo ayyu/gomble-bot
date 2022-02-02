@@ -3,6 +3,7 @@ const { Model, DataTypes } = require('sequelize');
 module.exports = (sequelize) => {
 	class User extends Model {
 		async spend(amount) {
+			amount = Math.ceil(amount);
 			if (amount > this.balance) {
 				throw new Error(`Insufficient balance.\n${this.balance} available, ${amount} needed.`);
 			}
@@ -11,6 +12,7 @@ module.exports = (sequelize) => {
 			return this.balance;
 		}
 		async earn(amount) {
+			amount = Math.ceil(amount);
 			await this.increment({ balance: amount });
 			await this.reload();
 			return this.balance;
