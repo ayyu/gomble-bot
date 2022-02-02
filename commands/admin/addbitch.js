@@ -14,10 +14,11 @@ module.exports = {
 	async execute(interaction) {
 		const target = interaction.options.getMember('user');
 
-		const bitches = await configKV.get('bitches') ?? new Set();
-		console.log(bitches);
-		bitches.add(target.id);
-		await configKV.set('bitches', bitches);
+		const bitches = await configKV.get('bitches') ?? [];
+		const bitchSet = new Set(bitches);
+		bitchSet.add(target.id);
+		console.log(bitchSet);
+		await configKV.set('bitches', bitchSet.values());
 
 		await interaction.reply(`Added ${target.user.tag} to hitlist.`);
 	}

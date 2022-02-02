@@ -14,9 +14,11 @@ module.exports = {
 	async execute(interaction) {
 		const target = interaction.options.getMember('user');
 
-		const bitches = await configKV.get('bitches') ?? new Set();
-		bitches.delete(target.id);
-		await configKV.set('bitches', bitches);
+		const bitches = await configKV.get('bitches') ?? [];
+		const bitchSet = new Set(bitches);
+		bitchSet.delete(target.id);
+		console.log(bitchSet);
+		await configKV.set('bitches', bitchSet.values());
 
 		await interaction.reply(`Removed ${target.user.tag} from hitlist.`);
 	}
