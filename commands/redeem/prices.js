@@ -23,7 +23,6 @@ module.exports = {
 			title: 'Redemption prices',
 			fields: pricelist,
 		};
-		console.log(embed);
 		await interaction.reply({embeds: [embed]});
   },
 };

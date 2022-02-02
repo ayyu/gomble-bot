@@ -5,15 +5,15 @@ const data = new SlashCommandSubcommandBuilder()
 	.setName('leaderboard')
 	.setDescription('Check the top and bottom 10 richest players');
 
-async function buildEmbedFields(guild, order, limit) {
+async function buildEmbedFields(interaction, order, limit) {
 	const models = await User.findAll({ order, limit });
-	const users = await guild.users.fetch({ user: models.map(model => model.id) });
+	const users = await interaction.guild.users.fetch({ user: models.map(model => model.id) });
 	console.log(users);
 }
 
 module.exports = {
 	data,
 	async execute(interaction) {
-		buildEmbedFields(interaction.guild, [['balance', 'DESC']], 10);
+		await buildEmbedFields(interaction, [['balance', 'DESC']], 10);
 	},
 };
