@@ -8,12 +8,27 @@ const data = new SlashCommandSubcommandBuilder()
 async function buildEmbedFields(interaction, order, limit) {
 	const models = await User.findAll({ order, limit });
 	const users = await interaction.guild.members.fetch({ user: models.map(model => model.id) });
-	console.log(users);
+	return models.map((row, index) => {
+		return {
+			name: index + 1,
+			value: `**${users[row.id].nickname}**: ${row.balance}`;
+		}
+	});
 }
 
 module.exports = {
 	data,
 	async execute(interaction) {
-		await buildEmbedFields(interaction, [['balance', 'DESC']], 10);
+		const top10Fields = await buildEmbedFields(interaction, [['balance', 'DESC']], 10);
+		const bottom10Fields = await buildEmbedFields(interaction, [['balance', 'ASC']], 10);
+		const top10Embed = {
+			title: 'Top 10 ballers',
+			fields: top10Fields
+		};
+		const bottom10Embed = {
+			title: 'Bottm 10 jobbers',
+			fields: bottom10Fields
+		};
+		await interaction.reply({embeds: [top10Embed, bottom10Embed]});
 	},
 };
