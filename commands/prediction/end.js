@@ -1,5 +1,5 @@
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
-const { Prediction } = require('../../db/models');
+const { User, Prediction } = require('../../db/models');
 const { startMessageEmbed } = require('../../utils/embeds');
 const { threadOnlyMsg } = require('../../utils/messages');
 const { requireThreaded } = require('../../utils/threads');
@@ -32,6 +32,9 @@ module.exports = {
 
 		await interaction.reply({ embeds: [respEmbed] });
 		for (const payee in payouts) {
+			const amount = payouts[payee];
+			const model = await User.findOne({ where: { id: payee } });
+			await model.earn(amount);
 			let member;
 			try {
 				member = await interaction.guild.members.fetch(payee);
@@ -39,7 +42,7 @@ module.exports = {
 				console.log(error);
 				member = 'Unknown Member';
 			}
-			await interaction.followUp(`${member} won **${payouts[payee]}**.`);
+			await interaction.followUp(`${member} won **${amount}**.`);
 		}
 
 		const starter = await interaction.channel.fetchStarterMessage();
