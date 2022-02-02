@@ -1,9 +1,11 @@
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
 const { User } = require('../../db/models')
 
+const limit = 5;
+
 const data = new SlashCommandSubcommandBuilder()
 	.setName('leaderboard')
-	.setDescription('Check the top and bottom 10 richest players');
+	.setDescription(`Check the top ${limit} and bottom ${limit} players`);
 
 async function buildEmbedFields(interaction, order, limit) {
 	const models = await User.findAll({ order, limit });
@@ -20,16 +22,16 @@ async function buildEmbedFields(interaction, order, limit) {
 module.exports = {
 	data,
 	async execute(interaction) {
-		const top10Fields = await buildEmbedFields(interaction, [['balance', 'DESC']], 10);
-		const bottom10Fields = await buildEmbedFields(interaction, [['balance', 'ASC']], 10);
-		const top10Embed = {
-			title: 'Top 10 ballers',
-			fields: top10Fields
+		const topFields = await buildEmbedFields(interaction, [['balance', 'DESC']], limit);
+		const bottomFields = await buildEmbedFields(interaction, [['balance', 'ASC']], limit);
+		const topEmbed = {
+			title: `📈 Top ${limit} ballers`,
+			fields: topFields
 		};
-		const bottom10Embed = {
-			title: 'Bottom 10 jobbers',
-			fields: bottom10Fields
+		const bottomEmbed = {
+			title: `📉 Bottom ${limit} jobbers`,
+			fields: bottomFields
 		};
-		await interaction.reply({embeds: [top10Embed, bottom10Embed]});
+		await interaction.reply({embeds: [topEmbed, bottomEmbed]});
 	},
 };

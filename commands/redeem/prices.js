@@ -19,7 +19,7 @@ module.exports = {
 			}
 		});
 		const embed = {
-			title: 'Redemption prices',
+			title: `🛒 Redemption prices`,
 			fields: pricelist,
 		};
 		await interaction.reply({embeds: [embed]});
