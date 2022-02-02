@@ -3,7 +3,7 @@ const path = require('path');
 const { Collection } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
-const { absForEach } = require('../utils/fs')
+const { absForEach } = require('../utils/fs');
 
 const data = new SlashCommandBuilder()
 	.setName('admin')
@@ -11,11 +11,11 @@ const data = new SlashCommandBuilder()
 
 const subcommands = new Collection();
 absForEach(path.resolve(__dirname, data.name), /\.js$/,
-  (directory, file) => {
-    const command = require(`${directory}/${file}`);
-    data.addSubcommand(command.data);
+	(directory, file) => {
+		const command = require(`${directory}/${file}`);
+		data.addSubcommand(command.data);
 		subcommands.set(command.data.name, command);
-  }
+	},
 );
 
 module.exports = {

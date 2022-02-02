@@ -40,14 +40,14 @@ module.exports = {
 			}
 			case 'private': {
 				const perms = basePrivatePerms(guild);
-				if (role) perms.push({id: role.id, type: 'ROLE', permission: true});
+				if (role) perms.push({ id: role.id, type: 'ROLE', permission: true });
 				await permsKV.set(command, perms);
 				await interaction.reply(`Saved private command \`/${command}\``);
 				break;
 			}
 		}
-		
+
 		await updateCommandPerms(guild);
-		await interaction.followUp(`Updated command permissions.`);
-	}
+		await interaction.followUp('Updated command permissions.');
+	},
 };

@@ -28,7 +28,7 @@ module.exports = {
 		switch (operation) {
 			case 'add':
 			case 'remove': {
-				if (!target) throw new Error(`No target provided.`);
+				if (!target) throw new Error('No target provided.');
 
 				const hitlist = await configKV.get('hitlist') ?? [];
 				const hitlistSet = new Set(hitlist);
@@ -41,15 +41,15 @@ module.exports = {
 					hitlistSet.delete(target.id);
 					await interaction.reply(`Removed ${target.user.tag} from hitlist.`);
 				}
-				
+
 				await configKV.set('hitlist', Array.from(hitlistSet));
 				break;
 			}
 			case 'clear': {
 				await configKV.delete('hitlist');
-				await interaction.reply(`Removed all users from hitlist.`);
+				await interaction.reply('Removed all users from hitlist.');
 				break;
 			}
 		}
-	}
+	},
 };

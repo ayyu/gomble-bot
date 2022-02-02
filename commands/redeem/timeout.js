@@ -13,7 +13,7 @@ const durations = [
 
 const data = new SlashCommandSubcommandBuilder()
 	.setName('timeout')
-	.setDescription(`Times out a user. Price is per minute.`)
+	.setDescription('Times out a user. Price is per minute.')
 	.addUserOption(option => option
 		.setName('user')
 		.setDescription('User to time out')
@@ -34,14 +34,14 @@ module.exports = {
 		if (member.id == target.id) throw new Error(cantTargetSelfMsg);
 		if (!target.moderatable) throw new Error(`${target.user.tag} is not a valid target.`);
 
-		const user = await User.findOne({where: {id: member.id}});
+		const user = await User.findOne({ where: { id: member.id } });
 		const pricePerMin = await pricesKV.get(data.name) ?? 0;
 		const msPerMin = ms('1 min');
 
 		let price = pricePerMin / msPerMin * duration;
 		const hitlist = await configKV.get('hitlist') ?? [];
 		if (hitlist.includes(target.id)) price /= 2;
-		
+
 		const balance = await user.spend(Math.ceil(price));
 		try {
 			await target.timeout(duration);
@@ -50,7 +50,7 @@ module.exports = {
 			throw error;
 		}
 
-		await interaction.reply(`${target} timed out for ${ms(duration, {long: true})}.`);
+		await interaction.reply(`${target} timed out for ${ms(duration, { long: true })}.`);
 		await interaction.followUp(paymentMessage(price, balance));
 	},
 };

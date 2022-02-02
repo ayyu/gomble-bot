@@ -1,9 +1,7 @@
 const { Model, DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-	class Prediction extends Model {
-		
-	}
+	class Prediction extends Model {}
 	Prediction.init({
 		id: {
 			type: DataTypes.STRING,

@@ -13,13 +13,13 @@ module.exports = {
 	async execute(interaction) {
 		if (!requireThreaded(interaction)) throw new Error(threadOnlyMsg);
 
-		const prediction = await Prediction.findOne({where: {id: interaction.channel.id}});
+		const prediction = await Prediction.findOne({ where: { id: interaction.channel.id } });
 
-		await prediction.update({'open': false});
-		
+		await prediction.update({ 'open': false });
+
 		await interaction.reply(closeBetMsg);
 		const starter = await interaction.channel.fetchStarterMessage();
 		const embed = await startMessageEmbed(prediction, closeBetMsg);
-		await starter.edit({embeds: [embed]});
+		await starter.edit({ embeds: [embed] });
 	},
 };

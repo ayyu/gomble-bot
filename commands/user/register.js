@@ -16,8 +16,8 @@ module.exports = {
 		const member = interaction.member;
 		const initialBalance = (await wagesKV.get('initial')) ?? 0;
 		const [, created] = await User.findOrCreate({
-			where: {id: member.id},
-			defaults: {balance: initialBalance}
+			where: { id: member.id },
+			defaults: { balance: initialBalance },
 		});
 		if (!created) throw new Error(registeredMsg);
 		await interaction.reply(`**Registered** ${member.user.tag} for predictions.`);

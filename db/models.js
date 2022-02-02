@@ -12,7 +12,5 @@ Bet.belongsTo(Prediction);
 
 module.exports = {
 	sequelize,
-	User,
-	Prediction,
-	Bet,
+	User, Prediction, Bet,
 };

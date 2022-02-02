@@ -17,10 +17,10 @@ module.exports = {
 	data,
 	async execute(interaction) {
 		const item = interaction.options.getString('item');
-		const price  = interaction.options.getInteger('price');
+		const price = interaction.options.getInteger('price');
 
 		await pricesKV.set(item, price);
 
 		await interaction.reply(`Updated price of \`/${item}\` to ${price}.`);
-	}
+	},
 };

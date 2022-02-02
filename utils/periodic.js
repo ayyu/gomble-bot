@@ -19,13 +19,13 @@ async function payWages(guild) {
 				console.log(`User with ID ${model.id} isn't in the server.`);
 			}
 			await model.earn(amount);
-		};
+		}
 		console.log(`Paid ${boostAmount} to boosters and ${amount} to all other users.`);
 
-		let interval = await wagesKV.get('interval') ?? '1 min';
+		const interval = await wagesKV.get('interval') ?? '1 min';
 		setTimeout(payWages, ms(interval), guild);
 		console.log(`Next payment is in ${interval}.`);
-		
+
 	} catch (error) {
 		console.error(error);
 	}
@@ -49,4 +49,4 @@ async function pruneMembers(guild) {
 module.exports = {
 	payWages,
 	pruneMembers,
-}
+};

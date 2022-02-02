@@ -1,4 +1,4 @@
-const { permsKV } = require('../db/keyv')
+const { permsKV } = require('../db/keyv');
 
 module.exports = {
 	async updateCommandPerms(guild) {
@@ -36,5 +36,5 @@ module.exports = {
 				permission: true,
 			},
 		];
-	}
-}
+	},
+};

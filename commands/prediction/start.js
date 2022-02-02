@@ -17,9 +17,9 @@ module.exports = {
 	async execute(interaction) {
 		if (!requireUnthreaded(interaction)) throw new Error(channelOnlyMsg);
 		const prompt = interaction.options.getString('prompt');
-		
+
 		const reply = await interaction.reply({
-			content: `**Prediction**`,
+			content: '**Prediction**',
 			fetchReply: true,
 		});
 
@@ -27,7 +27,7 @@ module.exports = {
 			name: `${prompt}`,
 			autoArchiveDuration: 'MAX',
 		});
-		
+
 		const prediction = await Prediction.create({
 			id: thread.id,
 			prompt,
@@ -35,7 +35,7 @@ module.exports = {
 		});
 
 		const embed = await startMessageEmbed(prediction);
-		await reply.edit({embeds: [embed]});
+		await reply.edit({ embeds: [embed] });
 		await reply.pin();
 	},
 };

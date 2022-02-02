@@ -9,12 +9,12 @@ const store = new KeyvPostgres({
 	ssl: {
 		require: true,
 		rejectUnauthorized: false,
-	}
+	},
 });
 
 module.exports = {
-	permsKV: new Keyv({store, namespace: 'perms'}),
-	wagesKV: new Keyv({store, namespace: 'wages'}),
-	pricesKV: new Keyv({store, namespace: 'prices'}),
-	configKV: new Keyv({store, namespace: 'config'}),
-}
+	permsKV: new Keyv({ store, namespace: 'perms' }),
+	wagesKV: new Keyv({ store, namespace: 'wages' }),
+	pricesKV: new Keyv({ store, namespace: 'prices' }),
+	configKV: new Keyv({ store, namespace: 'config' }),
+};
