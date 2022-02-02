@@ -10,11 +10,9 @@ const data = new SlashCommandSubcommandBuilder()
 async function buildEmbedFields(interaction, order, limit) {
 	const models = await User.findAll({ order, limit });
 	return models.map(async (model, index) => {
-		let tag = 'Unknown Member';
+		let name = 'Unknown Member';
 		const member = await model.getMember(interaction.guild.members);
-		if (member) tag = member.user.tag;
-		console.log(tag);
-		const name = `${(index + 1)}. ${tag}`;
+		if (member) name = member.user.tag;
 		const value = `\`\`\`${model.balance} points\`\`\``;
 		return { name, value };
 	});
