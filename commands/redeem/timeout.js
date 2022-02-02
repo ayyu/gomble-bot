@@ -1,5 +1,6 @@
 const ms = require('ms');
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
+const { configKV, pricesKV } = require('../../db/keyv');
 const { User } = require('../../db/models');
 const { paymentMessage, cantTargetSelfMsg } = require('../../utils/messages');
 
@@ -36,8 +37,12 @@ module.exports = {
 		const user = await User.findOne({where: {id: member.id}});
 		const pricePerMin = await pricesKV.get(data.name) ?? 0;
 		const msPerMin = ms('1 min');
+
+		let price = pricePerMin / msPerMin * duration;
+		const bitches = await configKV.get('bitches') ?? new Set();
+		if (bitches.has(target.id)) price /= 2;
 		
-		const balance = await user.spend(Math.round(pricePerMin / msPerMin * duration));
+		const balance = await user.spend(Math.ceil(price));
 		try {
 			await target.timeout(duration);
 		} catch (error) {
