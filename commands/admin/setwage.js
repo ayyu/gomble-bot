@@ -23,7 +23,7 @@ module.exports = {
 		const interval = interaction.options.getString('interval');
 		const amount = interaction.options.getInteger('amount');
 		const initial = interaction.options.getInteger('initial');
-		const boost = interaction.options.getInteger('boost');
+		const boost = interaction.options.getNumber('boost');
 
 		await interaction.reply('Updating wage settings.');
 		const settings = { interval, amount, initial, boost };
