@@ -1,6 +1,6 @@
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
 const { permsKV } = require('../../db/keyv');
-const { basePrivatePerms, updateCommandPerms } = require('../../utils/permissions');
+const { basePrivatePerms, basePublicPerms, updateCommandPerms } = require('../../utils/permissions');
 
 const modes = [
 	'public',
