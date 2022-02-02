@@ -9,6 +9,7 @@ async function buildEmbedFields(interaction, order, limit) {
 	const models = await User.findAll({ order, limit });
 	const users = await interaction.guild.members.fetch({ user: models.map(model => model.id) });
 	return models.map((row, index) => {
+		console.log(users[row.id]);
 		return {
 			name: index + 1,
 			value: `**${users[row.id].nickname}**: ${row.balance}`,
