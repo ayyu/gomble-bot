@@ -17,8 +17,6 @@ module.exports = {
 			where: { id: target.id },
 		});
 		if (!user) throw new Error(unregisteredMsg);
-		await interaction.reply(
-			`**${target.user.tag}'s balance:** ${user.balance}`,
-		);
+		await interaction.reply(`**${target.user.tag}'s balance:** ${user.balance}`);
 	},
 };
