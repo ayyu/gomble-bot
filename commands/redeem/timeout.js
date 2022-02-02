@@ -1,7 +1,7 @@
 const ms = require('ms');
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
 const { User } = require('../../db/models');
-const { paymentMessage } = require('../../utils/messages');
+const { paymentMessage, cantTargetSelfMsg } = require('../../utils/messages');
 
 const durations = [
 	'1 minute',
@@ -26,19 +26,25 @@ const data = new SlashCommandSubcommandBuilder()
 module.exports = {
 	data,
 	async execute(interaction) {
-		const invoker = interaction.member;
+		const member = interaction.member;
 		const target = interaction.options.getMember('user');
 		const duration = interaction.options.getInteger('duration');
 
-		if (invoker.id == target.id) throw new Error(`Can't target yourself`);
-		if (!target.moderatable) throw new Error(`${target} is not a valid target.`);
+		if (member.id == target.id) throw new Error(cantTargetSelfMsg);
+		if (!target.moderatable) throw new Error(`${target.user.tag} is not a valid target.`);
 
-		const invokerModel = await User.findOne({where: {id: invoker.id}});
+		const user = await User.findOne({where: {id: member.id}});
 		const pricePerMin = await pricesKV.get(data.name) ?? 0;
 		const msPerMin = ms('1 min');
-		const balance = await invokerModel.spend(Math.round(pricePerMin / msPerMin * duration));
+		
+		const balance = await user.spend(Math.round(pricePerMin / msPerMin * duration));
+		try {
+			await target.timeout(duration);
+		} catch (error) {
+			await user.earn(price);
+			throw error;
+		}
 
-		await target.timeout(duration);
 		await interaction.reply(`${target} timed out for ${ms(duration, {long: true})}.`);
 		await interaction.followUp(paymentMessage(price, balance));
 	},

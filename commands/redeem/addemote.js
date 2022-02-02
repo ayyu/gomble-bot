@@ -18,21 +18,21 @@ const data = new SlashCommandSubcommandBuilder()
 module.exports = {
   data,
   async execute(interaction) {
-    const invoker = interaction.member;
-    const invokerModel = await User.findOne({where: {id: invoker.id}});
+    const member = interaction.member;
+    const user = await User.findOne({where: {id: member.id}});
 
 		const attachment = interaction.options.getString('attachment');
     const name = interaction.options.getString('name');
 
     const price = await pricesKV.get(data.name) ?? 0;
-    const balance = await invokerModel.spend(price);
-		
+    
     let emoji;
-    try {
+    const balance = await user.spend(price);
+		try {
       emoji = await interaction.guild.emojis.create(attachment, name);
     } catch (error) {
-      await invokerModel.refund(price);
-      console.error(error);
+      await user.earn(price);
+      throw error;
     }
 
     await interaction.reply(`Added emote <:${emoji.identifier}> as **:${emoji.name}:**`);

@@ -9,4 +9,5 @@ module.exports = {
 	threadOnlyMsg: `You can only use this command in a betting thread.`,
 	registeredMsg: `This user is already registered.`,
 	unregisteredMsg: `User isn't registered. Use \`/user register\` first.`,
+	cantTargetSelfMsg: `Can't target yourself`,
 };

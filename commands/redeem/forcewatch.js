@@ -1,7 +1,7 @@
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
 const { pricesKV } = require('../../db/keyv');
 const { User } = require('../../db/models');
-const { paymentMessage } = require('../../utils/messages');
+const { paymentMessage, cantTargetSelfMsg } = require('../../utils/messages');
 
 const data = new SlashCommandSubcommandBuilder()
   .setName('forcewatch')
@@ -18,17 +18,24 @@ const data = new SlashCommandSubcommandBuilder()
 module.exports = {
   data,
   async execute(interaction) {
-    const invoker = interaction.member;
+    const member = interaction.member;
     const target = interaction.options.getMember('user');
 		const show = interaction.options.getString('show');
 
-    if (invoker.id == target.id) throw new Error(`Can't target yourself`);
+    if (member.id == target.id) throw new Error(cantTargetSelfMsg);
 
-    const invokerModel = await User.findOne({where: {id: invoker.id}});
+    const user = await User.findOne({where: {id: member.id}});
     const price = await pricesKV.get(data.name) ?? 0;
-    const balance = await invokerModel.spend(price);
+    
+    let reply;
+    const balance = await user.spend(price);
+    try {
+			reply = await interaction.reply(`${member} forces ${target} to watch ${show}`);
+		} catch (error) {
+			await user.earn(price);
+			throw error;
+		}
 		
-    const reply = await interaction.reply(`${invoker} forces ${target} to watch ${show}`);
     await reply.pin();
     await interaction.followUp(paymentMessage(price, balance));
   },
