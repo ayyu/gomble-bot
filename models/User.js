@@ -16,14 +16,22 @@ module.exports = (sequelize) => {
 			return this.balance;
 		}
 		async getMember(members) {
-			let member;
 			try {
-				member = await members.fetch(this.id);
+				const member = await members.fetch(this.id);
+				return member;
 			} catch (error) {
 				console.error(error);
-				member = null;
+				return null;
 			}
-			return member;
+		}
+		static async getMembers(models, members) {
+			try {
+				const collection = await members.fetch({ user: models.map(model => model.id) });
+				return collection;
+			} catch (error) {
+				console.error(error);
+				return null;
+			}
 		}
 	}
 	User.init({

@@ -9,11 +9,14 @@ async function payWages(guild) {
 		const boostAmount = Math.ceil(amount * boostMultiplier);
 
 		const models = await User.findAll();
+		const members = await User.getMembers(models, guild.members);
 		for (const model of models) {
-			const member = await model.getMember(guild.members);
+			const member = members.get(model.id);
 			if (member && member.premiumSinceTimestamp) {
 				console.log(`${member.user.tag} is a booster.`);
 				amount = boostAmount;
+			} else if (!member) {
+				console.log(`User with ID ${model.id} isn't in the server.`);
 			}
 			await model.earn(amount);
 		};
@@ -31,11 +34,11 @@ async function payWages(guild) {
 async function pruneMembers(guild) {
 	try {
 		const models = await User.findAll();
+		const members = await User.getMembers(models, guild.members);
 		for (const model of models) {
-			const member = await model.getMember(guild.members);
-			if (!member) {
+			if (!members.has(model.id)) {
 				model.destroy();
-				console.log(`Removed missing member ${model.id} from database.`);
+				console.log(`Removed missing member with ID ${model.id} from database.`);
 			}
 		}
 	} catch (error) {
