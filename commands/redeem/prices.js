@@ -16,7 +16,6 @@ module.exports = {
 			return {
 				name: row.key.replace(prefix, ''),
 				value: `\`\`\`${JSONB.parse(row.value).value}\`\`\``,
-				inline: true,
 			}
 		});
 		const embed = {
