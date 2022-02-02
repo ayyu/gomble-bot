@@ -1,5 +1,4 @@
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
-const { Sequelize } = require('sequelize');
 const { User, Bet } = require('../../db/models');
 const { unregisteredMsg } = require('../../utils/messages');
 
@@ -17,21 +16,18 @@ module.exports = {
 
 		const model = await User.findOne({
 			where: { id: target.id },
-			attributes: {
-				include: [[Sequelize.fn('COUNT', Sequelize.col('bets.id')), 'betCount']],
-			},
 			include: Bet,
 		});
 		if (!model) throw new Error(unregisteredMsg);
 
-		const description = `${model.betCount} bets on active predictions`;
+		const description = `${model.bets.length} bets on active predictions`;
 
 		const fields = [];
 		for (const bet of model.bets) {
 			const prompt = await bet.getPrompt(interaction.guild);
 			fields.push({
 				name: prompt,
-				value: `\`\`\`${bet.value} on ${bet.choice}\`\`\``,
+				value: `\`\`\`${bet.amount} on ${bet.choice}\`\`\``,
 			});
 		}
 		const embed = {
