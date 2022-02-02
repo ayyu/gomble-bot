@@ -12,11 +12,16 @@ module.exports = {
 		const store = pricesKV.opts.store;
 		const prefix = `${store.namespace}:`;
 		const rows = await store.query(`SELECT * FROM ${store.opts.table} WHERE key LIKE '${prefix}%'`);
-		const pricelist = rows.reduce((prev, row) => {
-			const command = row.key.replace(prefix, '');
-			const price = JSONB.parse(row.value).value;
-			return prev + `\`/${command}\`: ${price}\n`;
-		}, '');
-		await interaction.reply(pricelist);
+		const pricelist = rows.map((row) => {
+			return {
+				name: row.key.replace(prefix, ''),
+				value: `${JSONB.parse(row.value).value}`,
+				inline: true,
+			}
+		});
+		await interaction.reply({embeds: [{
+			title: 'Redemption prices',
+			fields: pricelist
+		}]});
   },
 };
