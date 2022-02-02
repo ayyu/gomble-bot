@@ -1,5 +1,5 @@
 const { Model, DataTypes } = require('sequelize');
-const { Bet, User } = require('../db/models');
+const { User } = require('../db/models');
 
 module.exports = (sequelize) => {
 	class Prediction extends Model {
@@ -18,12 +18,10 @@ module.exports = (sequelize) => {
 			await this.destroy();
 		}
 		async end(choice) {
-			const totalPool = await Bet.sum('amount', { where: { predictionId: this.id } });
-			const winningPool = await Bet.sum('amount', { where: { predictionId: this.id, choice } });
-			const winningBets = await this.getBets({
-				where: { choice },
-				include: User,
-			});
+			const bets = await this.getBets({ include: User });
+			const winningBets = bets.filter(bet => bet.choice == choice);
+			const totalPool = bets.reduce((total, bet) => total + bet.amount, 0);
+			const winningPool = winningBets.reduce((total, bet) => total + bet.amount, 0);
 			const payouts = {};
 			for (const bet of winningBets) {
 				const payout = bet.amount / winningPool * totalPool;
