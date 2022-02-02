@@ -17,8 +17,7 @@ module.exports = {
 		const bitches = await configKV.get('bitches') ?? [];
 		const bitchSet = new Set(bitches);
 		bitchSet.delete(target.id);
-		console.log(bitchSet);
-		await configKV.set('bitches', bitchSet.values());
+		await configKV.set('bitches', Array.from(bitchSet));
 
 		await interaction.reply(`Removed ${target.user.tag} from hitlist.`);
 	}

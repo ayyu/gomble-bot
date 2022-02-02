@@ -17,8 +17,7 @@ module.exports = {
 		const bitches = await configKV.get('bitches') ?? [];
 		const bitchSet = new Set(bitches);
 		bitchSet.add(target.id);
-		console.log(bitchSet);
-		await configKV.set('bitches', bitchSet.values());
+		await configKV.set('bitches', Array.from(bitchSet));
 
 		await interaction.reply(`Added ${target.user.tag} to hitlist.`);
 	}
