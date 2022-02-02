@@ -17,14 +17,13 @@ const data = new SlashCommandSubcommandBuilder()
 		.setRequired(true))
 	.addUserOption(option => option
 		.setName('user')
-		.setDescription('User to add or remove')
-		.setRequired(true));
+		.setDescription('User to add or remove'));
 
 module.exports = {
 	data,
 	async execute(interaction) {
 		const target = interaction.options.getMember('user');
-		const operation = interaction.option.getString('operation');
+		const operation = interaction.options.getString('operation');
 
 		switch (operation) {
 			case 'add':
