@@ -15,7 +15,8 @@ module.exports = {
 		const pricelist = rows.map((row) => {
 			return {
 				name: row.key.replace(prefix, ''),
-				value: `${JSONB.parse(row.value).value}`,
+				value: `\`\`\`${JSONB.parse(row.value).value}\`\`\``,
+				inline: true,
 			}
 		});
 		const embed = {
