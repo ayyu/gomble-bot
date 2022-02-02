@@ -1,7 +1,6 @@
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
 const { Prediction } = require('../../db/models');
-const { startMessageEmbed } = require('../../utils/embeds');
-const { cancelBetMsg, threadOnlyMsg } = require('../../utils/messages');
+const { threadOnlyMsg } = require('../../utils/messages');
 const { requireThreaded } = require('../../utils/threads');
 
 const data = new SlashCommandSubcommandBuilder()
@@ -15,13 +14,18 @@ module.exports = {
 
 		const prediction = await Prediction.findOne({ where: { id: interaction.channel.id } });
 
-		const startEmbed = await startMessageEmbed(prediction, cancelBetMsg);
-
 		prediction.cancel();
 
-		await interaction.reply(cancelBetMsg);
+		const replyEmbed = {
+			title: 'This prediction has been cancelled',
+			description: 'All bets have been refunded',
+		};
+		await interaction.reply({ embeds: [replyEmbed] });
+
 		const starter = await interaction.channel.fetchStarterMessage();
-		await starter.edit({ embeds: [startEmbed] });
+		const embeds = starter.embeds;
+		if (embeds[0]) embeds[0].description = replyEmbed.title;
+		await starter.edit({ embeds: embeds });
 		await starter.unpin();
 		await interaction.channel.setLocked(true);
 		await interaction.channel.setArchived(true);

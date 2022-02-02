@@ -1,6 +1,5 @@
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
 const { Prediction } = require('../../db/models');
-const { startMessageEmbed } = require('../../utils/embeds');
 const { threadOnlyMsg } = require('../../utils/messages');
 const { requireThreaded } = require('../../utils/threads');
 
@@ -20,17 +19,15 @@ module.exports = {
 		const choice = interaction.options.getBoolean('result');
 
 		const prediction = await Prediction.findOne({ where: { id: interaction.channel.id } });
-		const startEmbed = await startMessageEmbed(prediction);
 
 		const [totalPool, payouts] = await prediction.end(choice);
 
-		const respEmbed = {
+		const replyEmbed = {
 			title: `${choice ? 'Believers' : 'Doubters'} win!`,
 			description: `**${totalPool}** go to ${Object.keys(payouts).length} winners`,
 		};
-		startEmbed.description = respEmbed.title;
 
-		await interaction.reply({ embeds: [respEmbed] });
+		await interaction.reply({ embeds: [replyEmbed] });
 		for (const payee in payouts) {
 			let member;
 			try {
@@ -43,7 +40,9 @@ module.exports = {
 		}
 
 		const starter = await interaction.channel.fetchStarterMessage();
-		await starter.edit({ embeds: [startEmbed] });
+		const embeds = starter.embeds;
+		if (embeds[0]) embeds[0].description = replyEmbed.title;
+		await starter.edit({ embeds: embeds });
 		await starter.unpin();
 		await interaction.channel.setLocked(true);
 		await interaction.channel.setArchived(true);
