@@ -7,7 +7,7 @@ const data = new SlashCommandSubcommandBuilder()
 
 async function buildEmbedFields(interaction, order, limit) {
 	const models = await User.findAll({ order, limit });
-	const users = await interaction.guild.users.fetch({ user: models.map(model => model.id) });
+	const users = await interaction.guild.members.fetch({ user: models.map(model => model.id) });
 	console.log(users);
 }
 
