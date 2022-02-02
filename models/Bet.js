@@ -3,8 +3,11 @@ const { Model, DataTypes } = require('sequelize');
 module.exports = (sequelize) => {
 	class Bet extends Model {
 		async refund() {
+			await this.payout(this.amount);
+		}
+		async payout(amount) {
 			const user = await this.getUser();
-			await user.earn(this.amount);
+			await user.earn(amount);
 			await user.reload();
 			await this.destroy();
 		}

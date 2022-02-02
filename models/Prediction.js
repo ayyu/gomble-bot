@@ -25,6 +25,7 @@ module.exports = (sequelize) => {
 			for (const bet of winningBets) {
 				const payout = bet.amount / winningPool * totalPool;
 				payouts[bet.userId] = payout;
+				await bet.payout(payout);
 				await bet.destroy();
 			}
 			await this.destroy();
