@@ -13,6 +13,7 @@ async function buildEmbedFields(interaction, order, limit) {
 		let tag = 'Unknown Member';
 		const member = await model.getMember(interaction.guild.members);
 		if (member) tag = member.user.tag;
+		console.log(tag);
 		const name = `${(index + 1)}. ${tag}`;
 		const value = `\`\`\`${model.balance} points\`\`\``;
 		return { name, value };
