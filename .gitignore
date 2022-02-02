@@ -1,6 +1,7 @@
-*.txt
-config.json
 node_modules
-.env
+.vscode
 *.sqlite
+*.txt
+.env
+config.json
 package-lock.json
