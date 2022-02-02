@@ -16,7 +16,7 @@ module.exports = (sequelize) => {
 			return this.balance;
 		}
 		async getMember(interaction) {
-			const member = await interaction.guild.members.fetch({ id: this.id });
+			const member = await interaction.guild.members.fetch({ user: this.id });
 			return member;
 		}
 	}
