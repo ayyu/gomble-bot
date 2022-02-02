@@ -27,19 +27,24 @@ module.exports = {
 
 		switch (operation) {
 			case 'add':
-			case 'remove':
+			case 'remove': {
+				if (!target) throw new Error(`No target provided.`);
+
 				const hitlist = await configKV.get('hitlist') ?? [];
 				const hitlistSet = new Set(hitlist);
-			case 'add':
-				hitlistSet.add(target.id);
-				await interaction.reply(`Added ${target.user.tag} to hitlist.`);
-			case 'remove':
-				hitlistSet.delete(target.id);
-				await interaction.reply(`Removed ${target.user.tag} from hitlist.`);
-			case 'add':
-			case 'remove':
-				await configKV.set('bitches', Array.from(bitchSet));
+
+				if (operation == 'add') {
+					hitlistSet.add(target.id);
+					await interaction.reply(`Added ${target.user.tag} to hitlist.`);
+				}
+				if (operation == 'remove') {
+					hitlistSet.delete(target.id);
+					await interaction.reply(`Removed ${target.user.tag} from hitlist.`);
+				}
+				
+				await configKV.set('hitlist', Array.from(hitlistSet));
 				break;
+			}
 			case 'clear': {
 				await configKV.delete('hitlist');
 				await interaction.reply(`Removed all users from hitlist.`);
