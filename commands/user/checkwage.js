@@ -2,7 +2,7 @@ const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
 const { wagesKV } = require('../../db/keyv');
 
 const data = new SlashCommandSubcommandBuilder()
-	.setName('checkwage')
+	.setName('wage')
 	.setDescription('Checks the current server wage settings');
 
 module.exports = {
