@@ -6,11 +6,14 @@ const { requireThreaded } = require('../utils/threads');
 
 const data = new SlashCommandBuilder()
 	.setName('bet')
-	.setDescription('Place, raise, or check your bet')
+	.setDescription(`Place, raise, or check your bet. Leave options blank to check your bet.`)
 	.addIntegerOption(option => option
 		.setName('amount')
-		.setDescription('How much you want to wager. Leave blank to check your bet.')
+		.setDescription('How much to wager')
 		.setMinValue(1))
+	.addBooleanOption(option => option
+		.setName('all')
+		.setDescription('Whether to go all in'))
 	.addBooleanOption(option => option
 		.setName('choice')
 		.setDescription('The outcome you want to bet on.'));
@@ -19,14 +22,16 @@ module.exports = {
 	data,
 	async execute(interaction) {
 		if (!requireThreaded(interaction)) throw new Error(`You can only bet in a betting thread.`);
+		let amount = interaction.options.getInteger('amount');
+		const allIn = interaction.options.getBoolean('all');
 		const choice = interaction.options.getBoolean('choice');
-		const amount = interaction.options.getInteger('amount');
-
+		
 		const userId = interaction.member.id;
 		const predictionId = interaction.channel.id;
 		const bet = await Bet.findOne({where: {userId, predictionId}});
 		const user = await User.findOne({where: {id: userId}});
-
+		if (allIn) amount = user.balance;
+		
 		if (!user) throw new Error(`User is not registered.`);
 		if (amount == null) {
 			await interaction.reply(bet ? `You have a bet of **${bet.amount}** on **${bet.choice}**` : `No bet placed yet.`);
