@@ -1,5 +1,5 @@
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
-const { pricesKV } = require('../../db/keyv');
+const { configKV, pricesKV } = require('../../db/keyv');
 const { User } = require('../../db/models');
 const { paymentMessage, cantTargetSelfMsg } = require('../../utils/messages');
 
