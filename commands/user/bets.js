@@ -20,6 +20,8 @@ module.exports = {
 		});
 		if (!model) throw new Error(unregisteredMsg);
 
+		const description = `${model.bets.length} bets on active predictions`;
+
 		const fields = [];
 		for (const bet of model.bets) {
 			const prompt = await bet.getPrompt(interaction.guild);
@@ -30,6 +32,7 @@ module.exports = {
 		}
 		const embed = {
 			title: `${target.user.tag}'s active bets`,
+			description,
 			fields,
 		};
 
