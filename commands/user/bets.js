@@ -24,9 +24,9 @@ module.exports = {
 
 		const fields = [];
 		for (const bet of model.bets) {
-			const prompt = await bet.getPrompt(interaction.guild);
+			const prediction = await bet.getPrediction(interaction.guild);
 			fields.push({
-				name: prompt,
+				name: prediction.prompt,
 				value: `\`\`\`${bet.amount} on ${bet.choice}\`\`\``,
 			});
 		}

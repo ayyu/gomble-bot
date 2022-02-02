@@ -8,11 +8,6 @@ module.exports = (sequelize) => {
 			await user.reload();
 			await this.destroy();
 		}
-		async getPrompt(guild) {
-			const prediction = await this.getPrediction();
-			const thread = await guild.channels.fetch(prediction.id);
-			return thread.name;
-		}
 	}
 	Bet.init({
 		choice: {
