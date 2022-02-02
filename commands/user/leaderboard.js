@@ -13,7 +13,7 @@ async function buildEmbedFields(interaction, order, limit) {
 	return models.map((row, index) => {
 		const member = members.get(row.id);
 		return {
-			name: `${(index + 1)}. ${member.nickname ?? member.user.username}`,
+			name: `${(index + 1)}. ${member.user.tag}`,
 			value: `\`\`\`${row.balance} points\`\`\``,
 		}
 	});

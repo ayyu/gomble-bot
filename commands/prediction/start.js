@@ -26,7 +26,6 @@ module.exports = {
 		const thread = await reply.startThread({
 			name: `${prompt}`,
 			autoArchiveDuration: 'MAX',
-			reason: 'New prediction started: ${exchangeName}',
 		});
 		
 		const prediction = await Prediction.create({

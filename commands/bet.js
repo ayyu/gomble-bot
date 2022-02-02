@@ -32,7 +32,7 @@ module.exports = {
 		const user = await User.findOne({where: {id: userId}});
 		if (allIn) amount = user.balance;
 		
-		if (!user) throw new Error(`User is not registered.`);
+		if (!user) throw new Error(`You aren't registered. Use \`/user register\`.`);
 		if (amount == null) {
 			await interaction.reply(bet ? `You have a bet of **${bet.amount}** on **${bet.choice}**` : `No bet placed yet.`);
 			return;
