@@ -4,7 +4,7 @@ const { User } = require('../db/models');
 
 async function payWages(guild) {
 	try {
-		let amount = await wagesKV.get('amount') ?? 0;
+		const amount = await wagesKV.get('amount') ?? 0;
 		const boostMultiplier = await wagesKV.get('boost') ?? 1;
 		const boostAmount = amount * boostMultiplier;
 
@@ -12,13 +12,16 @@ async function payWages(guild) {
 		const members = await User.getMembers(models, guild.members);
 		for (const model of models) {
 			const member = members.get(model.id);
-			if (member && member.premiumSinceTimestamp) {
-				console.log(`${member.user.tag} is a booster.`);
-				amount = boostAmount;
-			} else if (!member) {
+			if (member) {
+				if (member.premiumSinceTimestamp) {
+					console.log(`${member.user.tag} is a booster.`);
+					await model.earn(boostAmount);
+				} else {
+					await model.earn(amount);
+				}
+			} else {
 				console.log(`User with ID ${model.id} isn't in the server.`);
 			}
-			await model.earn(amount);
 		}
 		console.log(`Paid ${boostAmount} to boosters and ${amount} to all other users.`);
 
