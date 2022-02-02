@@ -15,15 +15,6 @@ module.exports = (sequelize) => {
 			await this.reload();
 			return this.balance;
 		}
-		async getMember(members) {
-			try {
-				const member = await members.fetch(this.id);
-				return member;
-			} catch (error) {
-				console.error(error);
-				return null;
-			}
-		}
 	}
 	User.init({
 		id: {
