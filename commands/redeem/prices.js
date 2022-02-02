@@ -16,12 +16,13 @@ module.exports = {
 			return {
 				name: row.key.replace(prefix, ''),
 				value: `${JSONB.parse(row.value).value}`,
-				inline: true,
 			}
 		});
-		await interaction.reply({embeds: [{
+		const embed = {
 			title: 'Redemption prices',
-			fields: pricelist
-		}]});
+			fields: pricelist,
+		};
+		console.log(embed);
+		await interaction.reply({embeds: [embed]});
   },
 };
