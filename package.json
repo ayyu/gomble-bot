@@ -10,7 +10,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
-    "postinstall": "node deploy-commands.js && node deploy-database.js"
+    "prestart": "node deploy-commands.js",
+    "postinstall": "node deploy-database.js"
   },
   "keywords": [
     "prediction",
