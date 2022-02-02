@@ -2,7 +2,8 @@ const { permsKV } = require('../db/keyv')
 
 module.exports = {
 	async updateCommandPerms(guild) {
-		(await guild.commands.fetch()).forEach(async command => {
+		const commands = await guild.commands.fetch();
+		commands.forEach(async command => {
 			const name = command.name;
 			const permissions = await permsKV.get(name);
 			if (permissions != null) {

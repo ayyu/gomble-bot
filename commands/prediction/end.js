@@ -36,12 +36,12 @@ module.exports = {
 			where: {predictionId, choice},
 			include: User
 		});
-		winningBets.forEach(async bet => {
+		for (const bet of winningBets) {
 			const member = await bet.user.getMember(interaction.guild.members) ?? 'Unknown member';
 			const payout = Math.round(bet.amount / winningPool * totalPool);
 			await bet.user.earn(payout);
 			await interaction.followUp(`${member} won **${payout}**.`);
-		});
+		};
 
 		await prediction.destroy();
 		

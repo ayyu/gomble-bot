@@ -16,8 +16,9 @@ module.exports = {
 		const prediction = await Prediction.findOne({where: {id: interaction.channel.id}});
 		
 		const startEmbed = await startMessageEmbed(prediction, cancelBetMsg);
-
-		(await prediction.getBets()).forEach(async bet => await bet.refund());
+		
+		const bets = await prediction.getBets();
+		for (const bet of bets) await bet.refund();
 		await prediction.destroy();
 
 		await interaction.reply(cancelBetMsg);

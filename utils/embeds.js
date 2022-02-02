@@ -3,7 +3,7 @@ const { openBetMsg, closeBetMsg } = require("./messages");
 
 async function startMessageEmbed(prediction, description = null) {
 	const predictionId = prediction.id;
-	const buildSubset = async (choice) => {
+	async function buildSubset(choice) {
 		const where = {predictionId, choice};
 		const pool = await Bet.sum('amount', {where}) ?? 0;
 		const max = await Bet.max('amount', {where}) ?? 0;
