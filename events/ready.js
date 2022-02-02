@@ -1,6 +1,6 @@
 const ms = require('ms');
 const dotenv = require('dotenv');
-const { payWages, pruneMembers } = require('../utils/periodic');
+const { payWages, prune } = require('../utils/periodic');
 
 dotenv.config();
 
@@ -12,6 +12,6 @@ module.exports = {
 		const guild = await client.guilds.fetch(process.env.GUILD_ID);
 
 		await payWages(guild);
-		setTimeout(pruneMembers, ms('1 hour'), guild);
+		setTimeout(prune, ms('30 min'), guild);
 	},
 };

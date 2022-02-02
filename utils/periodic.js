@@ -1,6 +1,6 @@
 const ms = require('ms');
 const { wagesKV } = require('../db/keyv');
-const { User } = require('../db/models');
+const { User, Prediction } = require('../db/models');
 
 async function payWages(guild) {
 	try {
@@ -34,7 +34,8 @@ async function payWages(guild) {
 	}
 }
 
-async function pruneMembers(guild) {
+async function prune(guild) {
+	// remove users that aren't in the guild
 	try {
 		const models = await User.findAll();
 		const members = await User.getMembers(models, guild.members);
@@ -47,9 +48,20 @@ async function pruneMembers(guild) {
 	} catch (error) {
 		console.error(error);
 	}
+	// remove predictions without threads
+	try {
+		const models = await Prediction.findAll();
+		for (const model of models) {
+			const isOrphaned = await model.isOrphaned(guild.channels);
+			if (isOrphaned) model.cancel();
+			console.log(`Cancelled orphaned prediction with ID ${model.id} from database.`);
+		}
+	} catch (error) {
+		console.error(error);
+	}
 }
 
 module.exports = {
 	payWages,
-	pruneMembers,
+	prune,
 };
