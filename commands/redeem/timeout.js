@@ -39,8 +39,8 @@ module.exports = {
 		const msPerMin = ms('1 min');
 
 		let price = pricePerMin / msPerMin * duration;
-		const bitches = await configKV.get('bitches') ?? [];
-		if (bitches.includes(target.id)) price /= 2;
+		const hitlist = await configKV.get('hitlist') ?? [];
+		if (hitlist.includes(target.id)) price /= 2;
 		
 		const balance = await user.spend(Math.ceil(price));
 		try {
