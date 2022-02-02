@@ -16,11 +16,8 @@ module.exports = (sequelize) => {
 			return this.balance;
 		}
 		async getMember(guildMemberManager) {
-			return await guildMemberManager.fetch({
-				id: this.id,
-				force: true,
-				cache: false,
-			});
+			const member = await guildMemberManager.fetch({ id: this.id });
+			return member;
 		}
 	}
 	User.init({
