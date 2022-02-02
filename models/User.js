@@ -17,7 +17,7 @@ module.exports = (sequelize) => {
 		}
 		async getMember(members) {
 			try {
-				const member = await members.fetch({ user: this.id });
+				const member = await members.fetch(this.id);
 				return member;
 			} catch (error) {
 				console.error(error);
