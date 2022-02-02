@@ -2,11 +2,11 @@ const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
 const { configKV } = require('../../db/keyv');
 
 const data = new SlashCommandSubcommandBuilder()
-	.setName('addbitch')
-	.setDescription('Adds a user to list of victims')
+	.setName('removebitch')
+	.setDescription('Remvoes a user from list of victims')
 	.addUserOption(option => option
 		.setName('user')
-		.setDescription('User to add')
+		.setDescription('User to remove')
 		.setRequired(true));
 
 module.exports = {
