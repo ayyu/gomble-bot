@@ -5,7 +5,7 @@ const { User } = require('../db/models');
 async function payWages(guild) {
 	try {
 		let amount = await wagesKV.get('amount') ?? 0;
-		const boostMultiplier = await wagesKV.get('boostMultiplier') ?? 1;
+		const boostMultiplier = await wagesKV.get('boost') ?? 1;
 		const boostAmount = Math.ceil(amount * boostMultiplier);
 
 		const models = await User.findAll();
