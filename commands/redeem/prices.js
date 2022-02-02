@@ -14,8 +14,8 @@ module.exports = {
 		const rows = await store.query(`SELECT * FROM ${store.opts.table} WHERE key LIKE '${prefix}%'`);
 		const pricelist = rows.map((row) => {
 			return {
-				name: row.key.replace(prefix, ''),
-				value: `\`\`\`${JSONB.parse(row.value).value}\`\`\``,
+				name: `/${row.key.replace(prefix, '')}`,
+				value: `\`\`\`${JSONB.parse(row.value).value} points\`\`\``,
 			}
 		});
 		const embed = {
