@@ -5,7 +5,7 @@ module.exports = (sequelize) => {
 		async spend(amount) {
 			amount = Math.ceil(amount);
 			if (amount > this.balance) {
-				throw new Error(`Insufficient balance.\n${this.balance} available, ${amount} needed.`);
+				throw new Error(`Insufficient balance. ${this.balance} available, ${amount} needed.`);
 			}
 			await this.decrement({ balance: amount });
 			await this.reload();
