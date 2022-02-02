@@ -18,6 +18,12 @@ module.exports = {
 				value: `\`\`\`${JSONB.parse(row.value).value} points\`\`\``,
 			}
 		});
+		pricelist.sort((a, b) => {
+			const nameA = a.toLowerCase();
+			const nameB = b.toLowerCase();
+			if (nameA == nameB) return 0;
+			return (nameA > nameB) ? 1 : -1;
+		});
 		const embed = {
 			title: `🛒 Redemption prices`,
 			fields: pricelist,
