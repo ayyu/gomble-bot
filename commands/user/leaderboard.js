@@ -11,7 +11,7 @@ async function buildEmbedFields(interaction, order, limit) {
 	return models.map((row, index) => {
 		return {
 			name: index + 1,
-			value: `**${users[row.id].nickname}**: ${row.balance}`;
+			value: `**${users[row.id].nickname}**: ${row.balance}`,
 		}
 	});
 }
