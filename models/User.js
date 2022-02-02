@@ -3,20 +3,20 @@ const { Model, DataTypes } = require('sequelize');
 module.exports = (sequelize) => {
 	class User extends Model {
 		async spend(amount) {
-			if (amount > this.balance) throw new Error(
-				`Insufficient balance.\n${this.balance} available, ${amount} needed.`
-			);
-			await this.decrement({balance: amount});
+			if (amount > this.balance) {
+				throw new Error(`Insufficient balance.\n${this.balance} available, ${amount} needed.`);
+			}
+			await this.decrement({ balance: amount });
 			await this.reload();
 			return this.balance;
 		}
 		async earn(amount) {
-			await this.increment({balance: amount});
+			await this.increment({ balance: amount });
 			await this.reload();
 			return this.balance;
 		}
-		async getMember(guildMemberManager) {
-			const member = await guildMemberManager.fetch({ id: this.id });
+		async getMember(interaction) {
+			const member = await interaction.guild.members.fetch({ id: this.id });
 			return member;
 		}
 	}
@@ -30,8 +30,8 @@ module.exports = (sequelize) => {
 			allowNull: false,
 			validate: {
 				min: 0,
-			}
-		}
+			},
+		},
 	}, {
 		sequelize,
 		modelName: 'user',
