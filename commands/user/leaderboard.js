@@ -11,7 +11,7 @@ async function buildEmbedFields(interaction, order, limit) {
 	const models = await User.findAll({ order, limit });
 	return models.map(async (model, index) => {
 		const member = await model.getMember(interaction.guild.members);
-		const name = `${(index + 1)}. ${member.user ? member.user.tag : 'Unknown member'}`;
+		const name = `${(index + 1)}. ${member ? member.user.tag : 'Unknown member'}`;
 		const value = `\`\`\`${model.balance} points\`\`\``;
 		return { name, value };
 	});
