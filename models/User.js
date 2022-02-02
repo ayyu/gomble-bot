@@ -15,6 +15,16 @@ module.exports = (sequelize) => {
 			await this.reload();
 			return this.balance;
 		}
+		async getMember(members) {
+			let member;
+			try {
+				member = await members.fetch(this.id);
+			} catch (error) {
+				console.error(error);
+				member = null;
+			}
+			return member;
+		}
 	}
 	User.init({
 		id: {
