@@ -26,7 +26,7 @@ module.exports = {
 
 		let response = '**Active bets:**\n';
 		const betList = model.bets.reduce((content, bet) => {
-			return content + `<#${bet.predictionId}>: ${bet.amount} on ${bet.choice}\n`;
+			return content + `> <#${bet.predictionId}>: ${bet.amount} on ${bet.choice}\n`;
 		}, '');
 		response += (betList.length) ? betList : 'No active bets found.';
 		await interaction.reply(response);

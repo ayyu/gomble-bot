@@ -24,6 +24,6 @@ module.exports = {
 			defaults: { balance: initialBalance },
 		});
 		if (!created) throw new Error(registeredMsg);
-		await interaction.reply(`**Registered** ${member.user.tag} for predictions.`);
+		await interaction.reply(`**Registered ${member.user.tag}** for predictions.`);
 	},
 };
