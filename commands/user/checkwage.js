@@ -1,6 +1,6 @@
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
-const { Command } = require('../models/Command');
 const { wagesKV } = require('../../db/keyv');
+const { Command } = require('../../models/Command');
 const { MessageEmbed } = require('discord.js');
 
 const data = new SlashCommandSubcommandBuilder()

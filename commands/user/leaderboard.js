@@ -1,7 +1,7 @@
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
 const { MessageEmbed } = require('discord.js');
 const { User } = require('../../db/models');
-const { Command } = require('../models/Command');
+const { Command } = require('../../models/Command');
 
 /**
  * How many records to fetch for each list

@@ -1,6 +1,6 @@
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
 const { User, Bet } = require('../../db/models');
-const { Command } = require('../models/Command');
+const { Command } = require('../../models/Command');
 const { unregisteredMsg, formatPairs } = require('../../utils/messages');
 
 const data = new SlashCommandSubcommandBuilder()
