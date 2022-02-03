@@ -21,7 +21,7 @@ class Command {
 
 class ParentCommand extends Command {
 	/**
-	 * @param {import('@discordjs/builders').SlashCommandBuilder} data
+	 * @param {import('@discordjs/builders').SlashCommandBuilder|import('@discordjs/builders').SlashCommandSubcommandBuilder} data
 	 * @param {import('fs').PathLike} directory - directory of this command
 	 * @param {Function} execute - callback
 	 */
@@ -38,7 +38,7 @@ class ParentCommand extends Command {
 	 * @param {import('discord.js').CommandInteraction} interaction
 	 */
 	async execute(interaction) {
-		await super._execute(interaction);
+		await super.execute(interaction);
 		if (interaction.options.getSubcommand(false)) {
 			const subcommand = this._subcommands.get(interaction.options.getSubcommand());
 			if (!subcommand) return;
