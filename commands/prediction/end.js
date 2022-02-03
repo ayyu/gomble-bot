@@ -43,7 +43,6 @@ module.exports = {
 				}
 				await interaction.followUp({
 					content: `${member} won **${payouts[payee]}**.`,
-					ephemeral: true,
 				});
 			}
 		} else {
