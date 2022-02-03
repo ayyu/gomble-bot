@@ -11,16 +11,16 @@ const data = new SlashCommandSubcommandBuilder()
  * @param {import('discord.js').CommandInteraction} interaction
  */
 async function execute(interaction) {
-	const predictions = await Prediction.findAll();
-	const predictionPairs = predictions.map(prediction => [
-		`<#${prediction.id}>`,
-		`${prediction.open ? 'Open' : 'Closed'} for betting`,
-	]);
-	await interaction.reply(formatPairs(
-		'Active predictions',
-		predictionPairs,
-		'No active predictions found.',
-	));
+	await Prediction.findAll()
+		.then(predictions => predictions.map(prediction => [
+			`<#${prediction.id}>`,
+			`${prediction.open ? 'Open' : 'Closed'} for betting`,
+		]))
+		.then(pairs => interaction.reply(formatPairs(
+			'Active predictions',
+			pairs,
+			'No active predictions found.',
+		)));
 }
 
 module.exports = new Command(data, execute);

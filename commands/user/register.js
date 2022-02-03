@@ -13,7 +13,7 @@ const data = new SlashCommandSubcommandBuilder()
  */
 async function execute(interaction) {
 	const member = interaction.member;
-	const initialBalance = (await wagesKV.get('initial')) ?? 0;
+	const initialBalance = await wagesKV.get('initial') ?? 0;
 	const [, created] = await User.findOrCreate({
 		where: { id: member.id },
 		defaults: { balance: initialBalance },

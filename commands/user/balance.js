@@ -15,9 +15,11 @@ const data = new SlashCommandSubcommandBuilder()
  */
 async function execute(interaction) {
 	const target = interaction.options.getMember('user') ?? interaction.member;
-	const user = await User.findOne({ where: { id: target.id } });
-	if (!user) throw new Error(unregisteredMsg);
-	await interaction.reply(`**${target.user.tag}'s balance:** ${user.balance}`);
+	await User.findOne({ where: { id: target.id } })
+		.then(user => {
+			if (!user) throw new Error(unregisteredMsg);
+			return interaction.reply(`**${target.user.tag}'s balance:** ${user.balance}`);
+		});
 }
 
 module.exports = new Command(data, execute);

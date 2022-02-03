@@ -37,15 +37,17 @@ const data = new SlashCommandSubcommandBuilder()
 async function execute(interaction) {
 	const topFields = await buildEmbedFields(interaction, [['balance', 'DESC']], records);
 	const bottomFields = await buildEmbedFields(interaction, [['balance', 'ASC']], records);
-	const topEmbed = new MessageEmbed({
-		title: `📈 Top ${records} ballers`,
-		fields: topFields,
-	});
-	const bottomEmbed = new MessageEmbed({
-		title: `📉 Bottom ${records} jobbers`,
-		fields: bottomFields,
-	});
-	await interaction.reply({ embeds: [topEmbed, bottomEmbed] });
+	const embeds = [
+		new MessageEmbed({
+			title: `📈 Top ${records} ballers`,
+			fields: topFields,
+		}),
+		new MessageEmbed({
+			title: `📉 Bottom ${records} jobbers`,
+			fields: bottomFields,
+		}),
+	];
+	await interaction.reply({ embeds });
 }
 
 module.exports = new Command(data, execute);

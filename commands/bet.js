@@ -82,9 +82,9 @@ async function execute(interaction) {
 		await interaction.reply(`Bet raised on **${bet.choice}** by **${amount}** to **${bet.amount}**`);
 	}
 
-	const embedFields = await buildBetFields(prediction);
-	await updateStarterEmbed(interaction, embed => embed.setFields(embedFields));
-	await interaction.followUp(paymentMessage(amount, balance));
+	await buildBetFields(prediction)
+		.then(embeds => updateStarterEmbed(interaction, embed => embed.setFields(embeds)))
+		.then(() => interaction.followUp(paymentMessage(amount, balance)));
 }
 
 module.exports = new Command(data, execute);

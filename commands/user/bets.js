@@ -15,21 +15,19 @@ const data = new SlashCommandSubcommandBuilder()
  */
 async function execute(interaction) {
 	const target = interaction.options.getMember('user') ?? interaction.member;
-	const model = await User.findOne({
-		where: { id: target.id },
-		include: Bet,
-	});
-	if (!model) throw new Error(unregisteredMsg);
-
-	const betPairs = model.bets.map(bet => [
-		`<#${bet.predictionId}>`,
-		`${bet.amount} on ${bet.choice}`,
-	]);
-	await interaction.reply(formatPairs(
-		'Active bets',
-		betPairs,
-		'No active bets found.',
-	));
+	await User.findOne({ where: { id: target.id }, include: Bet })
+		.then(model => {
+			if (!model) throw new Error(unregisteredMsg);
+			return model.bets.map(bet => [
+				`<#${bet.predictionId}>`,
+				`${bet.amount} on ${bet.choice}`,
+			]);
+		})
+		.then(pairs => interaction.reply(formatPairs(
+			'Active bets',
+			pairs,
+			'No active bets found.',
+		)));
 }
 
 module.exports = new Command(data, execute);
