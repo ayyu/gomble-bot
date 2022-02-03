@@ -1,6 +1,6 @@
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
 const { CommandInteraction } = require('discord.js');
-const { User, Bet, Prediction } = require('../../db/models');
+const { User, Bet } = require('../../db/models');
 const { unregisteredMsg } = require('../../utils/messages');
 
 const data = new SlashCommandSubcommandBuilder()
@@ -24,23 +24,11 @@ module.exports = {
 		});
 		if (!model) throw new Error(unregisteredMsg);
 
-		const description = `${model.bets.length} bets on active predictions`;
-
-		const fields = [];
-		for (const bet of model.bets) {
-			/** @type {Prediction} */
-			const prediction = await bet.getPrediction(interaction.guild);
-			fields.push({
-				name: prediction.prompt,
-				value: `\`\`\`${bet.amount} on ${bet.choice}\`\`\``,
-			});
-		}
-		const embed = {
-			title: `${target.user.tag}'s active bets`,
-			description,
-			fields,
-		};
-
-		await interaction.reply({ embeds: [embed] });
+		let response = '**Active bets:**\n';
+		const betList = model.bets.reduce((content, bet) => {
+			return content + `<#${bet.predictionId}>: ${bet.amount} on ${bet.choice}\n`;
+		}, '');
+		response += (betList.length) ? betList : 'No active bets found.';
+		await interaction.reply(response);
 	},
 };
