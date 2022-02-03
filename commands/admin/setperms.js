@@ -1,6 +1,6 @@
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
-const { CommandInteraction } = require('discord.js');
 const { permsKV } = require('../../db/keyv');
+const { Command } = require('../../models/Command');
 const { getBasePrivatePerms, getBasePublicPerms, updateCommandPerms } = require('../../utils/permissions');
 
 const modes = [
@@ -15,43 +15,37 @@ const data = new SlashCommandSubcommandBuilder()
 		.setName('command')
 		.setDescription('Command to set permissions for')
 		.setRequired(true))
-	.addStringOption(option => option
+	.addIntegerOption(option => option
 		.setName('mode')
 		.setDescription('Public or private')
-		.addChoices(modes.map(x => [x, x]))
+		.addChoices(modes.map((value, index) => [value, index]))
 		.setRequired(true))
 	.addRoleOption(option => option
 		.setName('role')
 		.setDescription('Role to have access if private'));
 
-module.exports = {
-	data,
-	/**
-	 * @param {CommandInteraction} interaction
-	 */
-	async execute(interaction) {
-		const guild = interaction.guild;
+/**
+ * @param {import('discord.js').CommandInteraction} interaction
+ */
+async function execute(interaction) {
+	const guild = interaction.guild;
 
-		const command = interaction.options.getString('command');
-		const mode = interaction.options.getString('mode');
-		const role = interaction.options.getRole('role');
+	const command = interaction.options.getString('command');
+	const mode = interaction.options.getInteger('mode');
+	const role = interaction.options.getRole('role');
 
-		switch (mode) {
-			case 'public': {
-				await permsKV.set(command, getBasePublicPerms(guild));
-				await interaction.reply(`Saved public command \`/${command}\`.`);
-				break;
-			}
-			case 'private': {
-				const perms = getBasePrivatePerms(guild);
-				if (role) perms.push({ id: role.id, type: 'ROLE', permission: true });
-				await permsKV.set(command, perms);
-				await interaction.reply(`Saved private command \`/${command}\``);
-				break;
-			}
-		}
+	const basePerms = [
+		getBasePublicPerms(guild),
+		getBasePrivatePerms(guild),
+	];
 
-		await updateCommandPerms(guild);
-		await interaction.followUp('Updated command permissions.');
-	},
-};
+	const perms = basePerms[mode];
+	if (role) perms.push({ id: role.id, type: 'ROLE', permission: true });
+	await permsKV.set(command, perms);
+	await interaction.reply(`Saved command \`/${command}\` as ${modes[mode]}.`);
+
+	await updateCommandPerms(guild);
+	await interaction.followUp('Updated command permissions.');
+}
+
+module.exports = new Command(data, execute);
