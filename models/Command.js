@@ -5,7 +5,7 @@ const { absForEach } = require('../utils/fs');
 class Command {
 	/**
 	 * @param {import('@discordjs/builders').SlashCommandBuilder|import('@discordjs/builders').SlashCommandSubcommandBuilder} data
-	 * @param {Function} execute
+	 * @param {Function} execute - callback
 	 */
 	constructor(data, execute = null) {
 		this.data = data;
@@ -22,13 +22,14 @@ class Command {
 class ParentCommand extends Command {
 	/**
 	 * @param {import('@discordjs/builders').SlashCommandBuilder} data
-	 * @param {Function} execute
+	 * @param {import('fs').PathLike} directory - directory of this command
+	 * @param {Function} execute - callback
 	 */
-	constructor(data, execute = null) {
+	constructor(data, directory, execute = null) {
 		super(data, execute);
 		this._subcommands = new Collection();
-		absForEach(path.resolve('./', this.data.name), /\.js$/, (directory, file) => {
-			const command = require(`${directory}/${file}`);
+		absForEach(path.resolve(directory, this.data.name), /\.js$/, (dir, file) => {
+			const command = require(`${dir}/${file}`);
 			this.data.addSubcommand(command.data);
 			this._subcommands.set(command.data.name, command);
 		});

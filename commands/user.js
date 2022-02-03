@@ -5,4 +5,4 @@ const data = new SlashCommandBuilder()
 	.setName('user')
 	.setDescription('User management commands');
 
-module.exports = new ParentCommand(data);
+module.exports = new ParentCommand(data, __dirname);
