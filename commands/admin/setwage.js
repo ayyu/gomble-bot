@@ -32,7 +32,7 @@ module.exports = {
 			amount: interaction.options.getInteger('amount'),
 			initial: interaction.options.getInteger('initial'),
 			boost: interaction.options.getNumber('boost'),
-			minBet: interaction.options.getInteger('minBet'),
+			minBet: interaction.options.getInteger('minbet'),
 		};
 
 		await interaction.reply('Updating wage settings.');
