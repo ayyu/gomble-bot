@@ -36,17 +36,17 @@ for (const key in options) {
 }
 
 /**
- * @param {import('discord.js').CommandInteraction} interaction
+ * @param {import('discord.js').CommandInteraction} interactionpro
  */
 async function execute(interaction) {
 	await interaction.reply('Updating wage settings.');
-	for (const key in options) {
+	await Promise.all(Object.keys(options).map(async (key) => {
 		const value = interaction.options[`get${options[key].type}`](key);
 		if (value != null) {
-			await wagesKV.set(key, value);
-			await interaction.followUp(`Updated ${key} to ${value}`);
+			return wagesKV.set(key, value)
+				.then(() => interaction.followUp(`Updated ${key} to ${value}`));
 		}
-	}
+	}));
 }
 
 module.exports = new Command(data, execute);
