@@ -16,7 +16,10 @@ const data = new SlashCommandSubcommandBuilder()
 		.setDescription('How much users start with'))
 	.addNumberOption(option => option
 		.setName('boost')
-		.setDescription('Multiplier for boosters'));
+		.setDescription('Multiplier for boosters'))
+	.addIntegerOption(option => option
+		.setName('minbet')
+		.setDescription('Minimum bet amount'));
 
 module.exports = {
 	data,
@@ -24,13 +27,15 @@ module.exports = {
 	 * @param {CommandInteraction} interaction
 	 */
 	async execute(interaction) {
-		const interval = interaction.options.getString('interval');
-		const amount = interaction.options.getInteger('amount');
-		const initial = interaction.options.getInteger('initial');
-		const boost = interaction.options.getNumber('boost');
+		const settings = {
+			interval: interaction.options.getString('interval'),
+			amount: interaction.options.getInteger('amount'),
+			initial: interaction.options.getInteger('initial'),
+			boost: interaction.options.getNumber('boost'),
+			minBet: interaction.options.getInteger('minBet'),
+		};
 
 		await interaction.reply('Updating wage settings.');
-		const settings = { interval, amount, initial, boost };
 		for (const key in settings) {
 			if (settings[key] != null) {
 				await wagesKV.set(key, settings[key]);

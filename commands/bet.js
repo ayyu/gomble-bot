@@ -1,5 +1,6 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { CommandInteraction } = require('discord.js');
+const { wagesKV } = require('../db/keyv');
 const { Bet, User, Prediction } = require('../db/models');
 const { buildBetFields, updateStarterEmbed } = require('../utils/embeds');
 const { paymentMessage, closeBetMsg, unregisteredMsg, threadOnlyMsg } = require('../utils/messages');
@@ -60,7 +61,7 @@ module.exports = {
 			amount = parseInt(amount);
 		}
 
-		const minBet = 1;
+		const minBet = await wagesKV.get('minBet') ?? 1;
 		if (amount < minBet) throw new Error(`Your bet must be at least ${minBet}.`);
 
 		const balance = await user.spend(amount);
