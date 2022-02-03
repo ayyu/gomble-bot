@@ -15,23 +15,22 @@ const data = new SlashCommandSubcommandBuilder()
 async function execute(interaction) {
 	if (!requireThreaded(interaction)) throw new Error(threadOnlyMsg);
 
-	const prediction = await Prediction.findOne({ where: { id: interaction.channel.id } });
-
-	prediction.cancel();
-
 	const replyEmbed = new MessageEmbed({
 		title: 'This prediction has been cancelled',
 		description: 'All bets have been refunded',
 	});
-	await interaction.reply({ embeds: [replyEmbed] });
 
-	const starter = await updateStarterEmbed(
+	await Prediction.findOne({ where: { id: interaction.channel.id } })
+		.then(prediction => prediction.cancel())
+		.then(() => interaction.reply({ embeds: [replyEmbed] }));
+
+	await updateStarterEmbed(
 		interaction,
 		embed => embed.setDescription(replyEmbed.title),
-	);
-	await starter.unpin();
-	await interaction.channel.setLocked(true);
-	await interaction.channel.setArchived(true);
+	)
+		.then(starter => starter.unpin())
+		.then(interaction.channel.setLocked(true))
+		.then(channel => channel.setArchived(true));
 }
 
 module.exports = {
