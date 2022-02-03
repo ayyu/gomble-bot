@@ -1,4 +1,3 @@
-const { GuildMember, GuildMemberManager, Collection } = require('discord.js');
 const { Model, DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
@@ -35,8 +34,8 @@ module.exports = (sequelize) => {
 
 		/**
 		 * Fetches the GuildMember corresponding to this instance.
-		 * @param {GuildMemberManager} members
-		 * @returns {GuildMember}
+		 * @param {import('discord.js').GuildMemberManager} members
+		 * @returns {import('discord.js').Member}
 		 */
 		async getMember(members) {
 			try {
@@ -51,8 +50,8 @@ module.exports = (sequelize) => {
 		/**
 		 * Fetches all GuildMembers represented in the array of User instances.
 		 * @param {Array} models
-		 * @param {GuildMemberManager} members
-		 * @returns {Collection<GuildMember>}
+		 * @param {import('discord.js').GuildMemberManager} members
+		 * @returns {import('discord.js').Collection<string, import('discord.js').Member>}
 		 */
 		static async getMembers(models, members) {
 			try {

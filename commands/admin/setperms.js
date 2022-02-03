@@ -1,7 +1,7 @@
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
 const { CommandInteraction } = require('discord.js');
 const { permsKV } = require('../../db/keyv');
-const { basePrivatePerms, basePublicPerms, updateCommandPerms } = require('../../utils/permissions');
+const { getBasePrivatePerms, getBasePublicPerms, updateCommandPerms } = require('../../utils/permissions');
 
 const modes = [
 	'public',
@@ -38,12 +38,12 @@ module.exports = {
 
 		switch (mode) {
 			case 'public': {
-				await permsKV.set(command, basePublicPerms(guild));
+				await permsKV.set(command, getBasePublicPerms(guild));
 				await interaction.reply(`Saved public command \`/${command}\`.`);
 				break;
 			}
 			case 'private': {
-				const perms = basePrivatePerms(guild);
+				const perms = getBasePrivatePerms(guild);
 				if (role) perms.push({ id: role.id, type: 'ROLE', permission: true });
 				await permsKV.set(command, perms);
 				await interaction.reply(`Saved private command \`/${command}\``);

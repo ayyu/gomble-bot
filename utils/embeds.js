@@ -1,12 +1,21 @@
-const { CommandInteraction, Message } = require('discord.js');
-const { Bet, Prediction } = require('../db/models');
+const { MessageEmbed } = require('discord.js');
+const { Bet } = require('../db/models');
 const { openBetMsg, closeBetMsg } = require('./messages');
+
+/**
+ * Statistics for a Bet choice.
+ * @typedef {Object} ChoiceStats
+ * @property {number} pool
+ * @property {number} ratio
+ * @property {number} count
+ * @property {number} max
+*/
 
 /**
  * Gets stats for building an Embed field of a Prediction choice.
  * @param {Array<Bet>} bets - Bets of choice
  * @param {number} totalPool - Total of Bet amounts for this Prediction
- * @returns {Object<number, number, number, number>}
+ * @returns {ChoiceStats}
  */
 function getChoiceStats(bets, totalPool) {
 	const pool = bets.reduce((total, bet) => total + bet.amount, 0);
@@ -17,9 +26,9 @@ function getChoiceStats(bets, totalPool) {
 }
 
 /**
- * Returns Array of Embed field Objects for a Prediction.
- * @param {Prediction} prediction
- * @returns {Object}
+ * Returns Array of EmbedFields for a Prediction.
+ * @param {import('../db/models').Prediction} prediction
+ * @returns {Array<import('discord.js').EmbedFieldData>}
  */
 async function buildBetFields(prediction) {
 	const bets = await Bet.findAll({ where: { predictionId: prediction.id } });
@@ -35,23 +44,23 @@ async function buildBetFields(prediction) {
 }
 
 /**
- * Returns Object representing an Embed for a Prediction message.
- * @param {Prediction} prediction
- * @param {String} description - Override for embed description
- * @returns {Object}
+ * Returns an Embed for a Prediction message.
+ * @param {import('../db/models').Prediction} prediction
+ * @param {string} description - Override for embed description
+ * @returns {MessageEmbed}
  */
 async function startMessageEmbed(prediction, description = null) {
 	const title = prediction.prompt;
 	if (description == null) description = (prediction.open) ? openBetMsg : closeBetMsg;
 	const fields = await buildBetFields(prediction);
-	return { title, description, fields };
+	return new MessageEmbed({ title, description, fields });
 }
 
 /**
  * Edits the first Embed of an interaction's thread's starter Message.
- * @param {CommandInteraction} interaction
+ * @param {import('discord.js').CommandInteraction} interaction
  * @param {Function} callback - A callback to run on the first embed.
- * @returns {Message} the thread starter Message
+ * @returns {import('discord.js').Message} the thread starter Message
  */
 async function updateStarterEmbed(interaction, callback) {
 	const starter = await interaction.channel.fetchStarterMessage({ force: true });
