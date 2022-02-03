@@ -28,9 +28,19 @@ function formatPairs(title, pairs, empty) {
 	return response;
 }
 
+/**
+ * Returns the name of the group for a Bet's choice.
+ * @param {boolean} choice
+ * @returns {string} group name
+ */
+function getGroupName(choice) {
+	return choice ? 'Believers' : 'Doubters';
+}
+
 module.exports = {
 	paymentMessage,
 	formatPairs,
+	getGroupName,
 	openBetMsg: 'Betting is open. Place bets in the thread with `/bet`.',
 	closeBetMsg: 'Betting is closed for this prediction.',
 	channelOnlyMsg: 'You can only use this command outside of a thread.',

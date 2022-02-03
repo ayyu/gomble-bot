@@ -1,6 +1,6 @@
 const { MessageEmbed } = require('discord.js');
 const { Bet } = require('../db/models');
-const { openBetMsg, closeBetMsg } = require('./messages');
+const { openBetMsg, closeBetMsg, getGroupName } = require('./messages');
 
 /**
  * Statistics for a Bet choice.
@@ -37,7 +37,7 @@ async function buildBetFields(prediction) {
 	return choices.map(choice => {
 		const chosenBets = bets.filter(bet => bet.choice == choice);
 		const { pool, max, ratio, count } = getChoiceStats(chosenBets, totalPool);
-		const name = choice ? 'Believers' : 'Doubters';
+		const name = getGroupName(choice);
 		const value = `💰 ${pool}\n🏆 1:${ratio.toFixed(2)}\n🧍 ${count}\n💪 ${max}`;
 		return { name, value, inline: true };
 	});

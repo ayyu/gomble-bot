@@ -2,7 +2,7 @@ const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
 const { MessageEmbed } = require('discord.js');
 const { Prediction } = require('../../db/models');
 const { updateStarterEmbed } = require('../../utils/embeds');
-const { threadOnlyMsg } = require('../../utils/messages');
+const { threadOnlyMsg, getGroupName } = require('../../utils/messages');
 const { requireThreaded } = require('../../utils/threads');
 
 const data = new SlashCommandSubcommandBuilder()
@@ -24,7 +24,7 @@ async function execute(interaction) {
 	const prediction = await Prediction.findOne({ where: { id: interaction.channel.id } });
 	const payouts = await prediction.end(choice);
 
-	const replyEmbed = new MessageEmbed({ title: `${choice ? 'Believers' : 'Doubters'} win!` });
+	const replyEmbed = new MessageEmbed({ title: `${getGroupName(choice)} win!` });
 
 	if (payouts.size) {
 		const totalPool = payouts.reduce((total, amount) => total + amount, 0);
