@@ -34,7 +34,7 @@ module.exports = {
 		if (!user) throw new Error(unregisteredMsg);
 
 		const amount = allIn ? user.balance : interaction.options.getInteger('amount');
-		if (amount == null) {
+		if (amount == null && choice == null) {
 			await interaction.reply(bet
 				? `You have a bet of **${bet.amount}** on **${bet.choice}**`
 				: 'No bet placed yet.');
@@ -74,6 +74,7 @@ module.exports = {
 
 		const starter = await interaction.channel.fetchStarterMessage();
 		const embeds = starter.embeds;
+		console.log(starter);
 		console.log(embeds);
 		if (embeds[0]) {
 			embeds[0].setFields(buildBetFields(prediction));
