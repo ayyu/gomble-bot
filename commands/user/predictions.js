@@ -17,7 +17,7 @@ module.exports = {
 		const predictionList = predictions.reduce((content, prediction) => {
 			return content + `<#${prediction.id}>: ${prediction.open} for betting\n`;
 		}, '');
-		if (predictionList.length == 0) response += 'No active predictions found.';
+		response += (predictionList.length) ? predictionList : 'No active predictions found.';
 		await interaction.reply(response);
 	},
 };
