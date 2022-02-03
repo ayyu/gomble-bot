@@ -23,7 +23,7 @@ module.exports = (sequelize) => {
 		 */
 		async cancel() {
 			await this.getBets()
-				.then(bets => Promise.all(bets.map(bet => bet.refund())))
+				.then(bets => Promise.all(bets.map(async bet => await bet.refund())))
 				.then(this.destroy());
 		}
 
