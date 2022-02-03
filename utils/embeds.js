@@ -4,12 +4,10 @@ const { openBetMsg, closeBetMsg } = require('./messages');
 const sumAmounts = (total, bets) => total + bets.amount;
 
 async function getChoiceStats(bets, totalPool) {
-	const pool = bets.reduce(sumAmounts);
+	const pool = bets.reduce(sumAmounts, 0);
 	const ratio = (pool == 0) ? 1 : totalPool / pool;
 	const count = bets.length;
-	const max = bets.reduce((lowest, bet) => {
-		return Math.max(lowest, bet.amount);
-	}, 0);
+	const max = bets.reduce((lowest, bet) => Math.max(lowest, bet.amount), 0);
 	return { pool, max, ratio, count };
 }
 
