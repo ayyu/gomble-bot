@@ -25,10 +25,11 @@
   "author": "ayyu",
   "license": "ISC",
   "dependencies": {
-    "@discordjs/rest": "^0.1.0-canary.0",
+    "@discordjs/rest": "^0.3.0",
     "@keyv/postgres": "^1.2.0",
+    "discord-api-types": "^0.26.1",
     "discord.js": "^13.6.0",
-    "dotenv": "^15.0.0",
+    "dotenv": "^16.0.0",
     "json-buffer": "^3.0.1",
     "keyv": "^4.0.5",
     "ms": "^2.1.3",
