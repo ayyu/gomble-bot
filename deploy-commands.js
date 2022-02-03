@@ -1,6 +1,6 @@
 const fs = require('fs');
 const { REST } = require('@discordjs/rest');
-const { Routes } = require('discord-api-types');
+const { Routes } = require('discord-api-types/v9');
 const dotenv = require('dotenv');
 
 dotenv.config();
