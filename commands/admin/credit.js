@@ -22,8 +22,8 @@ async function execute(interaction) {
 	const amount = interaction.options.getInteger('amount');
 
 	await User.findOne({ where: { id: target.id } })
-		.then(model => model.earn(amount)
-			.then(balance => interaction.reply(`${target}'s new balance is **${balance}**`)));
+		.then(model => model.earn(amount))
+		.then(balance => interaction.reply(`${target}'s new balance is **${balance}**`));
 }
 
 module.exports = new Command(data, execute);
