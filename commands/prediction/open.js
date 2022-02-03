@@ -1,5 +1,6 @@
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
 const { Prediction } = require('../../db/models');
+const { updateStarterEmbed } = require('../../utils/embeds');
 const { openBetMsg, threadOnlyMsg } = require('../../utils/messages');
 const { requireThreaded } = require('../../utils/threads');
 
@@ -17,12 +18,6 @@ module.exports = {
 		await prediction.update({ 'open': true });
 
 		await interaction.reply(openBetMsg);
-		const starter = await interaction.channel.fetchStarterMessage();
-		const embeds = starter.embeds;
-		console.log(embeds);
-		if (embeds[0]) {
-			embeds[0].setDescription(openBetMsg);
-			await starter.edit({ embeds });
-		}
+		await updateStarterEmbed(interaction, embed => embed.setDescription(openBetMsg));
 	},
 };

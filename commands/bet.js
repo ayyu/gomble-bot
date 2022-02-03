@@ -1,6 +1,6 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { Bet, User, Prediction } = require('../db/models');
-const { buildBetFields } = require('../utils/embeds');
+const { buildBetFields, updateStarterEmbed } = require('../utils/embeds');
 const { paymentMessage, closeBetMsg, unregisteredMsg, threadOnlyMsg } = require('../utils/messages');
 const { requireThreaded } = require('../utils/threads');
 
@@ -72,14 +72,7 @@ module.exports = {
 			await interaction.reply(`Bet raised on **${bet.choice}** by **${amount}** to **${bet.amount}**`);
 		}
 
-		const starter = await interaction.channel.fetchStarterMessage();
-		const embeds = starter.embeds;
-		console.log(starter);
-		console.log(embeds);
-		if (embeds[0]) {
-			embeds[0].setFields(buildBetFields(prediction));
-			await starter.edit({ embeds });
-		}
+		await updateStarterEmbed(interaction, embed => embed.setFields(buildBetFields(prediction)));
 		await interaction.followUp(paymentMessage(amount, balance));
 	},
 };

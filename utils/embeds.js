@@ -29,7 +29,18 @@ async function startMessageEmbed(prediction, description = null) {
 	return { title, description, fields };
 }
 
+async function updateStarterEmbed(interaction, callback) {
+	const starter = await interaction.channel.fetchStarterMessage({ force: true });
+	const embeds = starter.embeds;
+	if (embeds[0]) {
+		callback(embeds[0]);
+		await starter.edit({ embeds });
+	}
+	return starter;
+}
+
 module.exports = {
 	startMessageEmbed,
 	buildBetFields,
+	updateStarterEmbed,
 };
