@@ -4,7 +4,7 @@ const { Command } = require('../../models/Command');
 
 const operations = [
 	'add',
-	'remove',
+	'delete',
 	'clear',
 ];
 
@@ -31,26 +31,20 @@ async function execute(interaction) {
 		case 'add':
 		case 'remove': {
 			if (!target) throw new Error('No target provided.');
-
-			/** @type {Array<String>} */
-			const hitlist = await configKV.get('hitlist') ?? [];
-			const hitlistSet = new Set(hitlist);
-
-			if (operation == 'add') {
-				hitlistSet.add(target.id);
-				await interaction.reply(`Added ${target.user.tag} to hitlist.`);
-			}
-			if (operation == 'remove') {
-				hitlistSet.delete(target.id);
-				await interaction.reply(`Removed ${target.user.tag} from hitlist.`);
-			}
-
-			await configKV.set('hitlist', Array.from(hitlistSet));
+			await configKV.get('hitlist')
+				.then(value => {
+					const hitlist = new Set(value ?? []);
+					hitlist[operation](target.id);
+					configKV.set('hitlist', Array.from(hitlist))
+						.then(() => interaction.reply(
+							`${operation == 'add' ? 'Added' : 'Removed'} ${target.user.tag} to/from hitlist.`,
+						));
+				});
 			break;
 		}
 		case 'clear': {
-			await configKV.delete('hitlist');
-			await interaction.reply('Removed all users from hitlist.');
+			await configKV.delete('hitlist')
+				.then(() => interaction.reply('Removed all users from hitlist.'));
 			break;
 		}
 	}
