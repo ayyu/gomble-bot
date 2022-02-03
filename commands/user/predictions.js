@@ -15,7 +15,7 @@ module.exports = {
 	async execute(interaction) {
 		const predictions = await Prediction.findAll();
 		const predictionPairs = predictions.map(prediction => [
-			`**<#${prediction.id}>**`,
+			`<#${prediction.id}>`,
 			`${prediction.open ? 'Open' : 'Closed'} for betting`,
 		]);
 		await interaction.reply(formatPairs(

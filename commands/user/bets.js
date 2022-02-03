@@ -24,7 +24,7 @@ module.exports = {
 		if (!model) throw new Error(unregisteredMsg);
 
 		const betPairs = model.bets.map(bet => [
-			`**<#${bet.predictionId}>**`,
+			`<#${bet.predictionId}>`,
 			`${bet.amount} on ${bet.choice}`,
 		]);
 		await interaction.reply(formatPairs(
