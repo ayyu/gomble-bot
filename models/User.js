@@ -6,9 +6,9 @@ module.exports = (sequelize) => {
 		/**
 		 * Decrements and reloads a User instance if their balance is sufficient.
 		 * Will round requested amount up to nearest integer.
-		 * @param {Number} amount - The amount to decrement by.
+		 * @param {number} amount - The amount to decrement by.
 		 * @throws {Error} The user doesn't have enough balance.
-		 * @returns {Number} New balance
+		 * @returns {number} New balance
 		 */
 		async spend(amount) {
 			amount = Math.ceil(amount);
@@ -23,8 +23,8 @@ module.exports = (sequelize) => {
 		/**
 		 * Increments a User instance.
 		 * Will round requested amount up to nearest integer.
-		 * @param {Number} amount - The amount to increment by.
-		 * @returns {Number} New balance
+		 * @param {number} amount - The amount to increment by.
+		 * @returns {number} New balance
 		 */
 		async earn(amount) {
 			amount = Math.ceil(amount);
