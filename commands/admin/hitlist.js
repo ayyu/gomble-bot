@@ -29,16 +29,15 @@ async function execute(interaction) {
 
 	switch (operation) {
 		case 'add':
-		case 'remove': {
+		case 'delete': {
 			if (!target) throw new Error('No target provided.');
 			await configKV.get('hitlist')
 				.then(value => {
 					const hitlist = new Set(value ?? []);
 					hitlist[operation](target.id);
-					configKV.set('hitlist', Array.from(hitlist))
-						.then(() => interaction.reply(
-							`${operation == 'add' ? 'Added' : 'Removed'} ${target.user.tag} to/from hitlist.`,
-						));
+					configKV.set('hitlist', Array.from(hitlist)).then(() => interaction.reply(
+						`${operation == 'add' ? 'Added' : 'Removed'} ${target.user.tag} to/from hitlist.`,
+					));
 				});
 			break;
 		}
