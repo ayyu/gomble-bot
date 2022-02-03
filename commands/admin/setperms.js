@@ -41,11 +41,11 @@ async function execute(interaction) {
 
 	const perms = basePerms[mode];
 	if (role) perms.push({ id: role.id, type: 'ROLE', permission: true });
-	await permsKV.set(command, perms);
-	await interaction.reply(`Saved command \`/${command}\` as ${modes[mode]}.`);
 
-	await updateCommandPerms(guild);
-	await interaction.followUp('Updated command permissions.');
+	await permsKV.set(command, perms)
+		.then(() => interaction.reply(`Saved command \`/${command}\` as ${modes[mode]}.`))
+		.then(() => updateCommandPerms(guild))
+		.then(() => interaction.followUp('Updated command permissions.'));
 }
 
 module.exports = new Command(data, execute);

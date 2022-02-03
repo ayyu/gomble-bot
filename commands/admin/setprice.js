@@ -21,9 +21,8 @@ async function execute(interaction) {
 	const item = interaction.options.getString('item');
 	const price = interaction.options.getInteger('price');
 
-	await pricesKV.set(item, price);
-
-	await interaction.reply(`Updated price of \`/${item}\` to ${price}.`);
+	await pricesKV.set(item, price)
+		.then(() => interaction.reply(`Updated price of \`/${item}\` to ${price}.`));
 }
 
 module.exports = new Command(data, execute);

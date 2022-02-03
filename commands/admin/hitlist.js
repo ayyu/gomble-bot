@@ -35,10 +35,11 @@ async function execute(interaction) {
 				.then(value => {
 					const hitlist = new Set(value ?? []);
 					hitlist[operation](target.id);
-					configKV.set('hitlist', Array.from(hitlist)).then(() => interaction.reply(
-						`${operation == 'add' ? 'Added' : 'Removed'} ${target.user.tag} to/from hitlist.`,
-					));
-				});
+					configKV.set('hitlist', Array.from(hitlist));
+				})
+				.then(() => interaction.reply(
+					`${operation == 'add' ? 'Added' : 'Removed'} ${target.user.tag} to/from hitlist.`,
+				));
 			break;
 		}
 		case 'clear': {
