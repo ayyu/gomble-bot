@@ -72,7 +72,8 @@ module.exports = {
 			await interaction.reply(`Bet raised on **${bet.choice}** by **${amount}** to **${bet.amount}**`);
 		}
 
-		await updateStarterEmbed(interaction, embed => embed.setFields(buildBetFields(prediction)));
+		const embedFields = await buildBetFields(prediction);
+		await updateStarterEmbed(interaction, embed => embed.setFields(embedFields));
 		await interaction.followUp(paymentMessage(amount, balance));
 	},
 };
