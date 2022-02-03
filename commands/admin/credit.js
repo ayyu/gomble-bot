@@ -1,4 +1,5 @@
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
+const { CommandInteraction } = require('discord.js');
 const { User } = require('../../db/models');
 
 const data = new SlashCommandSubcommandBuilder()
@@ -15,6 +16,9 @@ const data = new SlashCommandSubcommandBuilder()
 
 module.exports = {
 	data,
+	/**
+	 * @param {CommandInteraction} interaction
+	 */
 	async execute(interaction) {
 		const target = interaction.options.getMember('user');
 		const amount = interaction.options.getInteger('amount');

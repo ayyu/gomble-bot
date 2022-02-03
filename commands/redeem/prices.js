@@ -1,6 +1,7 @@
 const JSONB = require('json-buffer');
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
 const { pricesKV } = require('../../db/keyv');
+const { CommandInteraction } = require('discord.js');
 
 const data = new SlashCommandSubcommandBuilder()
 	.setName('prices')
@@ -8,6 +9,9 @@ const data = new SlashCommandSubcommandBuilder()
 
 module.exports = {
 	data,
+	/**
+	 * @param {CommandInteraction} interaction
+	 */
 	async execute(interaction) {
 		const store = pricesKV.opts.store;
 		const prefix = 'prices:';

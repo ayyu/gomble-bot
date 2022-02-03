@@ -1,4 +1,5 @@
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
+const { CommandInteraction } = require('discord.js');
 const { Prediction } = require('../../db/models');
 const { updateStarterEmbed } = require('../../utils/embeds');
 const { openBetMsg, threadOnlyMsg } = require('../../utils/messages');
@@ -10,6 +11,9 @@ const data = new SlashCommandSubcommandBuilder()
 
 module.exports = {
 	data,
+	/**
+	 * @param {CommandInteraction} interaction
+	 */
 	async execute(interaction) {
 		if (!requireThreaded(interaction)) throw new Error(threadOnlyMsg);
 

@@ -1,4 +1,5 @@
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
+const { CommandInteraction } = require('discord.js');
 const { pricesKV } = require('../../db/keyv');
 const { User } = require('../../db/models');
 const { paymentMessage, cantTargetSelfMsg } = require('../../utils/messages');
@@ -17,6 +18,9 @@ const data = new SlashCommandSubcommandBuilder()
 
 module.exports = {
 	data,
+	/**
+	 * @param {CommandInteraction} interaction
+	 */
 	async execute(interaction) {
 		const member = interaction.member;
 		const target = interaction.options.getMember('user');

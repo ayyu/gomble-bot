@@ -1,4 +1,5 @@
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
+const { CommandInteraction } = require('discord.js');
 const { User } = require('../../db/models');
 const { unregisteredMsg } = require('../../utils/messages');
 
@@ -11,6 +12,9 @@ const data = new SlashCommandSubcommandBuilder()
 
 module.exports = {
 	data,
+	/**
+	 * @param {CommandInteraction} interaction
+	 */
 	async execute(interaction) {
 		const target = interaction.options.getMember('user') ?? interaction.member;
 		const user = await User.findOne({

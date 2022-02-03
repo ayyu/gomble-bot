@@ -1,4 +1,5 @@
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
+const { CommandInteraction } = require('discord.js');
 const { User } = require('../../db/models');
 
 const records = 5;
@@ -7,6 +8,12 @@ const data = new SlashCommandSubcommandBuilder()
 	.setName('leaderboard')
 	.setDescription(`Check the top ${records} and bottom ${records} players`);
 
+/**
+ * @param {CommandInteraction} interaction
+ * @param {Array<Array>} order
+ * @param {Number} limit
+ * @returns {Array<Object>}
+ */
 async function buildEmbedFields(interaction, order, limit) {
 	const models = await User.findAll({ order, limit });
 	const fields = await Promise.all(models.map(async model => {
@@ -20,6 +27,9 @@ async function buildEmbedFields(interaction, order, limit) {
 
 module.exports = {
 	data,
+	/**
+	 * @param {CommandInteraction} interaction
+	 */
 	async execute(interaction) {
 		const topFields = await buildEmbedFields(interaction, [['balance', 'DESC']], records);
 		const bottomFields = await buildEmbedFields(interaction, [['balance', 'ASC']], records);

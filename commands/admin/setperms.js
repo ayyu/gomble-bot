@@ -1,4 +1,5 @@
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
+const { CommandInteraction } = require('discord.js');
 const { permsKV } = require('../../db/keyv');
 const { basePrivatePerms, basePublicPerms, updateCommandPerms } = require('../../utils/permissions');
 
@@ -25,6 +26,9 @@ const data = new SlashCommandSubcommandBuilder()
 
 module.exports = {
 	data,
+	/**
+	 * @param {CommandInteraction} interaction
+	 */
 	async execute(interaction) {
 		const guild = interaction.guild;
 

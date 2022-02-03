@@ -3,6 +3,7 @@ const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
 const { User } = require('../../db/models');
 const { wagesKV } = require('../../db/keyv');
 const { registeredMsg } = require('../../utils/messages');
+const { CommandInteraction } = require('discord.js');
 
 dotenv.config();
 
@@ -12,6 +13,9 @@ const data = new SlashCommandSubcommandBuilder()
 
 module.exports = {
 	data,
+	/**
+	 * @param {CommandInteraction} interaction
+	 */
 	async execute(interaction) {
 		const member = interaction.member;
 		const initialBalance = (await wagesKV.get('initial')) ?? 0;

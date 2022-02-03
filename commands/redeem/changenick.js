@@ -27,6 +27,7 @@ module.exports = {
 		const user = await User.findOne({ where: { id: member.id } });
 		let price = await pricesKV.get(data.name) ?? 0;
 		const hitlist = await configKV.get('hitlist') ?? [];
+
 		const discountRate = await configKV.get('hitlistDiscount') ?? 0.5;
 		if (hitlist.includes(target.id)) price *= discountRate;
 

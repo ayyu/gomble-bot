@@ -1,4 +1,5 @@
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
+const { CommandInteraction } = require('discord.js');
 const { configKV } = require('../../db/keyv');
 
 const operations = [
@@ -21,6 +22,9 @@ const data = new SlashCommandSubcommandBuilder()
 
 module.exports = {
 	data,
+	/**
+	 * @param {CommandInteraction} interaction
+	 */
 	async execute(interaction) {
 		const target = interaction.options.getMember('user');
 		const operation = interaction.options.getString('operation');
@@ -30,6 +34,9 @@ module.exports = {
 			case 'remove': {
 				if (!target) throw new Error('No target provided.');
 
+				/**
+				 * @type {Array<String>}
+				 */
 				const hitlist = await configKV.get('hitlist') ?? [];
 				const hitlistSet = new Set(hitlist);
 

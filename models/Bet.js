@@ -2,9 +2,16 @@ const { Model, DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
 	class Bet extends Model {
+		/**
+		 * Refunds this Bet and destroys it.
+		 */
 		async refund() {
 			await this.payout(this.amount);
 		}
+		/**
+		 * Pays the User of this Bet and destroys this Bet.
+		 * @param {Number} amount - Amount to pay to User
+		 */
 		async payout(amount) {
 			const user = await this.getUser();
 			await user.earn(amount);

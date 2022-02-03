@@ -12,9 +12,26 @@ const store = new KeyvPostgres({
 	},
 });
 
+/**
+ * @type {Keyv<Array<Object>>}
+ */
+const permsKV = new Keyv({ store, namespace: 'perms' });
+/**
+ * @type {Keyv<String|Number>}
+ */
+const wagesKV = new Keyv({ store, namespace: 'wages' });
+/**
+ * @type {Keyv<Number>}
+ */
+const pricesKV = new Keyv({ store, namespace: 'prices' });
+/**
+ * @type {Keyv<any>}
+ */
+const configKV = new Keyv({ store, namespace: 'config' });
+
 module.exports = {
-	permsKV: new Keyv({ store, namespace: 'perms' }),
-	wagesKV: new Keyv({ store, namespace: 'wages' }),
-	pricesKV: new Keyv({ store, namespace: 'prices' }),
-	configKV: new Keyv({ store, namespace: 'config' }),
+	permsKV,
+	wagesKV,
+	pricesKV,
+	configKV,
 };

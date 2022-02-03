@@ -1,4 +1,5 @@
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
+const { CommandInteraction } = require('discord.js');
 const { wagesKV } = require('../../db/keyv');
 
 const data = new SlashCommandSubcommandBuilder()
@@ -7,6 +8,9 @@ const data = new SlashCommandSubcommandBuilder()
 
 module.exports = {
 	data,
+	/**
+	 * @param {CommandInteraction} interaction
+	 */
 	async execute(interaction) {
 		const keys = ['interval', 'amount', 'initial', 'boost'];
 		const settings = {};

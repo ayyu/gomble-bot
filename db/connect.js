@@ -3,6 +3,9 @@ const dotenv = require('dotenv');
 
 dotenv.config();
 
+/**
+ * ORM instance for bot storage.
+ */
 const sequelize = new Sequelize(process.env.DATABASE_URL, {
 	dialectOptions: {
 		ssl: {

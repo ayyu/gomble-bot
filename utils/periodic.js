@@ -1,7 +1,12 @@
+const { Guild } = require('discord.js');
 const ms = require('ms');
 const { wagesKV } = require('../db/keyv');
 const { User, Prediction } = require('../db/models');
 
+/**
+ * Pays Users associated with a Guild according to the set schedule.
+ * @param {Guild} guild - Guild with members to pay
+ */
 async function payWages(guild) {
 	try {
 		const amount = await wagesKV.get('amount') ?? 0;
@@ -34,6 +39,10 @@ async function payWages(guild) {
 	}
 }
 
+/**
+ * Prunes orphaned Predictions and missing Members from the bot's database.
+ * @param {Guild} guild - Guild to be pruned
+ */
 async function prune(guild) {
 	// remove users that aren't in the guild
 	try {

@@ -1,4 +1,5 @@
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
+const { Emoji } = require('discord.js');
 const { pricesKV } = require('../../db/keyv');
 const { User } = require('../../db/models');
 const { paymentMessage } = require('../../utils/messages');
@@ -26,6 +27,9 @@ module.exports = {
 
 		const price = await pricesKV.get(data.name) ?? 0;
 
+		/**
+		 * @type {Emoji}
+		 */
 		let emoji;
 		const balance = await user.spend(price);
 		try {

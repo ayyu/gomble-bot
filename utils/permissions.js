@@ -1,6 +1,11 @@
+const { Guild } = require('discord.js');
 const { permsKV } = require('../db/keyv');
 
 module.exports = {
+	/**
+	 * Updates permissions for all commands with permission settings stored.
+	 * @param {Guild} guild - Guild with commands to update
+	 */
 	async updateCommandPerms(guild) {
 		const commands = await guild.commands.fetch();
 		commands.forEach(async command => {
@@ -14,6 +19,11 @@ module.exports = {
 			}
 		});
 	},
+	/**
+	 * Returns basic permissions for a private command accessible by the Guild owner.
+	 * @param {Guild} guild - Guild with roles
+	 * @returns {Array<Object>}
+	 */
 	basePrivatePerms(guild) {
 		return [
 			{
@@ -28,6 +38,11 @@ module.exports = {
 			},
 		];
 	},
+	/**
+	 * Returns basic permissions for a public command accessible by all Members.
+	 * @param {Guild} guild - Guild with roles
+	 * @returns {Array<Object>}
+	 */
 	basePublicPerms(guild) {
 		return [
 			{

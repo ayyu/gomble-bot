@@ -10,13 +10,11 @@ const data = new SlashCommandBuilder()
 	.setDescription('Cash in points for rewards');
 
 const subcommands = new Collection();
-absForEach(path.resolve(__dirname, data.name), /\.js$/,
-	(directory, file) => {
-		const command = require(`${directory}/${file}`);
-		data.addSubcommand(command.data);
-		subcommands.set(command.data.name, command);
-	},
-);
+absForEach(path.resolve(__dirname, data.name), /\.js$/, (directory, file) => {
+	const command = require(`${directory}/${file}`);
+	data.addSubcommand(command.data);
+	subcommands.set(command.data.name, command);
+});
 
 module.exports = {
 	data,
