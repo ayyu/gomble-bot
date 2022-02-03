@@ -1,16 +1,18 @@
-const { GuildChannelManager } = require('discord.js');
+const { GuildChannelManager, ThreadChannel } = require('discord.js');
 const { Model, DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
 	class Prediction extends Model {
 		/**
-		 * Returns whether Prediction is missing an associated thread.
+		 * Returns whether Prediction is missing an associated thread or starter Message.
 		 * @param {GuildChannelManager} channels
-		 * @returns {Boolean} true if missing a thread, false otherwise
+		 * @returns {Boolean} true if missing a thread or starter Message, false otherwise
 		 */
 		async isOrphaned(channels) {
 			try {
-				await channels.fetch(this.id);
+				/** @type {ThreadChannel} */
+				const thread = await channels.fetch(this.id);
+				await thread.fetchStarterMessage();
 			} catch (error) {
 				console.error(error);
 				return true;
