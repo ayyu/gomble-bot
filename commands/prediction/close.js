@@ -18,8 +18,8 @@ module.exports = {
 
 		await interaction.reply(closeBetMsg);
 		const starter = await interaction.channel.fetchStarterMessage();
-		const embeds = starter.embeds;
-		if (embeds[0]) embeds[0].description = closeBetMsg;
-		await starter.edit({ embeds });
+		const starterEmbeds = starter.embeds;
+		if (starterEmbeds[0]) starterEmbeds[0].description = closeBetMsg;
+		await starter.edit({ embeds: starterEmbeds });
 	},
 };
