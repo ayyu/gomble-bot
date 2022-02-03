@@ -17,11 +17,8 @@ async function execute(interaction) {
 	await Prediction.findOne({ where: { id: interaction.channel.id } })
 		.then(prediction => prediction.update({ 'open': false }));
 
-	await updateStarterEmbed(
-		interaction,
-		embed => embed.setDescription(closeBetMsg),
-	);
-	await interaction.reply(closeBetMsg);
+	await updateStarterEmbed(interaction, embed => embed.setDescription(closeBetMsg))
+		.then(() => interaction.reply(closeBetMsg));
 }
 
 module.exports = {

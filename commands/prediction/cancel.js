@@ -24,11 +24,10 @@ async function execute(interaction) {
 		.then(prediction => prediction.cancel());
 
 	await updateStarterEmbed(interaction, embed => embed.setDescription(replyEmbed.title))
-		.then(starter => starter.unpin());
-
-	await interaction.reply({ embeds: [replyEmbed] })
+		.then(starter => starter.unpin())
+		.then(() => interaction.reply({ embeds: [replyEmbed] }))
 		.then(() => interaction.channel.setLocked(true))
-		.then(() => interaction.channel.setLocked(true));
+		.then(() => interaction.channel.setArchived(true));
 }
 
 module.exports = {

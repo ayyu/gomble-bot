@@ -14,15 +14,11 @@ const data = new SlashCommandSubcommandBuilder()
 async function execute(interaction) {
 	if (!requireThreaded(interaction)) throw new Error(threadOnlyMsg);
 
-	const prediction = await Prediction.findOne({ where: { id: interaction.channel.id } });
+	await Prediction.findOne({ where: { id: interaction.channel.id } })
+		.then(prediction => prediction.update({ 'open': true }));
 
-	await prediction.update({ 'open': true });
-
-	await interaction.reply(openBetMsg);
-	await updateStarterEmbed(
-		interaction,
-		embed => embed.setDescription(openBetMsg),
-	);
+	await updateStarterEmbed(interaction, embed => embed.setDescription(openBetMsg))
+		.then(() => interaction.reply(openBetMsg));
 }
 
 module.exports = {

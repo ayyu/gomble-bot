@@ -21,36 +21,30 @@ async function execute(interaction) {
 
 	const choice = interaction.options.getBoolean('result');
 
-	const prediction = await Prediction.findOne({ where: { id: interaction.channel.id } });
-	const payouts = await prediction.end(choice);
+	const payouts = await Prediction.findOne({ where: { id: interaction.channel.id } })
+		.then(prediction => prediction.end());
 
 	const replyEmbed = new MessageEmbed({ title: `${getGroupName(choice)} win!` });
-
-	if (payouts.size) {
-		const totalPool = payouts.reduce((total, amount) => total + amount, 0);
-		replyEmbed.description = `**${totalPool}** go to ${payouts.size} winners`;
-		await interaction.reply({ embeds: [replyEmbed] });
-
-		await Promise.all(payouts.map(async (amount, payee) => {
+	const totalPool = payouts.reduce((total, amount) => total + amount, 0);
+	replyEmbed.description = payouts.size
+		? `**${totalPool}** go to ${payouts.size} winners`
+		: 'No winning bets placed. Refunding all bets.';
+	await interaction.reply({ embeds: [replyEmbed] })
+		.then(() => Promise.all(payouts.map(async (amount, payee) => {
 			/** @type {import('discord.js').GuildMember|string} */
-			let member;
 			try {
-				member = await interaction.guild.members.fetch(payee);
+				await interaction.guild.members.fetch(payee)
+					.then(member => interaction.followUp(`${member} won **${amount}**.`));
 			} catch (error) {
-				console.log(error);
-				member = 'Unknown Member';
+				console.error(error);
 			}
-			await interaction.followUp(`${member} won **${amount}**.`);
-		}));
-	} else {
-		replyEmbed.description = 'No winning bets placed. Refunding all bets.';
-		await interaction.reply({ embeds: [replyEmbed] });
-	}
+		})));
 
-	const starter = await updateStarterEmbed(interaction, embed => embed.setDescription(replyEmbed.title));
-	await starter.unpin();
-	await interaction.channel.setLocked(true);
-	await interaction.channel.setArchived(true);
+	await updateStarterEmbed(interaction, embed => embed.setDescription(replyEmbed.title))
+		.then(starter => starter.unpin())
+		.then(() => interaction.reply({ embeds: [replyEmbed] }))
+		.then(() => interaction.channel.setLocked(true))
+		.then(() => interaction.channel.setArchived(true));
 }
 
 module.exports = {
