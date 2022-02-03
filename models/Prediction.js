@@ -1,16 +1,16 @@
-const { GuildChannelManager, ThreadChannel } = require('discord.js');
 const { Model, DataTypes } = require('sequelize');
+const { Collection } = require('discord.js');
 
 module.exports = (sequelize) => {
 	class Prediction extends Model {
 		/**
 		 * Returns whether Prediction is missing an associated thread or starter Message.
-		 * @param {GuildChannelManager} channels
-		 * @returns {Boolean} true if missing a thread or starter Message, false otherwise
+		 * @param {import('discord.js').GuildChannelManager} channels
+		 * @returns {boolean} true if missing a thread or starter Message, false otherwise
 		 */
 		async isOrphaned(channels) {
 			try {
-				/** @type {ThreadChannel} */
+				/** @type {import('discord.js').ThreadChannel} */
 				const thread = await channels.fetch(this.id);
 				await thread.fetchStarterMessage();
 			} catch (error) {
@@ -32,29 +32,31 @@ module.exports = (sequelize) => {
 		/**
 		 * Ends this Prediction and pays out to winners.
 		 * Refunds all Bets if no Bets are winning.
-		 * @param {Boolean} choice - Correct outcome of the Prediction.
-		 * @returns {Array<Number, Object<string, Number>|null>} [total payout, dictionary of payouts]
+		 * @param {boolean} choice - Correct outcome of the Prediction.
+		 * @returns {Collection<string, number>} Collection of payouts
 		 */
 		async end(choice) {
-			const bets = await this.getBets();
-			const winningBets = bets.filter(bet => bet.choice == choice);
+			/** */
+			const models = await this.getBets();
+			const bets = new Collection(models);
 
-			if (winningBets.length == 0) {
-				this.cancel();
-				return [0, null];
-			}
-
+			const winningBets = bets.partition(bet => bet.choice == choice);
 			const totalPool = bets.reduce((total, bet) => total + bet.amount, 0);
 			const winningPool = winningBets.reduce((total, bet) => total + bet.amount, 0);
-			const payouts = {};
-			for (const bet of winningBets) {
-				const payout = bet.amount / winningPool * totalPool;
-				payouts[bet.userId] = payout;
-				await bet.payout(payout);
-				await bet.destroy();
+			const payouts = new Collection();
+
+			if (!winningBets.size) {
+				this.cancel();
+			} else {
+				for (const bet of winningBets) {
+					const payout = bet.amount / winningPool * totalPool;
+					payouts.set(bet.userId, payout);
+					await bet.payout(payout);
+					await bet.destroy();
+				}
+				await this.destroy();
 			}
-			await this.destroy();
-			return [totalPool, payouts];
+			return payouts;
 		}
 	}
 	Prediction.init({
