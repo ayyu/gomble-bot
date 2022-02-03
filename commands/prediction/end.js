@@ -22,7 +22,7 @@ async function execute(interaction) {
 	const choice = interaction.options.getBoolean('result');
 
 	const payouts = await Prediction.findOne({ where: { id: interaction.channel.id } })
-		.then(prediction => prediction.end());
+		.then(prediction => prediction.end(choice));
 
 	const replyEmbed = new MessageEmbed({ title: `${getGroupName(choice)} win!` });
 	const totalPool = payouts.reduce((total, amount) => total + amount, 0);
@@ -42,7 +42,6 @@ async function execute(interaction) {
 
 	await updateStarterEmbed(interaction, embed => embed.setDescription(replyEmbed.title))
 		.then(starter => starter.unpin())
-		.then(() => interaction.reply({ embeds: [replyEmbed] }))
 		.then(() => interaction.channel.setLocked(true))
 		.then(() => interaction.channel.setArchived(true));
 }
