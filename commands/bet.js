@@ -59,7 +59,7 @@ async function execute(interaction) {
 		amount = parseInt(amount);
 	}
 
-	const minBet = await wagesKV.get('minBet') ?? 1;
+	const minBet = await wagesKV.get('minbet') ?? 1;
 	if (amount < minBet) throw new Error(`Your bet must be at least ${minBet}.`);
 
 	const balance = await user.spend(amount);
