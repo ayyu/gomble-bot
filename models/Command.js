@@ -27,7 +27,7 @@ class ParentCommand extends Command {
 	constructor(data, execute = null) {
 		super(data, execute);
 		this._subcommands = new Collection();
-		absForEach(path.resolve(__dirname, this.data.name), /\.js$/, (directory, file) => {
+		absForEach(path.resolve('./', this.data.name), /\.js$/, (directory, file) => {
 			const command = require(`${directory}/${file}`);
 			this.data.addSubcommand(command.data);
 			this._subcommands.set(command.data.name, command);
