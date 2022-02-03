@@ -15,7 +15,7 @@ module.exports = {
 		const predictions = await Prediction.findAll();
 		let response = '**Active predictions:**\n';
 		const predictionList = predictions.reduce((content, prediction) => {
-			return content + `<#${prediction.id}>: ${prediction.open} for betting\n`;
+			return content + `<#${prediction.id}>: ${prediction.open ? 'Open' : 'Closed'} for betting\n`;
 		}, '');
 		response += (predictionList.length) ? predictionList : 'No active predictions found.';
 		await interaction.reply(response);
