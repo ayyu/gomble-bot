@@ -21,9 +21,9 @@ module.exports = {
 	formatPairs(title, pairs, empty) {
 		let response = '';
 		if (title) response += `**${title}**\n\n`;
-		if (!pairs.length) response += `> ${empty}\n> `;
+		if (!pairs.length) response += `> ${empty}\n`;
 		pairs.forEach(pair => {
-			response += `**${pair[0]}**\n> \`${pair[1]}\`\n\n`;
+			response += `**${pair[0]}**\n\`\`\`${pair[1]}\`\`\`\n`;
 		});
 		return response;
 	},
