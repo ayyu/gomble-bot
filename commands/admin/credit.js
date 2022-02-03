@@ -20,11 +20,10 @@ const data = new SlashCommandSubcommandBuilder()
 async function execute(interaction) {
 	const target = interaction.options.getMember('user');
 	const amount = interaction.options.getInteger('amount');
-	const targetModel = await User.findOne({ where: { id: target.id } });
 
-	const balance = await targetModel.earn(amount);
-
-	await interaction.reply(`${target}'s new balance is **${balance}**`);
+	await User.findOne({ where: { id: target.id } })
+		.then(model => model.earn(amount)
+			.then(balance => interaction.reply(`${target}'s new balance is **${balance}**`)));
 }
 
 module.exports = new Command(data, execute);
