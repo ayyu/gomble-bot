@@ -13,10 +13,10 @@ module.exports = (sequelize) => {
 		 * @param {number} amount - Amount to pay to User
 		 */
 		async payout(amount) {
-			const user = await this.getUser();
-			await user.earn(amount);
-			await user.reload();
-			await this.destroy();
+			await this.getUser()
+				.then(user => user.earn(amount))
+				.then(user => user.reload())
+				.then(this.destroy());
 		}
 	}
 	Bet.init({

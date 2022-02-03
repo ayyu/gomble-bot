@@ -10,9 +10,7 @@ module.exports = (sequelize) => {
 		 */
 		async isOrphaned(channels) {
 			try {
-				/** @type {import('discord.js').ThreadChannel} */
-				const thread = await channels.fetch(this.id);
-				await thread.fetchStarterMessage();
+				await channels.fetch(this.id).then(thread => thread.fetchStarterMessage());
 			} catch (error) {
 				console.error(error);
 				return true;
@@ -24,9 +22,9 @@ module.exports = (sequelize) => {
 		 * Cancels this Prediction and refunds all associated Bets.
 		 */
 		async cancel() {
-			const bets = await this.getBets();
-			for (const bet of bets) await bet.refund();
-			await this.destroy();
+			await this.getBets()
+				.then(bets => Promise.all(bets.map(bet => bet.refund())))
+				.then(this.destroy());
 		}
 
 		/**
