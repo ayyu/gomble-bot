@@ -35,7 +35,7 @@ module.exports = {
 		let reply;
 		const balance = await user.spend(price);
 		try {
-			reply = await interaction.reply(`${member} forces ${target} to watch ${show}`);
+			reply = await interaction.reply(`${member} forces ${target} to watch **${show}**`);
 		} catch (error) {
 			await user.earn(price);
 			throw error;

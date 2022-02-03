@@ -55,7 +55,7 @@ module.exports = {
 			throw error;
 		}
 
-		await interaction.reply(`${target} timed out for ${ms(duration, { long: true })}.`);
+		await interaction.reply(`**${target} timed out** for ${ms(duration, { long: true })}.`);
 		await interaction.followUp(paymentMessage(price, balance));
 	},
 };

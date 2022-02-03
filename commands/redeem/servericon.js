@@ -32,7 +32,7 @@ module.exports = {
 			throw error;
 		}
 
-		await interaction.reply(`Changed server icon to ${attachment}.`);
+		await interaction.reply(`**Changed server icon** to ${attachment}.`);
 		await interaction.followUp(paymentMessage(price, balance));
 	},
 };

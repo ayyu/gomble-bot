@@ -37,7 +37,7 @@ module.exports = {
 			throw error;
 		}
 
-		await interaction.reply(`Added emote <:${emoji.identifier}> as **:${emoji.name}:**`);
+		await interaction.reply(`**Added emote** <:${emoji.identifier}> as :${emoji.name}:`);
 		await interaction.followUp(paymentMessage(price, balance));
 	},
 };

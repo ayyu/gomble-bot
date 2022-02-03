@@ -39,7 +39,7 @@ module.exports = {
 			throw error;
 		}
 
-		await interaction.reply(`Nickname changed for ${target}`);
+		await interaction.reply(`**Nickname changed** for ${target}`);
 		await interaction.followUp(paymentMessage(price, balance));
 	},
 };
