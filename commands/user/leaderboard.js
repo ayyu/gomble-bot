@@ -1,6 +1,7 @@
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
-const { CommandInteraction } = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 const { User } = require('../../db/models');
+const { Command } = require('../models/Command');
 
 /**
  * How many records to fetch for each list
@@ -8,18 +9,15 @@ const { User } = require('../../db/models');
  */
 const records = 5;
 
-const data = new SlashCommandSubcommandBuilder()
-	.setName('leaderboard')
-	.setDescription(`Check the top ${records} and bottom ${records} players`);
-
 /**
- * @param {CommandInteraction} interaction
- * @param {Array<Array>} order
+ * @param {import('discord.js').CommandInteraction} interaction
+ * @param {Array<[string, string]>} order
  * @param {number} limit
- * @returns {Array<Object>}
+ * @returns {Array<import('discord.js').EmbedFieldData>}
  */
 async function buildEmbedFields(interaction, order, limit) {
 	const models = await User.findAll({ order, limit });
+	/** @type {Array<import('discord.js').EmbedFieldData>} */
 	const fields = await Promise.all(models.map(async model => {
 		const member = await model.getMember(interaction.guild.members);
 		const name = (member) ? member.user.tag : 'Unknown Member';
@@ -29,22 +27,25 @@ async function buildEmbedFields(interaction, order, limit) {
 	return fields;
 }
 
-module.exports = {
-	data,
-	/**
-	 * @param {CommandInteraction} interaction
-	 */
-	async execute(interaction) {
-		const topFields = await buildEmbedFields(interaction, [['balance', 'DESC']], records);
-		const bottomFields = await buildEmbedFields(interaction, [['balance', 'ASC']], records);
-		const topEmbed = {
-			title: `📈 Top ${records} ballers`,
-			fields: topFields,
-		};
-		const bottomEmbed = {
-			title: `📉 Bottom ${records} jobbers`,
-			fields: bottomFields,
-		};
-		await interaction.reply({ embeds: [topEmbed, bottomEmbed] });
-	},
-};
+const data = new SlashCommandSubcommandBuilder()
+	.setName('leaderboard')
+	.setDescription(`Check the top ${records} and bottom ${records} players`);
+
+/**
+ * @param {import('discord.js').CommandInteraction} interaction
+ */
+async function execute(interaction) {
+	const topFields = await buildEmbedFields(interaction, [['balance', 'DESC']], records);
+	const bottomFields = await buildEmbedFields(interaction, [['balance', 'ASC']], records);
+	const topEmbed = new MessageEmbed({
+		title: `📈 Top ${records} ballers`,
+		fields: topFields,
+	});
+	const bottomEmbed = new MessageEmbed({
+		title: `📉 Bottom ${records} jobbers`,
+		fields: bottomFields,
+	});
+	await interaction.reply({ embeds: [topEmbed, bottomEmbed] });
+}
+
+module.exports = new Command(data, execute);

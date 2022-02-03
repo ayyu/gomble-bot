@@ -1,6 +1,6 @@
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
-const { CommandInteraction } = require('discord.js');
 const { User } = require('../../db/models');
+const { Command } = require('../models/Command');
 const { unregisteredMsg } = require('../../utils/messages');
 
 const data = new SlashCommandSubcommandBuilder()
@@ -10,15 +10,14 @@ const data = new SlashCommandSubcommandBuilder()
 		.setName('user')
 		.setDescription('User to check'));
 
-module.exports = {
-	data,
-	/**
-	 * @param {CommandInteraction} interaction
-	 */
-	async execute(interaction) {
-		const target = interaction.options.getMember('user') ?? interaction.member;
-		const user = await User.findOne({ where: { id: target.id } });
-		if (!user) throw new Error(unregisteredMsg);
-		await interaction.reply(`**${target.user.tag}'s balance:** ${user.balance}`);
-	},
-};
+/**
+ * @param {import('discord.js').CommandInteraction} interaction
+ */
+async function execute(interaction) {
+	const target = interaction.options.getMember('user') ?? interaction.member;
+	const user = await User.findOne({ where: { id: target.id } });
+	if (!user) throw new Error(unregisteredMsg);
+	await interaction.reply(`**${target.user.tag}'s balance:** ${user.balance}`);
+}
+
+module.exports = new Command(data, execute);
