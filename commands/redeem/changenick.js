@@ -1,7 +1,5 @@
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
-const { configKV, pricesKV } = require('../../db/keyv');
-const { User } = require('../../db/models');
-const { paymentMessage, cantTargetSelfMsg } = require('../../utils/messages');
+const { RedemptionCommand } = require('../../models/Command');
 
 const data = new SlashCommandSubcommandBuilder()
 	.setName('changenick')
@@ -15,31 +13,14 @@ const data = new SlashCommandSubcommandBuilder()
 		.setDescription('Nickname to use')
 		.setRequired(true));
 
-module.exports = {
-	data,
-	async execute(interaction) {
-		const member = interaction.member;
-		const target = interaction.options.getMember('user');
-		const nick = interaction.options.getString('nick');
+/**
+ * @param {import('discord.js').CommandInteraction} interaction
+ */
+async function execute(interaction) {
+	const target = interaction.options.getMember('user');
+	const nick = interaction.options.getString('nick');
+	await target.setNickname(nick);
+	await interaction.reply(`**Nickname changed** for ${target}`);
+}
 
-		if (member.id == target.id) throw new Error(cantTargetSelfMsg);
-
-		const user = await User.findOne({ where: { id: member.id } });
-		let price = await pricesKV.get(data.name) ?? 0;
-		const hitlist = await configKV.get('hitlist') ?? [];
-
-		const discountRate = await configKV.get('hitlistDiscount') ?? 0.5;
-		if (hitlist.includes(target.id)) price *= discountRate;
-
-		const balance = await user.spend(price);
-		try {
-			await target.setNickname(nick);
-		} catch (error) {
-			await user.earn(price);
-			throw error;
-		}
-
-		await interaction.reply(`**Nickname changed** for ${target}`);
-		await interaction.followUp(paymentMessage(price, balance));
-	},
-};
+module.exports = new RedemptionCommand(data, execute);

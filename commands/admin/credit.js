@@ -1,6 +1,6 @@
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
-const { CommandInteraction } = require('discord.js');
 const { User } = require('../../db/models');
+const { Command } = require('../../models/Command');
 
 const data = new SlashCommandSubcommandBuilder()
 	.setName('credit')
@@ -14,18 +14,17 @@ const data = new SlashCommandSubcommandBuilder()
 		.setDescription('Amount to credit')
 		.setRequired(true));
 
-module.exports = {
-	data,
-	/**
-	 * @param {CommandInteraction} interaction
-	 */
-	async execute(interaction) {
-		const target = interaction.options.getMember('user');
-		const amount = interaction.options.getInteger('amount');
-		const targetModel = await User.findOne({ where: { id: target.id } });
+/**
+ * @param {import('discord.js').CommandInteraction} interaction
+ */
+async function execute(interaction) {
+	const target = interaction.options.getMember('user');
+	const amount = interaction.options.getInteger('amount');
+	const targetModel = await User.findOne({ where: { id: target.id } });
 
-		const balance = await targetModel.earn(amount);
+	const balance = await targetModel.earn(amount);
 
-		await interaction.reply(`${target}'s new balance is **${balance}**`);
-	},
-};
+	await interaction.reply(`${target}'s new balance is **${balance}**`);
+}
+
+module.exports = new Command(data, execute);

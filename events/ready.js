@@ -1,7 +1,6 @@
 const ms = require('ms');
 const dotenv = require('dotenv');
 const { payWages, prune } = require('../utils/periodic');
-const { Client } = require('discord.js');
 
 dotenv.config();
 
@@ -9,7 +8,7 @@ module.exports = {
 	name: 'ready',
 	once: true,
 	/**
-	 * @param {Client} client
+	 * @param {import('discord.js').Client} client
 	 */
 	async execute(client) {
 		console.log(`Ready! Logged in as ${client.user.tag}`);

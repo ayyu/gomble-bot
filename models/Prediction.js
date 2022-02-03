@@ -36,7 +36,7 @@ module.exports = (sequelize) => {
 		 * @returns {Collection<string, number>} Collection of payouts
 		 */
 		async end(choice) {
-			/** @type {Array<Bet>} */
+			/** @type {Array<import('../db/models').Bet>*/
 			const bets = await this.getBets();
 
 			const winningBets = bets.filter(bet => bet.choice == choice);

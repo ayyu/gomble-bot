@@ -1,6 +1,6 @@
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
-const { CommandInteraction } = require('discord.js');
 const { pricesKV } = require('../../db/keyv');
+const { Command } = require('../../models/Command');
 
 const data = new SlashCommandSubcommandBuilder()
 	.setName('setprice')
@@ -14,17 +14,16 @@ const data = new SlashCommandSubcommandBuilder()
 		.setDescription('Price for this redemption')
 		.setRequired(true));
 
-module.exports = {
-	data,
-	/**
-	 * @param {CommandInteraction} interaction
-	 */
-	async execute(interaction) {
-		const item = interaction.options.getString('item');
-		const price = interaction.options.getInteger('price');
+/**
+ * @param {import('discord.js').CommandInteraction} interaction
+ */
+async function execute(interaction) {
+	const item = interaction.options.getString('item');
+	const price = interaction.options.getInteger('price');
 
-		await pricesKV.set(item, price);
+	await pricesKV.set(item, price);
 
-		await interaction.reply(`Updated price of \`/${item}\` to ${price}.`);
-	},
-};
+	await interaction.reply(`Updated price of \`/${item}\` to ${price}.`);
+}
+
+module.exports = new Command(data, execute);

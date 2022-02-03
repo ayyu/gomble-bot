@@ -1,6 +1,6 @@
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
-const { CommandInteraction } = require('discord.js');
 const { configKV } = require('../../db/keyv');
+const { Command } = require('../../models/Command');
 
 const operations = [
 	'add',
@@ -20,41 +20,40 @@ const data = new SlashCommandSubcommandBuilder()
 		.setName('user')
 		.setDescription('User to add or remove'));
 
-module.exports = {
-	data,
-	/**
-	 * @param {CommandInteraction} interaction
-	 */
-	async execute(interaction) {
-		const target = interaction.options.getMember('user');
-		const operation = interaction.options.getString('operation');
+/**
+ * @param {import('discord.js').CommandInteraction} interaction
+ */
+async function execute(interaction) {
+	const target = interaction.options.getMember('user');
+	const operation = interaction.options.getString('operation');
 
-		switch (operation) {
-			case 'add':
-			case 'remove': {
-				if (!target) throw new Error('No target provided.');
+	switch (operation) {
+		case 'add':
+		case 'remove': {
+			if (!target) throw new Error('No target provided.');
 
-				/** @type {Array<String>} */
-				const hitlist = await configKV.get('hitlist') ?? [];
-				const hitlistSet = new Set(hitlist);
+			/** @type {Array<String>} */
+			const hitlist = await configKV.get('hitlist') ?? [];
+			const hitlistSet = new Set(hitlist);
 
-				if (operation == 'add') {
-					hitlistSet.add(target.id);
-					await interaction.reply(`Added ${target.user.tag} to hitlist.`);
-				}
-				if (operation == 'remove') {
-					hitlistSet.delete(target.id);
-					await interaction.reply(`Removed ${target.user.tag} from hitlist.`);
-				}
-
-				await configKV.set('hitlist', Array.from(hitlistSet));
-				break;
+			if (operation == 'add') {
+				hitlistSet.add(target.id);
+				await interaction.reply(`Added ${target.user.tag} to hitlist.`);
 			}
-			case 'clear': {
-				await configKV.delete('hitlist');
-				await interaction.reply('Removed all users from hitlist.');
-				break;
+			if (operation == 'remove') {
+				hitlistSet.delete(target.id);
+				await interaction.reply(`Removed ${target.user.tag} from hitlist.`);
 			}
+
+			await configKV.set('hitlist', Array.from(hitlistSet));
+			break;
 		}
-	},
-};
+		case 'clear': {
+			await configKV.delete('hitlist');
+			await interaction.reply('Removed all users from hitlist.');
+			break;
+		}
+	}
+}
+
+module.exports = new Command(data, execute);

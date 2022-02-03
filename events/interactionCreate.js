@@ -1,9 +1,7 @@
-const { CommandInteraction } = require('discord.js');
-
 module.exports = {
 	name: 'interactionCreate',
 	/**
-	 * @param {CommandInteraction} interaction
+	 * @param {import('discord.js').CommandInteraction} interaction
 	 */
 	execute(interaction) {
 		console.log(`${interaction.user.tag} in #${interaction.channel.name} triggered an interaction.`);

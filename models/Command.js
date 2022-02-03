@@ -64,7 +64,7 @@ class RedemptionCommand extends Command {
 	 */
 	async execute(interaction) {
 		const member = interaction.member;
-		const target = interaction.options.getMember('user');
+		const target = interaction.options.getMember('user') ?? interaction.options.getMember('target');
 
 		let price = await this.getPrice(interaction);
 

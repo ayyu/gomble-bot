@@ -1,16 +1,16 @@
 const sequelize = require('./connect');
 
-const User = require('../models/User')(sequelize);
-const Prediction = require('../models/Prediction')(sequelize);
-const Bet = require('../models/Bet')(sequelize);
+const _User = require('../models/User')(sequelize);
+const _Prediction = require('../models/Prediction')(sequelize);
+const _Bet = require('../models/Bet')(sequelize);
 
-User.hasMany(Bet);
-Bet.belongsTo(User);
+_User.hasMany(_Bet);
+_Bet.belongsTo(_User);
 
-Prediction.hasMany(Bet);
-Bet.belongsTo(Prediction);
+_Prediction.hasMany(_Bet);
+_Bet.belongsTo(_Prediction);
 
 module.exports = {
 	sequelize,
-	User, Prediction, Bet,
+	User: _User, Prediction: _Prediction, Bet: _Bet,
 };
