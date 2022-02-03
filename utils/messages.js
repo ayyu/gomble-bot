@@ -20,7 +20,7 @@ function paymentMessage(amount, balance) {
  */
 function formatPairs(title, pairs, empty) {
 	let response = '';
-	if (title) response += `**${title}**\n\n`;
+	if (title) response += `**${title}**\n`;
 	if (!pairs.length) response += `> ${empty}\n`;
 	pairs.forEach(pair => {
 		response += `> **${pair[0]}**: \`${pair[1]}\`\n`;
