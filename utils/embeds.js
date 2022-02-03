@@ -5,8 +5,8 @@ const { openBetMsg, closeBetMsg } = require('./messages');
 /**
  * Gets stats for building an Embed field of a Prediction choice.
  * @param {Array<Bet>} bets - Bets of choice
- * @param {Number} totalPool - Total of Bet amounts for this Prediction
- * @returns {Object<Number, Number, Number, Number>}
+ * @param {number} totalPool - Total of Bet amounts for this Prediction
+ * @returns {Object<number, number, number, number>}
  */
 function getChoiceStats(bets, totalPool) {
 	const pool = bets.reduce((total, bet) => total + bet.amount, 0);

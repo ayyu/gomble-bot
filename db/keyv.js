@@ -14,9 +14,9 @@ const store = new KeyvPostgres({
 
 /** @type {Keyv<Array<Object>>} */
 const permsKV = new Keyv({ store, namespace: 'perms' });
-/** @type {Keyv<String|Number>} */
+/** @type {Keyv<string|number>} */
 const wagesKV = new Keyv({ store, namespace: 'wages' });
-/** @type {Keyv<Number>} */
+/** @type {Keyv<number>} */
 const pricesKV = new Keyv({ store, namespace: 'prices' });
 /** @type {Keyv<any>} */
 const configKV = new Keyv({ store, namespace: 'config' });

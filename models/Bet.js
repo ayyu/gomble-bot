@@ -10,7 +10,7 @@ module.exports = (sequelize) => {
 		}
 		/**
 		 * Pays the User of this Bet and destroys this Bet.
-		 * @param {Number} amount - Amount to pay to User
+		 * @param {number} amount - Amount to pay to User
 		 */
 		async payout(amount) {
 			const user = await this.getUser();

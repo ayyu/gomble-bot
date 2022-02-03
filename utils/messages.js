@@ -1,9 +1,9 @@
 module.exports = {
 	/**
 	 * Returns a formatted ephemeral response to be sent in a Message.
-	 * @param {Number} amount - Amount spent
-	 * @param {Number} balance - New balance
-	 * @returns {Object<String, Boolean>} Formatted message.
+	 * @param {number} amount - Amount spent
+	 * @param {number} balance - New balance
+	 * @returns {Object<string, Boolean>} Formatted message.
 	 */
 	paymentMessage(amount, balance) {
 		return {

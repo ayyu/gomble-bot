@@ -4,7 +4,7 @@ const { User } = require('../../db/models');
 
 /**
  * How many records to fetch for each list
- * @type {Number}
+ * @type {number}
  */
 const records = 5;
 
@@ -15,7 +15,7 @@ const data = new SlashCommandSubcommandBuilder()
 /**
  * @param {CommandInteraction} interaction
  * @param {Array<Array>} order
- * @param {Number} limit
+ * @param {number} limit
  * @returns {Array<Object>}
  */
 async function buildEmbedFields(interaction, order, limit) {
