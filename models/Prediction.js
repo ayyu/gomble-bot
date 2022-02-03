@@ -22,9 +22,9 @@ module.exports = (sequelize) => {
 		 * Cancels this Prediction and refunds all associated Bets.
 		 */
 		async cancel() {
-			await this.getBets()
-				.then(bets => Promise.all(bets.map(async bet => await bet.refund())))
-				.then(this.destroy());
+			const bets = await this.getBets();
+			await Promise.all(bets.map(async bet => await bet.refund()))
+				.then(() => this.destroy());
 		}
 
 		/**

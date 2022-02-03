@@ -15,8 +15,7 @@ module.exports = (sequelize) => {
 		async payout(amount) {
 			await this.getUser()
 				.then(user => user.earn(amount))
-				.then(user => user.reload())
-				.then(this.destroy());
+				.then(() => this.destroy());
 		}
 	}
 	Bet.init({
