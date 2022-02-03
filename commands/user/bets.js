@@ -1,7 +1,7 @@
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
 const { CommandInteraction } = require('discord.js');
 const { User, Bet } = require('../../db/models');
-const { unregisteredMsg } = require('../../utils/messages');
+const { unregisteredMsg, formatPairs } = require('../../utils/messages');
 
 const data = new SlashCommandSubcommandBuilder()
 	.setName('bets')
@@ -17,18 +17,20 @@ module.exports = {
 	 */
 	async execute(interaction) {
 		const target = interaction.options.getMember('user') ?? interaction.member;
-
 		const model = await User.findOne({
 			where: { id: target.id },
 			include: Bet,
 		});
 		if (!model) throw new Error(unregisteredMsg);
 
-		let response = '**Active bets:**\n';
-		const betList = model.bets.reduce((content, bet) => {
-			return content + `> <#${bet.predictionId}>: ${bet.amount} on ${bet.choice}\n`;
-		}, '');
-		response += (betList.length) ? betList : 'No active bets found.';
-		await interaction.reply(response);
+		const betPairs = model.bets.map(bet => [
+			`**<#${bet.predictionId}>**`,
+			`${bet.amount} on ${bet.choice}`,
+		]);
+		await interaction.reply(formatPairs(
+			'Active bets',
+			betPairs,
+			'No active bets found.',
+		));
 	},
 };

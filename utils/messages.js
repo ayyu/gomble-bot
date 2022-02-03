@@ -11,6 +11,23 @@ module.exports = {
 			ephemeral: true,
 		};
 	},
+	/**
+	 * Formats an Array of pairs of values into a list string
+	 * @param {string} title
+	 * @param {Array<[string, string]>} pairs
+	 * @param {string} empty - fallback if pairs is empty
+	 * @returns {string} formatted list
+	 */
+	formatPairs(title, pairs, empty) {
+		let response = '';
+		if (title) response += `**${title}**\n`;
+		response += '> \n';
+		if (!pairs.length) response += `> ${empty}\n> `;
+		pairs.forEach(pair => {
+			response += `> ${pair[0]}\n> ${pair[1]}\n> `;
+		});
+		return response;
+	},
 	openBetMsg: 'Betting is open. Place bets in the thread with `/bet`.',
 	closeBetMsg: 'Betting is closed for this prediction.',
 	channelOnlyMsg: 'You can only use this command outside of a thread.',

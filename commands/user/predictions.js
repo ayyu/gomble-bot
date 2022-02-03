@@ -1,6 +1,7 @@
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
 const { CommandInteraction } = require('discord.js');
 const { Prediction } = require('../../db/models');
+const { formatPairs } = require('../../utils/messages');
 
 const data = new SlashCommandSubcommandBuilder()
 	.setName('predictions')
@@ -13,11 +14,14 @@ module.exports = {
 	 */
 	async execute(interaction) {
 		const predictions = await Prediction.findAll();
-		let response = '**Active predictions:**\n';
-		const predictionList = predictions.reduce((content, prediction) => {
-			return content + `> <#${prediction.id}>: ${prediction.open ? 'Open' : 'Closed'} for betting\n`;
-		}, '');
-		response += (predictionList.length) ? predictionList : 'No active predictions found.';
-		await interaction.reply(response);
+		const predictionPairs = predictions.map(prediction => [
+			`**<#${prediction.id}>**`,
+			`${prediction.open ? 'Open' : 'Closed'} for betting`,
+		]);
+		await interaction.reply(formatPairs(
+			'Active predictions',
+			predictionPairs,
+			'No active predictions found.',
+		));
 	},
 };
