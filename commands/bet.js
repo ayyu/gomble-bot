@@ -8,13 +8,9 @@ const { requireThreaded } = require('../utils/threads');
 const data = new SlashCommandBuilder()
 	.setName('bet')
 	.setDescription('Place, raise, or check your bet. Leave options blank to check your bet.')
-	.addIntegerOption(option => option
+	.addStringOption(option => option
 		.setName('amount')
-		.setDescription('How much to wager')
-		.setMinValue(1))
-	.addBooleanOption(option => option
-		.setName('all')
-		.setDescription('Whether to go all in'))
+		.setDescription('How much to wager. Valid options are integers and all'))
 	.addBooleanOption(option => option
 		.setName('choice')
 		.setDescription('The outcome you want to bet on.'));
@@ -27,17 +23,21 @@ module.exports = {
 	async execute(interaction) {
 		if (!requireThreaded(interaction)) throw new Error(threadOnlyMsg);
 
-		const allIn = interaction.options.getBoolean('all');
+		/** @type {string|number} */
+		let amount = interaction.options.getString('amount');
 		const choice = interaction.options.getBoolean('choice');
 
 		const userId = interaction.member.id;
 		const predictionId = interaction.channel.id;
-		const bet = await Bet.findOne({ where: { userId, predictionId } });
+
+		const prediction = await Prediction.findOne({ where: { id: predictionId } });
+		if (!prediction.open) throw new Error(closeBetMsg);
 
 		const user = await User.findOne({ where: { id: userId } });
 		if (!user) throw new Error(unregisteredMsg);
 
-		const amount = allIn ? user.balance : interaction.options.getInteger('amount');
+		const bet = await Bet.findOne({ where: { userId, predictionId } });
+
 		if (amount == null && choice == null) {
 			await interaction.reply(bet
 				? `You have a bet of **${bet.amount}** on **${bet.choice}**`
@@ -45,14 +45,26 @@ module.exports = {
 			return;
 		}
 
-		const prediction = await Prediction.findOne({ where: { id: predictionId } });
-		if (!prediction.open) throw new Error(closeBetMsg);
+		if (amount == null) throw new Error('You must choose an amount when placing or raising a bet.');
+		if (choice == null) {
+			if (!bet) throw new Error('You must choose an outcome when placing a bet.');
+		} else if (bet && choice != bet.choice) {
+			throw new Error('You can\'t bet against your initial choice.');
+		}
 
-		let balance;
+		if (amount == 'all') {
+			amount = user.balance;
+		} else if (isNaN(amount)) {
+			throw new Error('You can only use `all` or integers as amounts.');
+		} else {
+			amount = parseInt(amount);
+		}
+
+		const minBet = 1;
+		if (amount < minBet) throw new Error(`Your bet must be at least ${minBet}.`);
+
+		const balance = await user.spend(amount);
 		if (!bet) {
-			if (choice == null) throw new Error('You must choose an outcome when placing a bet.');
-
-			balance = await user.spend(amount);
 			try {
 				await Bet.create({ userId, predictionId, choice, amount });
 			} catch (error) {
@@ -60,12 +72,7 @@ module.exports = {
 				throw error;
 			}
 			await interaction.reply(`New bet placed on **${choice}** for **${amount}**`);
-
 		} else {
-			if (choice != null
-				&& choice != bet.choice) throw new Error('You can\'t bet against your initial choice.');
-
-			balance = await user.spend(amount);
 			try {
 				await bet.increment({ amount });
 			} catch (error) {
