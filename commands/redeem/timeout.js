@@ -18,7 +18,7 @@ const data = new SlashCommandSubcommandBuilder()
 		.setName('user')
 		.setDescription('User to time out')
 		.setRequired(true))
-	.addIntegerOption(option => option
+	.addNumberOption(option => option
 		.setName(amountOption)
 		.setDescription('How long to time out for')
 		.setRequired(true)
@@ -29,7 +29,7 @@ const data = new SlashCommandSubcommandBuilder()
  */
 async function execute(interaction) {
 	const target = interaction.options.getMember('user');
-	const duration = interaction.options.getInteger(amountOption);
+	const duration = interaction.options.addNumberOption(amountOption);
 	await target.timeout(duration);
 	await interaction.reply(`**${target} timed out** for ${ms(duration, { long: true })}.`);
 }
