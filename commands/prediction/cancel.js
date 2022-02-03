@@ -23,9 +23,12 @@ module.exports = {
 		await interaction.reply({ embeds: [replyEmbed] });
 
 		const starter = await interaction.channel.fetchStarterMessage();
-		const starterEmbeds = starter.embeds;
-		if (starterEmbeds[0]) starterEmbeds[0].description = replyEmbed.title;
-		await starter.edit({ embeds: starterEmbeds });
+		const embeds = starter.embeds;
+		console.log(embeds);
+		if (embeds[0]) {
+			embeds[0].setDescription(replyEmbed.title);
+			await starter.edit({ embeds });
+		}
 		await starter.unpin();
 		await interaction.channel.setLocked(true);
 		await interaction.channel.setArchived(true);

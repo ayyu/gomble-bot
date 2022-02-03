@@ -73,9 +73,12 @@ module.exports = {
 		}
 
 		const starter = await interaction.channel.fetchStarterMessage();
-		const starterEmbeds = starter.embeds;
-		if (starterEmbeds[0]) starterEmbeds[0].fields = buildBetFields(prediction);
-		await starter.edit({ embeds: starterEmbeds });
+		const embeds = starter.embeds;
+		console.log(embeds);
+		if (embeds[0]) {
+			embeds[0].setFields(buildBetFields(prediction));
+			await starter.edit({ embeds });
+		}
 		await interaction.followUp(paymentMessage(amount, balance));
 	},
 };
