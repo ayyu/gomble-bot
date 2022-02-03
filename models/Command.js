@@ -3,7 +3,7 @@ const { Collection } = require('discord.js');
 const { configKV, pricesKV } = require('../db/keyv');
 const { User } = require('../db/models');
 const { absForEach } = require('../utils/fs');
-const { paymentMessage, cantTargetSelfMsg } = require('../../utils/messages');
+const { paymentMessage, cantTargetSelfMsg } = require('../utils/messages');
 
 class Command {
 	/**
