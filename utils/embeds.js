@@ -15,8 +15,6 @@ async function buildBetFields(prediction) {
 	const choices = [true, false];
 	return choices.map(choice => {
 		const chosenBets = bets.filter(bet => bet.choice == choice);
-		console.log(chosenBets);
-		console.log(getChoiceStats(chosenBets, totalPool));
 		const { pool, max, ratio, count } = getChoiceStats(chosenBets, totalPool);
 		const name = choice ? 'Believers' : 'Doubters';
 		const value = `💰 ${pool}\n🏆 1:${ratio.toFixed(2)}\n🧍 ${count}\n💪 ${max}`;
