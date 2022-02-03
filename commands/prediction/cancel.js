@@ -21,16 +21,13 @@ async function execute(interaction) {
 	});
 
 	await Prediction.findOne({ where: { id: interaction.channel.id } })
-		.then(prediction => prediction.cancel())
-		.then(() => interaction.reply({ embeds: [replyEmbed] }));
+		.then(prediction => prediction.cancel());
 
-	await updateStarterEmbed(
-		interaction,
-		embed => embed.setDescription(replyEmbed.title),
-	)
+	await updateStarterEmbed(interaction, embed => embed.setDescription(replyEmbed.title))
 		.then(starter => starter.unpin())
-		.then(interaction.channel.setLocked(true))
-		.then(channel => channel.setArchived(true));
+		.then(() => interaction.reply({ embeds: [replyEmbed] }))
+		.then(() => interaction.channel.setLocked(true))
+		.then(() => interaction.channel.setLocked(true));
 }
 
 module.exports = {
