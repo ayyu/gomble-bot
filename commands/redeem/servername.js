@@ -14,8 +14,8 @@ const data = new SlashCommandSubcommandBuilder()
  */
 async function execute(interaction) {
 	const name = interaction.options.getString('name');
-	await interaction.guild.setName(name);
-	await interaction.reply(`**Changed server name** to ${name}.`);
+	await interaction.guild.setName(name)
+		.then(() => interaction.reply(`**Changed server name** to ${name}.`));
 }
 
 module.exports = new RedemptionCommand(data, execute);

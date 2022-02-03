@@ -19,8 +19,8 @@ const data = new SlashCommandSubcommandBuilder()
 async function execute(interaction) {
 	const attachment = interaction.options.getString('attachment');
 	const name = interaction.options.getString('name');
-	const emoji = await interaction.guild.emojis.create(attachment, name);
-	await interaction.reply(`**Added emote** <:${emoji.identifier}> as :${emoji.name}:`);
+	await interaction.guild.emojis.create(attachment, name)
+		.then(emoji => interaction.reply(`**Added emote** <:${emoji.identifier}> as :${emoji.name}:`));
 }
 
 module.exports = new RedemptionCommand(data, execute);

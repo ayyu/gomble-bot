@@ -20,9 +20,9 @@ async function execute(interaction) {
 	const member = interaction.member;
 	const target = interaction.options.getMember('user');
 	const show = interaction.options.getString('show');
-	const reply = await interaction.reply(`${member} forces ${target} to watch **${show}**`);
-	await reply.pin();
-	await interaction.reply(`**Nickname changed** for ${target}`);
+	await interaction.reply({ content: `${member} forces ${target} to watch **${show}**`, fetchReply: true })
+		.then(reply => reply.pin())
+		.then(() => interaction.reply(`**Nickname changed** for ${target}`));
 }
 
 module.exports = new RedemptionCommand(data, execute);

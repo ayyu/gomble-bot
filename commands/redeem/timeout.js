@@ -30,8 +30,8 @@ const data = new SlashCommandSubcommandBuilder()
 async function execute(interaction) {
 	const target = interaction.options.getMember('user');
 	const duration = interaction.options.getNumber(amountOption);
-	await target.timeout(duration);
-	await interaction.reply(`**${target} timed out** for ${ms(duration, { long: true })}.`);
+	await target.timeout(duration)
+		.then(member => interaction.reply(`**${member} timed out** for ${ms(duration, { long: true })}.`));
 }
 
 module.exports = new RateRedemptionCommand(data, execute, amountOption, ms('1 min'));

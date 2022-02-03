@@ -14,8 +14,8 @@ const data = new SlashCommandSubcommandBuilder()
  */
 async function execute(interaction) {
 	const attachment = interaction.options.getString('attachment');
-	await interaction.guild.setIcon(attachment);
-	await interaction.reply(`**Changed server icon** to ${attachment}.`);
+	await interaction.guild.setIcon(attachment)
+		.then(() => interaction.reply(`**Changed server icon** to ${attachment}.`));
 }
 
 module.exports = new RedemptionCommand(data, execute);

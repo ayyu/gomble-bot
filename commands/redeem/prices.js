@@ -19,13 +19,10 @@ async function execute(interaction) {
 	const rows = await store.query(`SELECT * FROM ${store.opts.table} WHERE key LIKE '${prefix}%'`);
 
 	/** @type {Array<import('discord.js').EmbedFieldData>} */
-	const pricelist = rows.map((row) => {
-		return {
-			name: `/${row.key.replace(prefix, '')}`,
-			value: `\`\`\`${JSONB.parse(row.value).value} points\`\`\``,
-		};
-	});
-	pricelist.sort((a, b) => {
+	const pricelist = rows.map((row) => ({
+		name: `/${row.key.replace(prefix, '')}`,
+		value: `\`\`\`${JSONB.parse(row.value).value} points\`\`\``,
+	})).sort((a, b) => {
 		const nameA = a.name.toLowerCase();
 		const nameB = b.name.toLowerCase();
 		if (nameA == nameB) return 0;

@@ -19,8 +19,8 @@ const data = new SlashCommandSubcommandBuilder()
 async function execute(interaction) {
 	const target = interaction.options.getMember('user');
 	const nick = interaction.options.getString('nick');
-	await target.setNickname(nick);
-	await interaction.reply(`**Nickname changed** for ${target}`);
+	await target.setNickname(nick)
+		.then(member => interaction.reply(`**Nickname changed** for ${member}`));
 }
 
 module.exports = new RedemptionCommand(data, execute);
