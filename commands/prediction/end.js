@@ -20,15 +20,14 @@ module.exports = {
 		const choice = interaction.options.getBoolean('result');
 
 		const prediction = await Prediction.findOne({ where: { id: interaction.channel.id } });
-
 		const [totalPool, payouts] = await prediction.end(choice);
 
 		const replyEmbed = {
 			title: `${choice ? 'Believers' : 'Doubters'} win!`,
 			description: `**${totalPool}** go to ${Object.keys(payouts).length} winners`,
 		};
-
 		await interaction.reply({ embeds: [replyEmbed] });
+
 		for (const payee in payouts) {
 			let member;
 			try {
