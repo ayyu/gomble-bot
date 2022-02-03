@@ -22,21 +22,25 @@ module.exports = {
 		const prediction = await Prediction.findOne({ where: { id: interaction.channel.id } });
 		const [totalPool, payouts] = await prediction.end(choice);
 
-		const replyEmbed = {
-			title: `${choice ? 'Believers' : 'Doubters'} win!`,
-			description: `**${totalPool}** go to ${Object.keys(payouts).length} winners`,
-		};
-		await interaction.reply({ embeds: [replyEmbed] });
+		const replyEmbed = { title: `${choice ? 'Believers' : 'Doubters'} win!` };
 
-		for (const payee in payouts) {
-			let member;
-			try {
-				member = await interaction.guild.members.fetch(payee);
-			} catch (error) {
-				console.log(error);
-				member = 'Unknown Member';
+		if (payouts) {
+			replyEmbed.description = `**${totalPool}** go to ${Object.keys(payouts).length} winners`;
+			await interaction.reply({ embeds: [replyEmbed] });
+
+			for (const payee in payouts) {
+				let member;
+				try {
+					member = await interaction.guild.members.fetch(payee);
+				} catch (error) {
+					console.log(error);
+					member = 'Unknown Member';
+				}
+				await interaction.followUp(`${member} won **${payouts[payee]}**.`);
 			}
-			await interaction.followUp(`${member} won **${payouts[payee]}**.`);
+		} else {
+			replyEmbed.description = 'No winning bets placed. Refunding all bets.';
+			await interaction.reply({ embeds: [replyEmbed] });
 		}
 
 		const starter = await updateStarterEmbed(interaction, embed => embed.setDescription(replyEmbed.title));

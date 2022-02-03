@@ -19,6 +19,12 @@ module.exports = (sequelize) => {
 		async end(choice) {
 			const bets = await this.getBets();
 			const winningBets = bets.filter(bet => bet.choice == choice);
+
+			if (winningBets.length == 0) {
+				this.cancel();
+				return [0, null];
+			}
+
 			const totalPool = bets.reduce((total, bet) => total + bet.amount, 0);
 			const winningPool = winningBets.reduce((total, bet) => total + bet.amount, 0);
 			const payouts = {};
