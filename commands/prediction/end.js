@@ -41,7 +41,10 @@ module.exports = {
 					console.log(error);
 					member = 'Unknown Member';
 				}
-				await interaction.followUp(`${member} won **${payouts[payee]}**.`);
+				await interaction.followUp({
+					content: `${member} won **${payouts[payee]}**.`,
+					ephemeral: true,
+				});
 			}
 		} else {
 			replyEmbed.description = 'No winning bets placed. Refunding all bets.';
