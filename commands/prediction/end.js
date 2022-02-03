@@ -27,7 +27,7 @@ async function execute(interaction) {
 	const replyEmbed = new MessageEmbed({ title: `${choice ? 'Believers' : 'Doubters'} win!` });
 
 	if (payouts.size) {
-		const totalPool = payouts.reduce((total, bet) => total + bet.amount, 0);
+		const totalPool = payouts.reduce((total, amount) => total + amount, 0);
 		replyEmbed.description = `**${totalPool}** go to ${payouts.size} winners`;
 		await interaction.reply({ embeds: [replyEmbed] });
 
