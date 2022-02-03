@@ -34,9 +34,7 @@ module.exports = {
 			case 'remove': {
 				if (!target) throw new Error('No target provided.');
 
-				/**
-				 * @type {Array<String>}
-				 */
+				/** @type {Array<String>} */
 				const hitlist = await configKV.get('hitlist') ?? [];
 				const hitlistSet = new Set(hitlist);
 

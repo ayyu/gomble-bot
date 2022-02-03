@@ -1,6 +1,6 @@
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
 const { CommandInteraction } = require('discord.js');
-const { User, Bet } = require('../../db/models');
+const { User, Bet, Prediction } = require('../../db/models');
 const { unregisteredMsg } = require('../../utils/messages');
 
 const data = new SlashCommandSubcommandBuilder()
@@ -28,6 +28,7 @@ module.exports = {
 
 		const fields = [];
 		for (const bet of model.bets) {
+			/** @type {Prediction} */
 			const prediction = await bet.getPrediction(interaction.guild);
 			fields.push({
 				name: prediction.prompt,

@@ -27,9 +27,7 @@ module.exports = {
 
 		const price = await pricesKV.get(data.name) ?? 0;
 
-		/**
-		 * @type {Emoji}
-		 */
+		/** @type {Emoji} */
 		let emoji;
 		const balance = await user.spend(price);
 		try {

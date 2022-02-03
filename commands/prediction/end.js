@@ -1,5 +1,5 @@
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
-const { CommandInteraction } = require('discord.js');
+const { CommandInteraction, GuildMember } = require('discord.js');
 const { Prediction } = require('../../db/models');
 const { updateStarterEmbed } = require('../../utils/embeds');
 const { threadOnlyMsg } = require('../../utils/messages');
@@ -33,6 +33,7 @@ module.exports = {
 			await interaction.reply({ embeds: [replyEmbed] });
 
 			for (const payee in payouts) {
+				/** @type {GuildMember|String} */
 				let member;
 				try {
 					member = await interaction.guild.members.fetch(payee);

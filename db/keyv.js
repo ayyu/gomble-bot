@@ -12,21 +12,13 @@ const store = new KeyvPostgres({
 	},
 });
 
-/**
- * @type {Keyv<Array<Object>>}
- */
+/** @type {Keyv<Array<Object>>} */
 const permsKV = new Keyv({ store, namespace: 'perms' });
-/**
- * @type {Keyv<String|Number>}
- */
+/** @type {Keyv<String|Number>} */
 const wagesKV = new Keyv({ store, namespace: 'wages' });
-/**
- * @type {Keyv<Number>}
- */
+/** @type {Keyv<Number>} */
 const pricesKV = new Keyv({ store, namespace: 'prices' });
-/**
- * @type {Keyv<any>}
- */
+/** @type {Keyv<any>} */
 const configKV = new Keyv({ store, namespace: 'config' });
 
 module.exports = {

@@ -1,5 +1,5 @@
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
-const { CommandInteraction } = require('discord.js');
+const { CommandInteraction, ThreadChannel } = require('discord.js');
 const { Prediction } = require('../../db/models');
 const { startMessageEmbed } = require('../../utils/embeds');
 const { channelOnlyMsg } = require('../../utils/messages');
@@ -27,6 +27,7 @@ module.exports = {
 			fetchReply: true,
 		});
 
+		/** @type {ThreadChannel} */
 		const thread = await reply.startThread({
 			name: `${prompt}`,
 			autoArchiveDuration: 'MAX',

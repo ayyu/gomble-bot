@@ -2,6 +2,10 @@ const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
 const { CommandInteraction } = require('discord.js');
 const { User } = require('../../db/models');
 
+/**
+ * How many records to fetch for each list
+ * @type {Number}
+ */
 const records = 5;
 
 const data = new SlashCommandSubcommandBuilder()

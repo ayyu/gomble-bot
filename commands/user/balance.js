@@ -17,9 +17,7 @@ module.exports = {
 	 */
 	async execute(interaction) {
 		const target = interaction.options.getMember('user') ?? interaction.member;
-		const user = await User.findOne({
-			where: { id: target.id },
-		});
+		const user = await User.findOne({ where: { id: target.id } });
 		if (!user) throw new Error(unregisteredMsg);
 		await interaction.reply(`**${target.user.tag}'s balance:** ${user.balance}`);
 	},

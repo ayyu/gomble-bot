@@ -1,5 +1,5 @@
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
-const { CommandInteraction } = require('discord.js');
+const { CommandInteraction, Message } = require('discord.js');
 const { pricesKV } = require('../../db/keyv');
 const { User } = require('../../db/models');
 const { paymentMessage, cantTargetSelfMsg } = require('../../utils/messages');
@@ -31,6 +31,7 @@ module.exports = {
 		const user = await User.findOne({ where: { id: member.id } });
 		const price = await pricesKV.get(data.name) ?? 0;
 
+		/** @type {Message} */
 		let reply;
 		const balance = await user.spend(price);
 		try {
