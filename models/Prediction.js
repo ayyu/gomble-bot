@@ -36,16 +36,15 @@ module.exports = (sequelize) => {
 		 * @returns {Collection<string, number>} Collection of payouts
 		 */
 		async end(choice) {
-			/** */
-			const models = await this.getBets();
-			const bets = new Collection(models);
+			/** @type {Array<Bet>} */
+			const bets = await this.getBets();
 
-			const winningBets = bets.partition(bet => bet.choice == choice);
+			const winningBets = bets.filter(bet => bet.choice == choice);
 			const totalPool = bets.reduce((total, bet) => total + bet.amount, 0);
 			const winningPool = winningBets.reduce((total, bet) => total + bet.amount, 0);
 			const payouts = new Collection();
 
-			if (!winningBets.size) {
+			if (!winningBets.length) {
 				this.cancel();
 			} else {
 				for (const bet of winningBets) {
