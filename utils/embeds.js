@@ -1,10 +1,8 @@
 const { Bet } = require('../db/models');
 const { openBetMsg, closeBetMsg } = require('./messages');
 
-const sumAmounts = (total, bets) => total + bets.amount;
-
-async function getChoiceStats(bets, totalPool) {
-	const pool = bets.reduce(sumAmounts, 0);
+function getChoiceStats(bets, totalPool) {
+	const pool = bets.reduce((total, bet) => total + bet.amount, 0);
 	const ratio = (pool == 0) ? 1 : totalPool / pool;
 	const count = bets.length;
 	const max = bets.reduce((lowest, bet) => Math.max(lowest, bet.amount), 0);
@@ -13,10 +11,12 @@ async function getChoiceStats(bets, totalPool) {
 
 async function buildBetFields(prediction) {
 	const bets = await Bet.findAll({ where: { predictionId: prediction.id } });
-	const totalPool = bets.reduce(sumAmounts, 0);
+	const totalPool = bets.reduce((total, bet) => total + bet.amount, 0);
 	const choices = [true, false];
 	return choices.map(choice => {
 		const chosenBets = bets.filter(bet => bet.choice == choice);
+		console.log(chosenBets);
+		console.log(getChoiceStats(chosenBets, totalPool));
 		const { pool, max, ratio, count } = getChoiceStats(chosenBets, totalPool);
 		const name = choice ? 'Believers' : 'Doubters';
 		const value = `💰 ${pool}\n🏆 1:${ratio.toFixed(2)}\n🧍 ${count}\n💪 ${max}`;
