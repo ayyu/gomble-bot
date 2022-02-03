@@ -21,6 +21,7 @@ module.exports = {
 		const starterEmbeds = starter.embeds;
 		console.log(starterEmbeds);
 		if (starterEmbeds[0]) starterEmbeds[0].description = openBetMsg;
+		console.log(starterEmbeds);
 		await starter.edit({ embeds: starterEmbeds });
 	},
 };
