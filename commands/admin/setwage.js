@@ -23,6 +23,10 @@ const options = {
 		type: 'Integer',
 		description: 'Minimum bet amount',
 	},
+	hitlistDiscount: {
+		type: 'Number',
+		description: 'Discount vs. hitlist members',
+	},
 };
 
 const data = new SlashCommandSubcommandBuilder()

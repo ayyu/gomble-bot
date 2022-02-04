@@ -43,7 +43,7 @@ async function execute(interaction) {
 			break;
 		}
 		case 'clear': {
-			await configKV.delete('hitlist')
+			await configKV.set('hitlist', [])
 				.then(() => interaction.reply('Removed all users from hitlist.'));
 			break;
 		}
