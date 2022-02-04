@@ -32,7 +32,7 @@ async function execute(interaction) {
 	const prediction = await Prediction.findOne({ where: { id: predictionId } });
 	if (!prediction.open) throw new Error(closeBetMsg);
 
-	const user = await User.findOne({ where: { id: userId } });
+	let user = await User.findOne({ where: { id: userId } });
 	if (!user) throw new Error(unregisteredMsg);
 
 	const bet = await Bet.findOne({ where: { userId, predictionId } });
@@ -62,7 +62,7 @@ async function execute(interaction) {
 	const minBet = await wagesKV.get('minbet') ?? 1;
 	if (amount < minBet) throw new Error(`Your bet must be at least ${minBet}.`);
 
-	const balance = await user.spend(amount);
+	user = await user.spend(amount);
 	if (!bet) {
 		await Bet.create({ userId, predictionId, choice, amount })
 			.then(() => interaction.reply(`New bet placed on **${choice}** for **${amount}**`))
@@ -82,7 +82,7 @@ async function execute(interaction) {
 
 	await buildBetFields(prediction)
 		.then(embeds => updateStarterEmbed(interaction, embed => embed.setFields(embeds)))
-		.then(() => interaction.followUp(paymentMessage(amount, balance)));
+		.then(() => interaction.followUp(paymentMessage(amount, user.balance)));
 }
 
 module.exports = new Command(data, execute);
