@@ -63,21 +63,22 @@ async function execute(interaction) {
 	if (amount < minBet) throw new Error(`Your bet must be at least ${minBet}.`);
 
 	user = await user.spend(amount);
-	if (!bet) {
-		await Bet.create({ userId, predictionId, choice, amount })
-			.then(() => interaction.reply(`New bet placed on **${choice}** for **${amount}**`))
-			.catch(async error => {
-				await user.earn(amount);
-				throw error;
-			});
-	} else {
-		await bet.increment({ amount })
-			.then(model => model.reload())
-			.then(model => interaction.reply(`Bet raised on **${model.choice}** by **${amount}** to **${model.amount}**`))
-			.catch(async error => {
-				await user.earn(amount);
-				throw error;
-			});
+	try {
+		if (!bet) {
+			await Bet.create({ userId, predictionId, choice, amount })
+				.then(() => interaction.reply(`New bet placed on **${choice}** for **${amount}**`));
+		} else {
+			await bet.increment({ amount })
+				.then(model => model.reload())
+				.then(model => interaction.reply(`Bet raised on **${model.choice}** by **${amount}** to **${model.amount}**`));
+		}
+	} catch (error) {
+		console.error(error);
+		await user.earn(amount)
+			.then(() => interaction.reply({
+				content: error.message,
+				ephemeral: true,
+			}));
 	}
 
 	await buildBetFields(prediction)
