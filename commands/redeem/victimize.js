@@ -21,7 +21,7 @@ async function execute(interaction) {
 	if (hitlist.includes(target.id)) throw new Error('Target is already on hitlist.');
 	hitlist.push(target.id);
 	await configKV.set('hitlist', hitlist);
-	return await interaction.reply(`**Added ${target}** to the hitlist.`);
+	await interaction.reply(`**Added ${target}** to the hitlist.`);
 }
 
 module.exports = new RedemptionCommand(data, execute);

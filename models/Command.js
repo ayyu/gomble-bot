@@ -20,7 +20,7 @@ class Command {
 	async execute(interaction) {
 		if (this._execute) {
 			await this._execute(interaction)
-				.catch(async error => this.error(error, interaction));
+				.catch(async error => await this.error(error, interaction));
 		}
 	}
 
@@ -60,7 +60,7 @@ class ParentCommand extends Command {
 			const subcommand = this._subcommands.get(interaction.options.getSubcommand());
 			if (subcommand) {
 				await subcommand.execute(interaction)
-					.catch(async error => this.error(error, interaction));
+					.catch(async error => await this.error(error, interaction));
 			}
 		}
 	}
@@ -97,12 +97,12 @@ class RedemptionCommand extends Command {
 
 		if (this._execute) {
 			this._execute(interaction)
+				.then(() => interaction.followUp(paymentMessage(price, user.balance)))
 				.catch(async error => {
 					await user.earn(price);
 					await super.error(error, interaction);
 				});
 		}
-		await interaction.followUp(paymentMessage(price, user.balance));
 	}
 
 	/**
