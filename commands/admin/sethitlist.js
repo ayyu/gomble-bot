@@ -9,7 +9,7 @@ const operations = [
 ];
 
 const data = new SlashCommandSubcommandBuilder()
-	.setName('hitlist')
+	.setName('sethitlist')
 	.setDescription('Options for managing list of victims')
 	.addStringOption(option => option
 		.setName('operation')
