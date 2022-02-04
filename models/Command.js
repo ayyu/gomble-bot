@@ -80,11 +80,12 @@ class RedemptionCommand extends Command {
 		const user = await User.findOne({ where: { id: member.id } })
 			.then(model => model.spend(price));
 
-		await super.execute(interaction)
-			.catch(async error => {
-				await user.earn(price);
-				throw error;
-			});
+		try {
+			super.execute(interaction);
+		} catch (error) {
+			await user.earn(price);
+			throw error;
+		}
 
 		await interaction.followUp(paymentMessage(price, user.balance));
 	}
