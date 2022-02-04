@@ -20,7 +20,7 @@ async function execute(interaction) {
 
 	/** @type {Array<import('discord.js').EmbedFieldData>} */
 	const pricelist = rows.map((row) => ({
-		name: `/${row.key.replace(prefix, '')}`,
+		name: `/redeem ${row.key.replace(prefix, '')}`,
 		value: `\`\`\`${JSONB.parse(row.value).value} points\`\`\``,
 	})).sort((a, b) => {
 		const nameA = a.name.toLowerCase();
