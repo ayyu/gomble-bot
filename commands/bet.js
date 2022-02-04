@@ -64,22 +64,20 @@ async function execute(interaction) {
 
 	const balance = await user.spend(amount);
 	if (!bet) {
-		try {
-			await Bet.create({ userId, predictionId, choice, amount });
-		} catch (error) {
-			await user.earn(amount);
-			throw error;
-		}
-		await interaction.reply(`New bet placed on **${choice}** for **${amount}**`);
+		await Bet.create({ userId, predictionId, choice, amount })
+			.then(() => interaction.reply(`New bet placed on **${choice}** for **${amount}**`))
+			.catch(async error => {
+				await user.earn(amount);
+				throw error;
+			});
 	} else {
-		try {
-			await bet.increment({ amount });
-		} catch (error) {
-			await user.earn(amount);
-			throw error;
-		}
-		await bet.reload();
-		await interaction.reply(`Bet raised on **${bet.choice}** by **${amount}** to **${bet.amount}**`);
+		await bet.increment({ amount })
+			.then(model => model.reload())
+			.then(model => interaction.reply(`Bet raised on **${model.choice}** by **${amount}** to **${model.amount}**`))
+			.catch(async error => {
+				await user.earn(amount);
+				throw error;
+			});
 	}
 
 	await buildBetFields(prediction)

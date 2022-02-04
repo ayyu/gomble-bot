@@ -7,44 +7,35 @@ module.exports = (sequelize) => {
 		 * Will round requested amount up to nearest integer.
 		 * @param {number} amount - The amount to decrement by.
 		 * @throws {Error} The user doesn't have enough balance.
-		 * @returns {number} New balance
+		 * @returns {Promise<this>}
 		 */
 		async spend(amount) {
 			amount = Math.ceil(amount);
-			if (amount > this.balance) {
-				throw new Error(`Insufficient balance. ${this.balance} available, ${amount} needed.`);
-			}
-			await this.decrement({ balance: amount });
-			await this.reload();
-			return this.balance;
+			if (amount > this.balance) throw new Error(`Insufficient balance. ${this.balance} available, ${amount} needed.`);
+			return await this.decrement({ balance: amount })
+				.then(model => model.reload());
 		}
 
 		/**
 		 * Increments a User instance.
 		 * Will round requested amount up to nearest integer.
 		 * @param {number} amount - The amount to increment by.
-		 * @returns {number} New balance
+		 * @returns {Promise<this>}
 		 */
 		async earn(amount) {
 			amount = Math.ceil(amount);
-			await this.increment({ balance: amount });
-			await this.reload();
-			return this.balance;
+			return await this.increment({ balance: amount })
+				.then(model => model.reload());
 		}
 
 		/**
 		 * Fetches the GuildMember corresponding to this instance.
 		 * @param {import('discord.js').GuildMemberManager} members
-		 * @returns {import('discord.js').Member}
+		 * @returns {Promise<import('discord.js').Member>}
 		 */
 		async getMember(members) {
-			try {
-				const member = await members.fetch(this.id);
-				return member;
-			} catch (error) {
-				console.error(error);
-				return null;
-			}
+			return await (members.fetch(this.id))
+				.catch(() => null);
 		}
 
 		/**
@@ -54,13 +45,8 @@ module.exports = (sequelize) => {
 		 * @returns {import('discord.js').Collection<string, import('discord.js').Member>}
 		 */
 		static async getMembers(models, members) {
-			try {
-				const collection = await members.fetch({ user: models.map(model => model.id) });
-				return collection;
-			} catch (error) {
-				console.error(error);
-				return null;
-			}
+			return await members.fetch({ user: models.map(model => model.id) })
+				.catch(() => null);
 		}
 	}
 	User.init({

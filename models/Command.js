@@ -18,7 +18,7 @@ class Command {
 	 * @param {import('discord.js').CommandInteraction} interaction
 	 */
 	async execute(interaction) {
-		if (this._execute) await this._execute(interaction);
+		if (this._execute) return await this._execute(interaction);
 	}
 }
 
@@ -44,8 +44,7 @@ class ParentCommand extends Command {
 		await super.execute(interaction);
 		if (interaction.options.getSubcommand(false)) {
 			const subcommand = this._subcommands.get(interaction.options.getSubcommand());
-			if (!subcommand) return;
-			await subcommand.execute(interaction);
+			if (subcommand) return await subcommand.execute(interaction);
 		}
 	}
 }
@@ -76,17 +75,16 @@ class RedemptionCommand extends Command {
 			if (hitlist.includes(target.id)) price *= discountRate;
 		}
 
-		const user = await User.findOne({ where: { id: member.id } });
+		const user = await User.findOne({ where: { id: member.id } })
+			.then(model => model.spend(price));
 
-		const balance = await user.spend(price);
-		try {
-			await super.execute(interaction);
-		} catch (error) {
-			await user.earn(price);
-			throw error;
-		}
+		await super.execute(interaction)
+			.catch(async error => {
+				await user.earn(price);
+				throw error;
+			});
 
-		await interaction.followUp(paymentMessage(price, balance));
+		await interaction.followUp(paymentMessage(price, user.balance));
 	}
 
 	/**
@@ -113,9 +111,8 @@ class RateRedemptionCommand extends RedemptionCommand {
 	}
 
 	async getPrice(interaction = null) {
-		const pricePerUnit = await super.getPrice(interaction);
-		const amount = interaction.options.getNumber(this.amountOption);
-		return pricePerUnit * amount / this.denominator;
+		return await super.getPrice(interaction)
+			.then(pricePerUnit => pricePerUnit * interaction.options.getNumber(this.amountOption) / this.denominator);
 	}
 }
 

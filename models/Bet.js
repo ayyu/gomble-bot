@@ -6,14 +6,14 @@ module.exports = (sequelize) => {
 		 * Refunds this Bet and destroys it.
 		 */
 		async refund() {
-			await this.payout(this.amount);
+			return await this.payout(this.amount);
 		}
 		/**
 		 * Pays the User of this Bet and destroys this Bet.
 		 * @param {number} amount - Amount to pay to User
 		 */
 		async payout(amount) {
-			await this.getUser()
+			return await this.getUser()
 				.then(user => user.earn(amount))
 				.then(() => this.destroy());
 		}

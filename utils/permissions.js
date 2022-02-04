@@ -16,15 +16,14 @@ async function updateCommandPerms(guild) {
 	const commands = await guild.commands.fetch();
 	await Promise.all(commands.map(async command => {
 		const name = command.name;
-		await permsKV.get(name)
-			.then(permissions => {
-				if (permissions) {
-					return guild.commands.permissions.add({
-						command: command.id,
-						permissions,
-					});
-				}
-			});
+		await permsKV.get(name).then(permissions => {
+			if (permissions) {
+				return guild.commands.permissions.add({
+					command: command.id,
+					permissions,
+				});
+			}
+		});
 	}));
 }
 

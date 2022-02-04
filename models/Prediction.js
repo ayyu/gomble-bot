@@ -9,13 +9,9 @@ module.exports = (sequelize) => {
 		 * @returns {boolean} true if missing a thread or starter Message, false otherwise
 		 */
 		async isOrphaned(channels) {
-			try {
-				await channels.fetch(this.id).then(thread => thread.fetchStarterMessage());
-			} catch (error) {
-				console.error(error);
-				return true;
-			}
-			return false;
+			return await channels.fetch(this.id).then(thread => thread.fetchStarterMessage())
+				.then(() => false)
+				.catch(() => true);
 		}
 
 		/**
@@ -23,7 +19,7 @@ module.exports = (sequelize) => {
 		 */
 		async cancel() {
 			const bets = await this.getBets();
-			await Promise.all(bets.map(async bet => await bet.refund()))
+			return await Promise.all(bets.map(async bet => await bet.refund()))
 				.then(() => this.destroy());
 		}
 
@@ -43,13 +39,12 @@ module.exports = (sequelize) => {
 			const payouts = new Collection();
 
 			if (!winningBets.length) {
-				this.cancel();
+				return this.cancel();
 			} else {
 				for (const bet of winningBets) {
 					const payout = bet.amount / winningPool * totalPool;
 					payouts.set(bet.userId, payout);
 					await bet.payout(payout);
-					await bet.destroy();
 				}
 				await this.destroy();
 			}

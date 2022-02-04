@@ -49,9 +49,13 @@ async function prune(guild) {
 	try {
 		const models = await Prediction.findAll();
 		await Promise.all(models.map(async model => {
-			const isOrphaned = await model.isOrphaned(guild.channels);
-			if (isOrphaned) await model.cancel();
-			console.log(`Cancelled orphaned prediction with ID ${model.id} from database.`);
+			await model.isOrphaned(guild.channels)
+				.then(orphaned => {
+					if (orphaned) {
+						console.log(`Cancelled orphaned prediction with ID ${model.id} from database.`);
+						return model.cancel();
+					}
+				});
 		}));
 	} catch (error) {
 		console.error(error);
