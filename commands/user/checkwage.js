@@ -5,18 +5,18 @@ const { MessageEmbed } = require('discord.js');
 
 const data = new SlashCommandSubcommandBuilder()
 	.setName('wage')
-	.setDescription('Checks the current server wage settings');
+	.setDescription('Checks the current server currency settings');
 
 /**
  * @param {import('discord.js').CommandInteraction} interaction
  */
 async function execute(interaction) {
-	const keys = ['interval', 'amount', 'initial', 'boost'];
+	const keys = ['interval', 'amount', 'initial', 'boost', 'minbet'];
 	const settings = {};
 	for (const key of keys) settings[key] = await wagesKV.get(key) ?? null;
 
 	const embed = new MessageEmbed({
-		title: 'Current wage settings',
+		title: 'Currency settings',
 		fields: [
 			{
 				name: 'Payment tick interval',
@@ -33,6 +33,10 @@ async function execute(interaction) {
 			{
 				name: 'Initial balance for new users',
 				value: `\`\`\`${settings['initial']}\`\`\``,
+			},
+			{
+				name: 'Minimum bet',
+				value: `\`\`\`${settings['minbet']}\`\`\``,
 			},
 		],
 	});
