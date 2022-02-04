@@ -41,11 +41,13 @@ class ParentCommand extends Command {
 	 * @param {import('discord.js').CommandInteraction} interaction
 	 */
 	async execute(interaction) {
-		await super.execute(interaction);
-		if (interaction.options.getSubcommand(false)) {
-			const subcommand = this._subcommands.get(interaction.options.getSubcommand());
-			if (subcommand) return await subcommand.execute(interaction);
-		}
+		return await super.execute(interaction)
+			.then(async () => {
+				if (interaction.options.getSubcommand(false)) {
+					const subcommand = this._subcommands.get(interaction.options.getSubcommand());
+					if (subcommand) return await subcommand.execute(interaction);
+				}
+			});
 	}
 }
 

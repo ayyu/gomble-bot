@@ -40,7 +40,7 @@ async function prune(guild) {
 		await Promise.all(models.map(async model => {
 			if (members.has(model.id)) return;
 			console.log(`Removed missing member with ID ${model.id} from database.`);
-			await model.destroy();
+			return await model.destroy();
 		}));
 	} catch (error) {
 		console.error(error);

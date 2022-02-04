@@ -14,7 +14,7 @@ const { permsKV } = require('../db/keyv');
  */
 async function updateCommandPerms(guild) {
 	const commands = await guild.commands.fetch();
-	await Promise.all(commands.map(async command => {
+	return await Promise.all(commands.map(async command => {
 		const name = command.name;
 		await permsKV.get(name).then(permissions => {
 			if (permissions) {
