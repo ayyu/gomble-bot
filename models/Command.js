@@ -57,13 +57,16 @@ class ParentCommand extends Command {
 	 * @param {import('discord.js').CommandInteraction} interaction
 	 */
 	async execute(interaction) {
-		return await super.execute(interaction)
-			.then(async () => {
-				if (interaction.options.getSubcommand(false)) {
-					const subcommand = this._subcommands.get(interaction.options.getSubcommand());
-					if (subcommand) await subcommand.execute(interaction);
+		if (interaction.options.getSubcommand(false)) {
+			const subcommand = this._subcommands.get(interaction.options.getSubcommand());
+			if (subcommand) {
+				try {
+					await subcommand.execute(interaction);
+				} catch (error) {
+					super.error(error, interaction);
 				}
-			});
+			}
+		}
 	}
 }
 
@@ -97,22 +100,12 @@ class RedemptionCommand extends Command {
 			.then(model => model.spend(price));
 
 		try {
-			if (this._execute) return await this._execute(interaction);
+			if (this._execute) await this._execute(interaction);
 		} catch (error) {
-			await this.error(error, interaction, user, price);
+			await user.earn(price);
+			await super.error(error, interaction);
 		}
 		await interaction.followUp(paymentMessage(price, user.balance));
-	}
-
-	/**
-	 * @param {Error} error
-	 * @param {import('discord.js').CommandInteraction} interaction
-	 * @param {User} user
-	 * @param {number} price
-	 */
-	async error(error, interaction, user, price) {
-		await user.earn(price);
-		super.error(error, interaction);
 	}
 
 	/**
