@@ -53,8 +53,7 @@ async function startMessageEmbed(prediction, description = null) {
 	const title = prediction.prompt;
 	if (description == null) description = (prediction.open) ? openBetMsg : closeBetMsg;
 	const fields = await buildBetFields(prediction);
-	return new MessageEmbed({ title, description, fields })
-		.setColor(colors.open);
+	return new MessageEmbed({ title, color: colors.open, description, fields });
 }
 
 /**
@@ -83,6 +82,8 @@ const colors = {
 	open: 'GREEN',
 	ended: 'BLUE',
 	closed: 'ORANGE',
+	losers: 'DARK_RED',
+	winners: 'DARK_GREEN',
 };
 
 module.exports = {

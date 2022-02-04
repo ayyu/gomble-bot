@@ -2,6 +2,7 @@ const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
 const { MessageEmbed } = require('discord.js');
 const { User } = require('../../db/models');
 const { Command } = require('../../models/Command');
+const { colors } = require('../../utils/embeds');
 
 /**
  * How many records to fetch for each list
@@ -40,10 +41,12 @@ async function execute(interaction) {
 	const embeds = [
 		new MessageEmbed({
 			title: `📈 Top ${records} ballers`,
+			color: colors.winners,
 			fields: topFields,
 		}),
 		new MessageEmbed({
 			title: `📉 Bottom ${records} jobbers`,
+			color: colors.losers,
 			fields: bottomFields,
 		}),
 	];
