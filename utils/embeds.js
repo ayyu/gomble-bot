@@ -79,10 +79,10 @@ async function updateStarterEmbed(interaction, callback) {
 }
 
 const colors = {
-	cancelled: 'tomato',
-	open: 'seagreen',
-	ended: 'steelblue',
-	closed: 'gold',
+	cancelled: 'RED',
+	open: 'GREEN',
+	ended: 'BLUE',
+	closed: 'ORANGE',
 };
 
 module.exports = {
