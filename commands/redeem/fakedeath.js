@@ -14,8 +14,8 @@ async function execute(interaction) {
 	/** @type {Array<string>} */
 	const hitlist = await configKV.get('hitlist');
 	if (!hitlist.includes(target.id)) throw new Error('You\'re not on the hitlist.');
-	return await configKV.set('hitlist', hitlist.filter(id => id != target.id))
-		.then(() => interaction.reply(`**Added ${target}** to the hitlist.`));
+	await configKV.set('hitlist', hitlist.filter(id => id != target.id));
+	return await interaction.reply(`**Removed ${target}** from the hitlist.`);
 }
 
 module.exports = new RedemptionCommand(data, execute);
