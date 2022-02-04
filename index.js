@@ -25,17 +25,7 @@ absForEach(path.resolve(__dirname, './events'), /\.js$/, (directory, file) => {
 client.on('interactionCreate', async interaction => {
 	if (!interaction.isCommand()) return;
 	const command = commands.get(interaction.commandName);
-	if (!command) return;
-
-	try {
-		await command.execute(interaction);
-	} catch (error) {
-		console.error(error);
-		await interaction.reply({
-			content: error.message,
-			ephemeral: true,
-		});
-	}
+	if (command) await command.execute(interaction);
 });
 
 client.login(process.env.DISCORD_TOKEN);
