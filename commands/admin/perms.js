@@ -9,7 +9,7 @@ const modes = [
 ];
 
 const data = new SlashCommandSubcommandBuilder()
-	.setName('setperms')
+	.setName('perms')
 	.setDescription('Sets permissions for a command')
 	.addStringOption(option => option
 		.setName('command')

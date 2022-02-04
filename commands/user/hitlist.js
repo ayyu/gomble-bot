@@ -12,7 +12,7 @@ const data = new SlashCommandSubcommandBuilder()
  */
 async function execute(interaction) {
 	/** @type {Array<string>} */
-	const discountRate = await wagesKV.get('hitlistDiscount') ?? 0.5;
+	const discountRate = await wagesKV.get('discount') ?? 0.5;
 	const hitlist = await configKV.get('hitlist')
 		.then(list => interaction.guild.members.fetch({ user: list }))
 		.then(members => members.map(member => `${member.user.tag}`));

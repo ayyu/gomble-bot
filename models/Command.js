@@ -73,7 +73,7 @@ class RedemptionCommand extends Command {
 			if (member.id == target.id) throw new Error(cantTargetSelfMsg);
 			if (!target.moderatable) throw new Error(`${target.user.tag} is not a valid target.`);
 			const hitlist = await configKV.get('hitlist') ?? [];
-			const discountRate = await wagesKV.get('hitlistDiscount') ?? 0.5;
+			const discountRate = await wagesKV.get('discount') ?? 0.5;
 			if (hitlist.includes(target.id)) price *= discountRate;
 		}
 

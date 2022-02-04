@@ -23,14 +23,14 @@ const options = {
 		type: 'Integer',
 		description: 'Minimum bet amount',
 	},
-	hitlistDiscount: {
+	discount: {
 		type: 'Number',
 		description: 'Discount vs. hitlist members',
 	},
 };
 
 const data = new SlashCommandSubcommandBuilder()
-	.setName('setwage')
+	.setName('wage')
 	.setDescription('Change income settings');
 
 for (const key in options) {

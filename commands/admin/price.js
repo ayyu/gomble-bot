@@ -3,7 +3,7 @@ const { pricesKV } = require('../../db/keyv');
 const { Command } = require('../../models/Command');
 
 const data = new SlashCommandSubcommandBuilder()
-	.setName('setprice')
+	.setName('price')
 	.setDescription('Sets the price for a redemption command')
 	.addStringOption(option => option
 		.setName('item')
