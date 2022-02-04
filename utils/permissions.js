@@ -14,16 +14,18 @@ const { permsKV } = require('../db/keyv');
  */
 async function updateCommandPerms(guild) {
 	const commands = await guild.commands.fetch();
-	commands.forEach(async command => {
+	await Promise.all(commands.map(async command => {
 		const name = command.name;
-		const permissions = await permsKV.get(name);
-		if (permissions != null) {
-			await guild.commands.permissions.add({
-				command: command.id,
-				permissions,
+		await permsKV.get(name)
+			.then(permissions => {
+				if (permissions) {
+					return guild.commands.permissions.add({
+						command: command.id,
+						permissions,
+					});
+				}
 			});
-		}
-	});
+	}));
 }
 
 /**

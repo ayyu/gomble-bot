@@ -63,13 +63,12 @@ async function startMessageEmbed(prediction, description = null) {
  * @returns {import('discord.js').Message} the thread starter Message
  */
 async function updateStarterEmbed(interaction, callback) {
-	const starter = await interaction.channel.fetchStarterMessage({ force: true });
-	const embeds = starter.embeds;
-	if (embeds[0]) {
-		callback(embeds[0]);
-		await starter.edit({ embeds });
-	}
-	return starter;
+	await interaction.channel.fetchStarterMessage({ force: true })
+		.then(starter => {
+			const embeds = starter.embeds;
+			if (embeds[0]) callback(embeds[0]);
+			return starter.edit({ embeds });
+		});
 }
 
 module.exports = {

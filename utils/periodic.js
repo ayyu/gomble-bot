@@ -14,25 +14,15 @@ async function payWages(guild) {
 
 		const models = await User.findAll();
 		const members = await User.getMembers(models, guild.members);
-		for (const model of models) {
+		await Promise.all(models.map(async model => {
 			const member = members.get(model.id);
-			if (member) {
-				if (member.premiumSinceTimestamp) {
-					console.log(`${member.user.tag} is a booster.`);
-					await model.earn(boostAmount);
-				} else {
-					await model.earn(amount);
-				}
-			} else {
-				console.log(`User with ID ${model.id} isn't in the server.`);
-			}
-		}
-		console.log(`Paid ${boostAmount} to boosters and ${amount} to all other users.`);
+			if (member) await model.earn(member.premiumSinceTimestamp ? boostAmount : amount);
+		}))
+			.then(() => console.log(`Paid ${boostAmount} to boosters and ${amount} to all other users.`));
 
 		const interval = await wagesKV.get('interval') ?? '1 min';
 		setTimeout(payWages, ms(interval), guild);
 		console.log(`Next payment is in ${interval}.`);
-
 	} catch (error) {
 		console.error(error);
 	}
@@ -47,23 +37,22 @@ async function prune(guild) {
 	try {
 		const models = await User.findAll();
 		const members = await User.getMembers(models, guild.members);
-		for (const model of models) {
-			if (!members.has(model.id)) {
-				model.destroy();
-				console.log(`Removed missing member with ID ${model.id} from database.`);
-			}
-		}
+		await Promise.all(models.map(async model => {
+			if (members.has(model.id)) return;
+			console.log(`Removed missing member with ID ${model.id} from database.`);
+			await model.destroy();
+		}));
 	} catch (error) {
 		console.error(error);
 	}
 	// remove predictions without threads
 	try {
 		const models = await Prediction.findAll();
-		for (const model of models) {
+		await Promise.all(models.map(async model => {
 			const isOrphaned = await model.isOrphaned(guild.channels);
-			if (isOrphaned) model.cancel();
+			if (isOrphaned) await model.cancel();
 			console.log(`Cancelled orphaned prediction with ID ${model.id} from database.`);
-		}
+		}));
 	} catch (error) {
 		console.error(error);
 	}
