@@ -6,7 +6,7 @@ const { Command } = require('../../models/Command');
 
 const data = new SlashCommandSubcommandBuilder()
 	.setName('prices')
-	.setDescription('See a list of prices set for redemptions');
+	.setDescription('View prices set for redemptions');
 
 /**
  * @param {import('discord.js').CommandInteraction} interaction

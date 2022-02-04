@@ -30,7 +30,7 @@ async function buildEmbedFields(interaction, order, limit) {
 
 const data = new SlashCommandSubcommandBuilder()
 	.setName('leaderboard')
-	.setDescription(`Check the top ${records} and bottom ${records} players`);
+	.setDescription(`View the top ${records} and bottom ${records} balances`);
 
 /**
  * @param {import('discord.js').CommandInteraction} interaction

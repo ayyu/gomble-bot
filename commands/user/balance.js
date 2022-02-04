@@ -5,7 +5,7 @@ const { unregisteredMsg } = require('../../utils/messages');
 
 const data = new SlashCommandSubcommandBuilder()
 	.setName('balance')
-	.setDescription('Check your or another user\'s points balance')
+	.setDescription('Check a users\'s point balance')
 	.addUserOption(option => option
 		.setName('user')
 		.setDescription('User to check'));

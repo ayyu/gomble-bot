@@ -5,7 +5,7 @@ const { Command } = require('../../models/Command');
 
 const data = new SlashCommandSubcommandBuilder()
 	.setName('hitlist')
-	.setDescription('Check who\'s on the hitlist');
+	.setDescription('View who\'s on the hitlist');
 
 /**
  * @param {import('discord.js').CommandInteraction} interaction

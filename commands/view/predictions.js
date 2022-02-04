@@ -5,7 +5,7 @@ const { formatPairs } = require('../../utils/messages');
 
 const data = new SlashCommandSubcommandBuilder()
 	.setName('predictions')
-	.setDescription('Get a list of all active predictions');
+	.setDescription('View a list of all active predictions');
 
 /**
  * @param {import('discord.js').CommandInteraction} interaction

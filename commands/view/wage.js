@@ -6,7 +6,7 @@ const { currencySettings } = require('../../utils/currency');
 
 const data = new SlashCommandSubcommandBuilder()
 	.setName('wage')
-	.setDescription('Checks the current server currency settings');
+	.setDescription('View various point settings');
 
 /**
  * @param {import('discord.js').CommandInteraction} interaction
