@@ -53,13 +53,20 @@ async function startMessageEmbed(prediction, description = null) {
 	const title = prediction.prompt;
 	if (description == null) description = (prediction.open) ? openBetMsg : closeBetMsg;
 	const fields = await buildBetFields(prediction);
-	return new MessageEmbed({ title, description, fields });
+	return new MessageEmbed({ title, description, fields })
+		.setColor(colors.open);
 }
+
+/**
+ * @callback editEmbed
+ * @param {MessageEmbed} embed
+ * @returns {MessageEmbed}
+ */
 
 /**
  * Edits the first Embed of an interaction's thread's starter Message.
  * @param {import('discord.js').CommandInteraction} interaction
- * @param {Function} callback - A callback to run on the first embed.
+ * @param {editEmbed} callback - A callback to run on the first embed.
  * @returns {import('discord.js').Message} the thread starter Message
  */
 async function updateStarterEmbed(interaction, callback) {
@@ -71,8 +78,16 @@ async function updateStarterEmbed(interaction, callback) {
 		});
 }
 
+const colors = {
+	cancelled: 'tomato',
+	open: 'seagreen',
+	ended: 'steelblue',
+	closed: 'gold',
+};
+
 module.exports = {
 	startMessageEmbed,
 	buildBetFields,
 	updateStarterEmbed,
+	colors,
 };

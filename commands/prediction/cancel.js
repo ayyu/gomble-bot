@@ -1,7 +1,7 @@
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
 const { MessageEmbed } = require('discord.js');
 const { Prediction } = require('../../db/models');
-const { updateStarterEmbed } = require('../../utils/embeds');
+const { updateStarterEmbed, colors } = require('../../utils/embeds');
 const { threadOnlyMsg } = require('../../utils/messages');
 const { requireThreaded } = require('../../utils/threads');
 
@@ -23,7 +23,9 @@ async function execute(interaction) {
 	await Prediction.findOne({ where: { id: interaction.channel.id } })
 		.then(prediction => prediction.cancel());
 
-	await updateStarterEmbed(interaction, embed => embed.setDescription(replyEmbed.title))
+	await updateStarterEmbed(interaction, embed => embed
+		.setDescription(replyEmbed.title)
+		.setColor(colors.cancelled))
 		.then(starter => starter.unpin())
 		.then(() => interaction.reply({ embeds: [replyEmbed] }))
 		.then(() => interaction.channel.setLocked(true))
