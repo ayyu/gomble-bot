@@ -83,8 +83,12 @@ class RedemptionCommand extends Command {
 		try {
 			super.execute(interaction);
 		} catch (error) {
-			await user.earn(price);
-			throw error;
+			console.error(error);
+			await user.earn(price)
+				.then(() => interaction.reply({
+					content: error.message,
+					ephemeral: true,
+				}));
 		}
 
 		await interaction.followUp(paymentMessage(price, user.balance));
