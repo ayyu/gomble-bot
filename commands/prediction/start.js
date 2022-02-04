@@ -22,9 +22,9 @@ async function execute(interaction) {
 	await interaction.reply({ content: '**Prediction**', fetchReply: true })
 		.then(reply => reply.pin())
 		.then(reply => reply.startThread({ name: `${prompt}`, autoArchiveDuration: 'MAX' })
-			.then(thread => Prediction.create({ id: thread.id, prompt, open: true })
-				.then(prediction => startMessageEmbed(prediction)
-					.then(embed => reply.edit({ embeds: [embed] })))));
+			.then(thread => Prediction.create({ id: thread.id, prompt, open: true }))
+			.then(prediction => startMessageEmbed(prediction))
+			.then(embed => reply.edit({ embeds: [embed] })));
 }
 
 module.exports = {
