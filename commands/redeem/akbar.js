@@ -6,7 +6,7 @@ const amountOption = 'amount';
 
 const data = new SlashCommandSubcommandBuilder()
 	.setName('akbar')
-	.setDescription('Deduct from a user\'s points by paying 4x that amount')
+	.setDescription('Deduct from a user\'s points by paying a multiple of that amount')
 	.addUserOption(option => option
 		.setName('user')
 		.setDescription('User to nuke')
