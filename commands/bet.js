@@ -26,7 +26,7 @@ const data = new SlashCommandBuilder()
 function validateBetOptions(amount, choice, bet) {
 	if (amount == null) throw new Error('You must choose an amount when placing or raising a bet.');
 	if (choice == null && !bet) throw new Error('You must choose an outcome when placing a bet.');
-	if (bet && choice && choice != bet.choice) throw new Error('You can\'t bet against your initial choice.');
+	if (bet && choice != null && choice != bet.choice) throw new Error('You can\'t bet against your initial choice.');
 }
 
 /**
