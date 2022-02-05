@@ -15,7 +15,7 @@ const data = new SlashCommandSubcommandBuilder()
  */
 async function execute(interaction) {
 	const name = interaction.options.getString('name');
-	await interaction.guild.setName(name)
+	return interaction.guild.setName(name)
 		.then(() => interaction.reply(`**Changed server name** to ${name}.`));
 }
 

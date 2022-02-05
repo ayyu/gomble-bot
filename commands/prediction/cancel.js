@@ -21,15 +21,15 @@ async function execute(interaction) {
 		description: 'All bets have been refunded',
 	});
 
-	await Prediction.findOne({ where: { id: interaction.channel.id } })
+	return Prediction.findOne({ where: { id: interaction.channel.id } })
 		.then(prediction => prediction.cancel())
 		.then(() => updateStarterEmbed(interaction, embed => embed
 			.setDescription(replyEmbed.title)
 			.setColor(colors.cancelled))
-			.then(starter => starter.unpin())
-			.then(() => interaction.reply({ embeds: [replyEmbed] }))
-			.then(() => interaction.channel.setLocked(true))
-			.then(() => interaction.channel.setArchived(true)));
+			.then(starter => starter.unpin()))
+		.then(() => interaction.reply({ embeds: [replyEmbed] }))
+		.then(() => interaction.channel.setLocked(true))
+		.then(() => interaction.channel.setArchived(true));
 }
 
 module.exports = new Command(data, execute);

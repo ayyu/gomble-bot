@@ -52,7 +52,7 @@ async function execute(interaction) {
 			fields: bottomFields,
 		}),
 	];
-	await interaction.reply({ embeds });
+	return interaction.reply({ embeds });
 }
 
 module.exports = new Command(data, execute);

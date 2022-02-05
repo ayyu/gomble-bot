@@ -23,15 +23,15 @@ const data = new SlashCommandSubcommandBuilder()
 async function execute(interaction) {
 	const target = interaction.options.getMember('user');
 	const amount = interaction.options.getNumber(amountOption);
-
-	await User.findOne({ where: { id: target.id } })
+	return User.findOne({ where: { id: target.id } })
 		.then(model => {
 			if (model.balance >= amount) return model;
 			throw new Error(`Target only has ${model.balance} points. Choose a lower amount.`);
 		})
 		.then(model => model.spend(amount))
 		.then(model => interaction.reply(
-			`**${target}'s points nuked** by ${amount}. ${target}'s new balance: ${model.balance}`));
+			`**${target}'s points nuked** by ${amount}. ${target}'s new balance: ${model.balance}`,
+		));
 }
 
 module.exports = new RateRedemptionCommand(data, execute, amountOption, 1);

@@ -40,7 +40,7 @@ async function execute(interaction) {
 	][mode];
 	if (role) perms.push({ id: role.id, type: 'ROLE', permission: true });
 
-	await permsKV.set(command, perms)
+	return permsKV.set(command, perms)
 		.then(() => interaction.reply(`Saved command \`/${command}\` as ${modes[mode]}.`))
 		.then(() => updateCommandPerms(guild))
 		.then(() => interaction.followUp('Updated command permissions.'));

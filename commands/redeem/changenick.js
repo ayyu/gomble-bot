@@ -20,7 +20,7 @@ const data = new SlashCommandSubcommandBuilder()
 async function execute(interaction) {
 	const target = interaction.options.getMember('user');
 	const nick = interaction.options.getString('nick');
-	await target.setNickname(nick)
+	return target.setNickname(nick)
 		.then(member => interaction.reply(`**Nickname changed** for ${member}`));
 }
 

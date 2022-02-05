@@ -15,7 +15,7 @@ const data = new SlashCommandSubcommandBuilder()
  */
 async function execute(interaction) {
 	const attachment = interaction.options.getString('attachment');
-	await interaction.guild.setIcon(attachment)
+	return interaction.guild.setIcon(attachment)
 		.then(() => interaction.reply(`**Changed server icon** to ${attachment}.`));
 }
 

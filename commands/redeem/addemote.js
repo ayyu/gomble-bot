@@ -20,7 +20,7 @@ const data = new SlashCommandSubcommandBuilder()
 async function execute(interaction) {
 	const attachment = interaction.options.getString('attachment');
 	const name = interaction.options.getString('name');
-	await interaction.guild.emojis.create(attachment, name)
+	return interaction.guild.emojis.create(attachment, name)
 		.then(emoji => interaction.reply(`**Added emote** <:${emoji.identifier}> as :${emoji.name}:`));
 }
 

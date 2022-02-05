@@ -12,7 +12,7 @@ const data = new SlashCommandSubcommandBuilder()
  */
 async function execute(interaction) {
 	const target = interaction.member;
-	await configKV.get('hitlist')
+	return configKV.get('hitlist')
 		.then(hitlist => {
 			if (!hitlist.includes(target.id)) throw new Error('You\'re not on the hitlist.');
 			return hitlist.filter(id => id != target.id);

@@ -18,7 +18,7 @@ for (const key in currencySettings) {
  * @param {CommandInteraction} interaction
  */
 async function execute(interaction) {
-	await interaction.reply('Updating wage settings.')
+	return interaction.reply('Updating wage settings.')
 		.then(() => Promise.all(Object.keys(currencySettings).map(async (key) => {
 			const value = interaction.options[`get${currencySettings[key].type}`](key);
 			if (value == null) return;

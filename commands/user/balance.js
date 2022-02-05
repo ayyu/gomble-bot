@@ -16,7 +16,7 @@ const data = new SlashCommandSubcommandBuilder()
  */
 async function execute(interaction) {
 	const target = interaction.options.getMember('user') ?? interaction.member;
-	await User.findOne({ where: { id: target.id } })
+	return User.findOne({ where: { id: target.id } })
 		.then(user => {
 			if (!user) throw new Error(unregisteredMsg);
 			return user;

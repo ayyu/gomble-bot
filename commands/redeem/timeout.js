@@ -35,7 +35,7 @@ async function execute(interaction) {
 	/** @type {GuildMember} */
 	const target = interaction.options.getMember('user');
 	const duration = interaction.options.getNumber(amountOption);
-	await target.timeout(duration)
+	return target.timeout(duration)
 		.then(member => interaction.reply(`**${member} timed out** for ${ms(duration, { long: true })}.`));
 }
 

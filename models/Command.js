@@ -14,7 +14,7 @@ const { paymentMessage, cantTargetSelfMsg } = require('../utils/messages');
 /**
  * @callback CommandCallback
  * @param {CommandInteraction} interaction
- * @returns {Promise<void>}
+ * @returns {Promise<any>}
  */
 
 class Command {

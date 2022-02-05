@@ -18,10 +18,9 @@ const data = new SlashCommandSubcommandBuilder()
  */
 async function execute(interaction) {
 	requireUnthreaded(interaction);
-
 	const prompt = interaction.options.getString('prompt');
 	const name = sanitizeThreadName(prompt);
-	await interaction.reply({ content: '**Prediction**', fetchReply: true })
+	return interaction.reply({ content: '**Prediction**', fetchReply: true })
 		.then(reply => reply.pin())
 		.then(reply => reply.startThread({ name, autoArchiveDuration: 'MAX' })
 			.then(thread => Prediction.create({ id: thread.id, prompt, open: true }))

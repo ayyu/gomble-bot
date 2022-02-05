@@ -73,11 +73,10 @@ async function execute(interaction) {
 	}
 
 	validateBetOptions(amount, choice, bet);
-
 	const minbet = await wagesKV.get('minbet') ?? 1;
 	amount = parseAmount(amount, user, minbet);
 
-	await user.spend(amount)
+	return user.spend(amount)
 		.then(() => (bet)
 			? bet.increment({ amount })
 			: Bet.create({ userId, predictionId, choice, amount }))
@@ -90,14 +89,7 @@ async function execute(interaction) {
 				.then(() => buildBetFields(prediction)
 					.then(embeds => updateStarterEmbed(interaction, embed => embed.setFields(embeds)))
 					.then(() => interaction.followUp(paymentMessage(amount, user.balance)))),
-			error => user.earn(amount)
-				.then(() => {
-					console.error(error);
-					return interaction.reply({
-						content: error.message,
-						ephemeral: true,
-					});
-				}),
+			error => user.earn(amount).then(() => { throw error; }),
 		);
 }
 

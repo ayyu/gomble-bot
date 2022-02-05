@@ -15,7 +15,7 @@ const data = new SlashCommandSubcommandBuilder()
  */
 async function execute(interaction) {
 	const attachment = interaction.options.getString('attachment');
-	await interaction.guild.setBanner(attachment)
+	return interaction.guild.setBanner(attachment)
 		.then(() => interaction.reply(`**Changed server banner** to ${attachment}.`));
 }
 

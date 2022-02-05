@@ -21,7 +21,7 @@ async function execute(interaction) {
 	const member = interaction.member;
 	const target = interaction.options.getMember('user');
 	const show = interaction.options.getString('show');
-	await interaction.reply({ content: `${member} forces ${target} to watch **${show}**`, fetchReply: true })
+	return interaction.reply({ content: `${member} forces ${target} to watch **${show}**`, fetchReply: true })
 		.then(reply => reply.pin());
 }
 

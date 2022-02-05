@@ -34,7 +34,7 @@ async function execute(interaction) {
 
 	if (operation == 'add' || operation == 'delete') {
 		if (!target) throw new Error('No target provided.');
-		await configKV.get('hitlist')
+		return configKV.get('hitlist')
 			.then(value => configKV.set(
 				'hitlist',
 				Array.from(new Set(value ?? [])[operation](target.id)),
@@ -43,7 +43,7 @@ async function execute(interaction) {
 				`${operation == 'add' ? 'Added' : 'Removed'} ${target.user.tag} to/from hitlist.`,
 			));
 	} else if (operation == 'clear') {
-		await configKV.set('hitlist', [])
+		return configKV.set('hitlist', [])
 			.then(() => interaction.reply('Removed all users from hitlist.'));
 	}
 }

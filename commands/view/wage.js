@@ -16,7 +16,7 @@ const data = new SlashCommandSubcommandBuilder()
  * @param {CommandInteraction} interaction
  */
 async function execute(interaction) {
-	await Promise.all(Object.keys(currencySettings).map(async key => {
+	return Promise.all(Object.keys(currencySettings).map(async key => {
 		const value = await wagesKV.get(key);
 		/** @type {EmbedFieldData} */
 		const field = {

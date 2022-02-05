@@ -21,7 +21,7 @@ const data = new SlashCommandSubcommandBuilder()
 async function execute(interaction) {
 	const item = interaction.options.getString('item');
 	const price = interaction.options.getInteger('price');
-	await pricesKV.set(item, price)
+	return pricesKV.set(item, price)
 		.then(() => interaction.reply(`Updated price of \`/${item}\` to ${price}.`));
 }
 

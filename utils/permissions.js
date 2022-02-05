@@ -13,18 +13,17 @@ const { permsKV } = require('../db/keyv');
  * @param {import('discord.js').Guild} guild
  */
 async function updateCommandPerms(guild) {
-	const commands = await guild.commands.fetch();
-	return await Promise.all(commands.map(async command => {
-		const name = command.name;
-		await permsKV.get(name).then(permissions => {
-			if (permissions) {
-				return guild.commands.permissions.add({
-					command: command.id,
-					permissions,
-				});
-			}
-		});
-	}));
+	return guild.commands.fetch().then(commands => Promise.all(
+		commands.map(async command => permsKV.get(command.name)
+			.then(permissions => {
+				if (permissions) {
+					return guild.commands.permissions.add({
+						command: command.id,
+						permissions,
+					});
+				}
+			}),
+		)));
 }
 
 /**

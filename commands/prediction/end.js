@@ -24,7 +24,7 @@ async function execute(interaction) {
 	const choice = interaction.options.getBoolean('result');
 	const replyEmbed = new MessageEmbed({ title: `${getGroupName(choice)} win!` });
 
-	await Prediction.findOne({ where: { id: interaction.channel.id } })
+	return Prediction.findOne({ where: { id: interaction.channel.id } })
 		.then(prediction => prediction.end(choice))
 		.then(payouts => {
 			const totalPool = payouts.reduce((total, amount) => total + amount, 0);
@@ -36,14 +36,14 @@ async function execute(interaction) {
 		.then(payouts => interaction.reply({ embeds: [replyEmbed] })
 			.then(() => Promise.all(payouts.map(async (amount, payee) => interaction.guild.members.fetch(payee)
 				.then(member => interaction.followUp(`${member} won **${amount}**.`))
-				.catch(error => console.error(error)),
+				.catch(console.error),
 			)))
 			.then(() => updateStarterEmbed(interaction, embed => embed
 				.setDescription(replyEmbed.title)
 				.setColor(colors.ended))
-				.then(starter => starter.unpin())
-				.then(() => interaction.channel.setLocked(true))
-				.then(() => interaction.channel.setArchived(true))),
+				.then(starter => starter.unpin()))
+			.then(() => interaction.channel.setLocked(true))
+			.then(() => interaction.channel.setArchived(true)),
 		);
 }
 

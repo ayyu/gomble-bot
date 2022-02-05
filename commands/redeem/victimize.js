@@ -16,7 +16,7 @@ const data = new SlashCommandSubcommandBuilder()
  */
 async function execute(interaction) {
 	const target = interaction.options.getMember('user');
-	await configKV.get('hitlist')
+	return configKV.get('hitlist')
 		.then(hitlist => {
 			if (hitlist.includes(target.id)) throw new Error('Target is already on hitlist.');
 			hitlist.push(target.id);

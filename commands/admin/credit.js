@@ -21,7 +21,7 @@ const data = new SlashCommandSubcommandBuilder()
 async function execute(interaction) {
 	const target = interaction.options.getMember('user');
 	const amount = interaction.options.getInteger('amount');
-	await User.findOne({ where: { id: target.id } })
+	return User.findOne({ where: { id: target.id } })
 		.then(model => model.earn(amount))
 		.then(model => interaction.reply(`${target}'s new balance is **${model.balance}**`));
 }

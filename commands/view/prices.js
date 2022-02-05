@@ -17,18 +17,18 @@ const data = new SlashCommandSubcommandBuilder()
 async function execute(interaction) {
 	const store = pricesKV.opts.store;
 	const prefix = 'prices:';
-
-	await store.query(`SELECT * FROM ${store.opts.table} WHERE key LIKE '${prefix}%'`)
+	return store.query(`SELECT * FROM ${store.opts.table} WHERE key LIKE '${prefix}%'`)
 		.then(rows => rows.map(row => ({
 			name: `${row.key.replace(prefix, '')}`,
 			value: `\`\`\`${JSONB.parse(row.value).value} points\`\`\``,
 			inline: true,
-		})).sort((a, b) => {
-			const nameA = a.name.toLowerCase();
-			const nameB = b.name.toLowerCase();
-			if (nameA == nameB) return 0;
-			return (nameA > nameB) ? 1 : -1;
 		}))
+			.sort((a, b) => {
+				const nameA = a.name.toLowerCase();
+				const nameB = b.name.toLowerCase();
+				if (nameA == nameB) return 0;
+				return (nameA > nameB) ? 1 : -1;
+			}))
 		.then(pricelist => new MessageEmbed({
 			title: '🛒 /redeem prices',
 			fields: pricelist,

@@ -12,7 +12,7 @@ const data = new SlashCommandSubcommandBuilder()
  * @param {CommandInteraction} interaction
  */
 async function execute(interaction) {
-	await Prediction.findAll()
+	return Prediction.findAll()
 		.then(predictions => predictions.map(prediction => [
 			`<#${prediction.id}>`,
 			`${prediction.open ? 'Open' : 'Closed'} for betting`,

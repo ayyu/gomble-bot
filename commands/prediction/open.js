@@ -15,13 +15,12 @@ const data = new SlashCommandSubcommandBuilder()
  */
 async function execute(interaction) {
 	requireThreaded(interaction);
-
-	await Prediction.findOne({ where: { id: interaction.channel.id } })
+	return Prediction.findOne({ where: { id: interaction.channel.id } })
 		.then(prediction => prediction.update({ 'open': true }))
 		.then(() => updateStarterEmbed(interaction, embed => embed
 			.setDescription(openBetMsg)
-			.setColor(colors.open))
-			.then(() => interaction.reply(openBetMsg)));
+			.setColor(colors.open)))
+		.then(() => interaction.reply(openBetMsg));
 }
 
 module.exports = new Command(data, execute);
