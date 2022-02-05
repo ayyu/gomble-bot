@@ -38,7 +38,7 @@ function formatPairs(title, pairs, empty) {
  * @returns {string} group name
  */
 function getGroupName(choice) {
-	return choice ? 'Believers' : 'Doubters';
+	return choice ? '✔ Believers' : '✖ Doubters';
 }
 
 module.exports = {
