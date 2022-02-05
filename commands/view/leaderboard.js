@@ -3,6 +3,10 @@ const { MessageEmbed } = require('discord.js');
 const { User } = require('../../db/models');
 const { Command } = require('../../models/Command');
 const { colors } = require('../../utils/embeds');
+/**
+ * @typedef {import('discord.js').CommandInteraction} CommandInteraction
+ * @typedef {import('discord.js').EmbedFieldData} EmbedFieldData
+ */
 
 /**
  * How many records to fetch for each list
@@ -11,21 +15,19 @@ const { colors } = require('../../utils/embeds');
 const records = 5;
 
 /**
- * @param {import('discord.js').CommandInteraction} interaction
+ * @param {CommandInteraction} interaction
  * @param {Array<[string, string]>} order
  * @param {number} limit
- * @returns {Array<import('discord.js').EmbedFieldData>}
+ * @returns {Array<EmbedFieldData>}
  */
 async function buildEmbedFields(interaction, order, limit) {
-	const models = await User.findAll({ order, limit });
-	/** @type {Array<import('discord.js').EmbedFieldData>} */
-	const fields = await Promise.all(models.map(async model => {
-		const member = await model.getMember(interaction.guild.members);
-		const name = (member) ? member.user.tag : 'Unknown Member';
-		const value = `\`\`\`${model.balance} points\`\`\``;
-		return { name, value };
-	}));
-	return fields;
+	return User.findAll({ order, limit })
+		.then(models => Promise.all(models.map(async model => {
+			const member = await model.getMember(interaction.guild.members);
+			const name = (member) ? member.user.tag : 'Unknown Member';
+			const value = `\`\`\`${model.balance} points\`\`\``;
+			return { name, value };
+		})));
 }
 
 const data = new SlashCommandSubcommandBuilder()
@@ -33,7 +35,7 @@ const data = new SlashCommandSubcommandBuilder()
 	.setDescription(`View the top ${records} and bottom ${records} balances`);
 
 /**
- * @param {import('discord.js').CommandInteraction} interaction
+ * @param {CommandInteraction} interaction
  */
 async function execute(interaction) {
 	const topFields = await buildEmbedFields(interaction, [['balance', 'DESC']], records);

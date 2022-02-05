@@ -1,6 +1,10 @@
 const ms = require('ms');
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
 const { RateRedemptionCommand } = require('../../models/Command');
+/**
+ * @typedef {import('discord.js').CommandInteraction} CommandInteraction
+ * @typedef {import('discord.js').GuildMember} GuildMember
+ */
 
 const durations = [
 	'1 minute',
@@ -25,9 +29,10 @@ const data = new SlashCommandSubcommandBuilder()
 		.addChoices(durations.map((duration) => [duration, ms(duration)])));
 
 /**
- * @param {import('discord.js').CommandInteraction} interaction
+ * @param {CommandInteraction} interaction
  */
 async function execute(interaction) {
+	/** @type {GuildMember} */
 	const target = interaction.options.getMember('user');
 	const duration = interaction.options.getNumber(amountOption);
 	await target.timeout(duration)

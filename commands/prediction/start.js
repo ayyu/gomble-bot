@@ -4,6 +4,7 @@ const { Command } = require('../../models/Command');
 const { startMessageEmbed } = require('../../utils/embeds');
 const { channelOnlyMsg } = require('../../utils/messages');
 const { requireUnthreaded } = require('../../utils/threads');
+/** @typedef {import('discord.js').CommandInteraction} CommandInteraction */
 
 const data = new SlashCommandSubcommandBuilder()
 	.setName('start')
@@ -14,12 +15,12 @@ const data = new SlashCommandSubcommandBuilder()
 		.setRequired(true));
 
 /**
- * @param {import('discord.js').CommandInteraction} interaction
+ * @param {CommandInteraction} interaction
  */
 async function execute(interaction) {
 	if (!requireUnthreaded(interaction)) throw new Error(channelOnlyMsg);
-	const prompt = interaction.options.getString('prompt');
 
+	const prompt = interaction.options.getString('prompt');
 	await interaction.reply({ content: '**Prediction**', fetchReply: true })
 		.then(reply => reply.pin())
 		.then(reply => reply.startThread({ name: `${prompt}`, autoArchiveDuration: 'MAX' })

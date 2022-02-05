@@ -2,6 +2,7 @@ const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
 const { permsKV } = require('../../db/keyv');
 const { Command } = require('../../models/Command');
 const { getBasePrivatePerms, getBasePublicPerms, updateCommandPerms } = require('../../utils/permissions');
+/** @typedef {import('discord.js').CommandInteraction} CommandInteraction */
 
 const modes = [
 	'public',
@@ -25,21 +26,18 @@ const data = new SlashCommandSubcommandBuilder()
 		.setDescription('Role to have access if private'));
 
 /**
- * @param {import('discord.js').CommandInteraction} interaction
+ * @param {CommandInteraction} interaction
  */
 async function execute(interaction) {
 	const guild = interaction.guild;
-
 	const command = interaction.options.getString('command');
 	const mode = interaction.options.getInteger('mode');
 	const role = interaction.options.getRole('role');
 
-	const basePerms = [
+	const perms = [
 		getBasePublicPerms(guild),
 		getBasePrivatePerms(guild),
-	];
-
-	const perms = basePerms[mode];
+	][mode];
 	if (role) perms.push({ id: role.id, type: 'ROLE', permission: true });
 
 	await permsKV.set(command, perms)

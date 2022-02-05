@@ -3,36 +3,38 @@ const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
 const { MessageEmbed } = require('discord.js');
 const { pricesKV } = require('../../db/keyv');
 const { Command } = require('../../models/Command');
+/**
+ * @typedef {import('discord.js').CommandInteraction} CommandInteraction
+ */
 
 const data = new SlashCommandSubcommandBuilder()
 	.setName('prices')
 	.setDescription('View prices set for redemptions');
 
 /**
- * @param {import('discord.js').CommandInteraction} interaction
+ * @param {CommandInteraction} interaction
  */
 async function execute(interaction) {
 	const store = pricesKV.opts.store;
 	const prefix = 'prices:';
 
-	/** @type {Array<{string, string}>} */
-	const rows = await store.query(`SELECT * FROM ${store.opts.table} WHERE key LIKE '${prefix}%'`);
-
-	/** @type {Array<import('discord.js').EmbedFieldData>} */
-	const pricelist = rows.map((row) => ({
-		name: `/redeem ${row.key.replace(prefix, '')}`,
-		value: `\`\`\`${JSONB.parse(row.value).value} points\`\`\``,
-	})).sort((a, b) => {
-		const nameA = a.name.toLowerCase();
-		const nameB = b.name.toLowerCase();
-		if (nameA == nameB) return 0;
-		return (nameA > nameB) ? 1 : -1;
-	});
-	const embed = new MessageEmbed({
-		title: '🛒 Redemption prices',
-		fields: pricelist,
-	});
-	await interaction.reply({ embeds: [embed] });
+	await store.query(`SELECT * FROM ${store.opts.table} WHERE key LIKE '${prefix}%'`)
+		.then(rows => rows.map(row => ({
+			name: `/redeem ${row.key.replace(prefix, '')}`,
+			value: `\`\`\`${JSONB.parse(row.value).value} points\`\`\``,
+			inline: true,
+		})).sort((a, b) => {
+			const nameA = a.name.toLowerCase();
+			const nameB = b.name.toLowerCase();
+			if (nameA == nameB) return 0;
+			return (nameA > nameB) ? 1 : -1;
+		}))
+		.then(pricelist => new MessageEmbed({
+			title: '🛒 Redemption prices',
+			fields: pricelist,
+			inline: true,
+		}))
+		.then(embed => interaction.reply({ embeds: [embed] }));
 }
 
 module.exports = new Command(data, execute);

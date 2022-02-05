@@ -2,6 +2,7 @@ const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
 const { wagesKV } = require('../../db/keyv');
 const { Command } = require('../../models/Command');
 const { currencySettings } = require('../../utils/currency');
+/** @typedef {import('discord.js').CommandInteraction} CommandInteraction */
 
 const data = new SlashCommandSubcommandBuilder()
 	.setName('wage')
@@ -14,17 +15,16 @@ for (const key in currencySettings) {
 }
 
 /**
- * @param {import('discord.js').CommandInteraction} interactionpro
+ * @param {CommandInteraction} interaction
  */
 async function execute(interaction) {
-	await interaction.reply('Updating wage settings.');
-	await Promise.all(Object.keys(currencySettings).map(async (key) => {
-		const value = interaction.options[`get${currencySettings[key].type}`](key);
-		if (value != null) {
+	await interaction.reply('Updating wage settings.')
+		.then(() => Promise.all(Object.keys(currencySettings).map(async (key) => {
+			const value = interaction.options[`get${currencySettings[key].type}`](key);
+			if (value == null) return;
 			return wagesKV.set(key, value)
 				.then(() => interaction.followUp(`Updated ${key} to ${value}`));
-		}
-	}));
+		})));
 }
 
 module.exports = new Command(data, execute);

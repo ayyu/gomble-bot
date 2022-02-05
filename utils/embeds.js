@@ -12,6 +12,13 @@ const { openBetMsg, closeBetMsg, getGroupName } = require('./messages');
 */
 
 /**
+ * @typedef {import('discord.js').EmbedField} EmbedField
+ * @typedef {import('../models/Prediction')} Prediction
+ * @typedef {import('discord.js').Message} Message
+ * @typedef {import('discord.js').CommandInteraction} CommandInteraction
+ */
+
+/**
  * Gets stats for building an Embed field of a Prediction choice.
  * @param {Array<Bet>} bets - Bets of choice
  * @param {number} totalPool - Total of Bet amounts for this Prediction
@@ -27,33 +34,40 @@ function getChoiceStats(bets, totalPool) {
 
 /**
  * Returns Array of EmbedFields for a Prediction.
- * @param {import('../db/models').Prediction} prediction
- * @returns {Array<import('discord.js').EmbedFieldData>}
+ * @param {Prediction} prediction
+ * @returns {Promise<Array<EmbedField>>}
  */
 async function buildBetFields(prediction) {
-	const bets = await Bet.findAll({ where: { predictionId: prediction.id } });
-	const totalPool = bets.reduce((total, bet) => total + bet.amount, 0);
-	const choices = [true, false];
-	return choices.map(choice => {
-		const chosenBets = bets.filter(bet => bet.choice == choice);
-		const { pool, max, ratio, count } = getChoiceStats(chosenBets, totalPool);
-		const name = getGroupName(choice);
-		const value = `💰 ${pool}\n🏆 1:${ratio.toFixed(2)}\n🧍 ${count}\n💪 ${max}`;
-		return { name, value, inline: true };
-	});
+	return Bet.findAll({ where: { predictionId: prediction.id } })
+		.then(bets => [true, false].map(choice => {
+			const chosenBets = bets.filter(bet => bet.choice == choice);
+			const { pool, max, ratio, count } = getChoiceStats(
+				chosenBets,
+				bets.reduce((total, bet) => total + bet.amount, 0),
+			);
+			const name = getGroupName(choice);
+			const value = `💰 ${pool}\n🏆 1:${ratio.toFixed(2)}\n🧍 ${count}\n💪 ${max}`;
+			/** @type {EmbedField} */
+			const field = { name, value, inline: true };
+			return field;
+		}));
 }
+
 
 /**
  * Returns an Embed for a Prediction message.
- * @param {import('../db/models').Prediction} prediction
+ * @param {Prediction} prediction
  * @param {string} description - Override for embed description
- * @returns {MessageEmbed}
+ * @returns {Promise<MessageEmbed>}
  */
 async function startMessageEmbed(prediction, description = null) {
-	const title = prediction.prompt;
-	if (description == null) description = (prediction.open) ? openBetMsg : closeBetMsg;
-	const fields = await buildBetFields(prediction);
-	return new MessageEmbed({ title, color: colors.open, description, fields });
+	return buildBetFields(prediction)
+		.then((fields) => new MessageEmbed({
+			title: prediction.prompt,
+			color: colors.open,
+			description: description ?? (prediction.open) ? openBetMsg : closeBetMsg,
+			fields,
+		}));
 }
 
 /**
@@ -64,13 +78,14 @@ async function startMessageEmbed(prediction, description = null) {
 
 /**
  * Edits the first Embed of an interaction's thread's starter Message.
- * @param {import('discord.js').CommandInteraction} interaction
+ * @param {CommandInteraction} interaction
  * @param {editEmbed} callback - A callback to run on the first embed.
- * @returns {import('discord.js').Message} the thread starter Message
+ * @returns {Promise<Message>} the thread starter Message
  */
 async function updateStarterEmbed(interaction, callback) {
-	return await interaction.channel.fetchStarterMessage({ force: true })
+	return interaction.channel.fetchStarterMessage({ force: true })
 		.then(starter => {
+			/** @type {Array<MessageEmbed>} */
 			const embeds = starter.embeds;
 			if (embeds[0]) callback(embeds[0]);
 			return starter.edit({ embeds });

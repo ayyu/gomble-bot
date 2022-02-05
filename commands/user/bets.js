@@ -2,6 +2,7 @@ const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
 const { User, Bet } = require('../../db/models');
 const { Command } = require('../../models/Command');
 const { unregisteredMsg, formatPairs } = require('../../utils/messages');
+/** @typedef {import('discord.js').CommandInteraction} CommandInteraction */
 
 const data = new SlashCommandSubcommandBuilder()
 	.setName('bets')
@@ -11,18 +12,19 @@ const data = new SlashCommandSubcommandBuilder()
 		.setDescription('User to check'));
 
 /**
- * @param {import('discord.js').CommandInteraction} interaction
+ * @param {CommandInteraction} interaction
  */
 async function execute(interaction) {
 	const target = interaction.options.getMember('user') ?? interaction.member;
 	await User.findOne({ where: { id: target.id }, include: Bet })
 		.then(model => {
 			if (!model) throw new Error(unregisteredMsg);
-			return model.bets.map(bet => [
-				`<#${bet.predictionId}>`,
-				`${bet.amount} on ${bet.choice}`,
-			]);
+			return model;
 		})
+		.then(model => model.bets.map(bet => [
+			`<#${bet.predictionId}>`,
+			`${bet.amount} on ${bet.choice}`,
+		]))
 		.then(pairs => interaction.reply(formatPairs(
 			'Active bets',
 			pairs,

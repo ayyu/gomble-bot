@@ -2,13 +2,14 @@ const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
 const { Prediction } = require('../../db/models');
 const { Command } = require('../../models/Command');
 const { formatPairs } = require('../../utils/messages');
+/** @typedef {import('discord.js').CommandInteraction} CommandInteraction */
 
 const data = new SlashCommandSubcommandBuilder()
 	.setName('predictions')
 	.setDescription('View a list of all active predictions');
 
 /**
- * @param {import('discord.js').CommandInteraction} interaction
+ * @param {CommandInteraction} interaction
  */
 async function execute(interaction) {
 	await Prediction.findAll()

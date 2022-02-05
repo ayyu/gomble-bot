@@ -19,7 +19,7 @@ module.exports = (sequelize) => {
 		 */
 		async cancel() {
 			const bets = await this.getBets();
-			return await Promise.all(bets.map(async bet => await bet.refund()))
+			return Promise.all(bets.map(async bet => bet.refund()))
 				.then(() => this.destroy());
 		}
 

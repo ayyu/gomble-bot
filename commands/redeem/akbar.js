@@ -1,6 +1,7 @@
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
 const { User } = require('../../db/models');
 const { RateRedemptionCommand } = require('../../models/Command');
+/** @typedef {import('discord.js').CommandInteraction} CommandInteraction */
 
 const amountOption = 'amount';
 
@@ -17,17 +18,18 @@ const data = new SlashCommandSubcommandBuilder()
 		.setRequired(true));
 
 /**
- * @param {import('discord.js').CommandInteraction} interaction
+ * @param {CommandInteraction} interaction
  */
 async function execute(interaction) {
 	const target = interaction.options.getMember('user');
 	const amount = interaction.options.getNumber(amountOption);
 
-	const targetModel = await User.findOne({ where: { id: target.id } });
-
-	if (amount > targetModel.balance) throw new Error(`Target only has ${targetModel.balance} points. Choose a lower amount.`);
-
-	await targetModel.spend(amount)
+	await User.findOne({ where: { id: target.id } })
+		.then(model => {
+			if (model.balance >= amount) return model;
+			throw new Error(`Target only has ${model.balance} points. Choose a lower amount.`);
+		})
+		.then(model => model.spend(amount))
 		.then(model => interaction.reply(
 			`**${target}'s points nuked** by ${amount}. ${target}'s new balance: ${model.balance}`));
 }

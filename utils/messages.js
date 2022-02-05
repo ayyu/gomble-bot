@@ -1,8 +1,12 @@
 /**
+ * @typedef {import("discord.js").MessageOptions} MessageOptions
+ */
+
+/**
  * Returns a formatted ephemeral response to be sent in a Message.
  * @param {number} amount - Amount spent
  * @param {number} balance - New balance
- * @returns {import("discord.js").MessageOptions} Formatted message.
+ * @returns {MessageOptions} Formatted message.
  */
 function paymentMessage(amount, balance) {
 	return {

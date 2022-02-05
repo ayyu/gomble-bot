@@ -1,65 +1,65 @@
 const ms = require('ms');
 const { wagesKV } = require('../db/keyv');
 const { User, Prediction } = require('../db/models');
+/**
+ * @typedef {import('discord.js').Guild} Guild
+ */
 
 /**
  * Pays Users associated with a Guild according to the set schedule.
- * @param {import('discord.js').Guild} guild
+ * @param {Guild} guild
  */
 async function payWages(guild) {
-	try {
-		const amount = await wagesKV.get('amount') ?? 0;
-		const boostMultiplier = await wagesKV.get('boost') ?? 1;
-		const boostAmount = amount * boostMultiplier;
+	const amount = await wagesKV.get('amount') ?? 0;
+	const boostMultiplier = await wagesKV.get('boost') ?? 1;
+	const boostAmount = amount * boostMultiplier;
 
-		const models = await User.findAll();
-		const members = await User.getMembers(models, guild.members);
-		await Promise.all(models.map(async model => {
-			const member = members.get(model.id);
-			if (member) await model.earn(member.premiumSinceTimestamp ? boostAmount : amount);
-		}))
-			.then(() => console.log(`Paid ${boostAmount} to boosters and ${amount} to all other users.`));
+	await User.findAll()
+		.then(async users => {
+			const members = await User.getMembers(users, guild.members);
+			return Promise.all(users.map(async user => {
+				const member = members.get(user.id);
+				if (!member) return;
+				return user.earn(member.premiumSinceTimestamp ? boostAmount : amount);
+			}));
+		})
+		.then(
+			() => console.log(`Paid ${boostAmount} to boosters and ${amount} to all other users.`),
+			error => console.error(error),
+		);
 
-		const interval = await wagesKV.get('interval') ?? '1 min';
-		setTimeout(payWages, ms(interval), guild);
-		console.log(`Next payment is in ${interval}.`);
-	} catch (error) {
-		console.error(error);
-	}
+	const interval = await wagesKV.get('interval') ?? '1 min';
+	setTimeout(payWages, ms(interval), guild);
+	console.log(`Next payment is in ${interval}.`);
 }
 
 /**
  * Prunes orphaned Predictions and missing Members from the bot's database.
- * @param {import('discord.js').Guild} guild
+ * @param {Guild} guild
  */
 async function prune(guild) {
 	// remove users that aren't in the guild
-	try {
-		const models = await User.findAll();
-		const members = await User.getMembers(models, guild.members);
-		await Promise.all(models.map(async model => {
-			if (members.has(model.id)) return;
-			console.log(`Removed missing member with ID ${model.id} from database.`);
-			return await model.destroy();
-		}));
-	} catch (error) {
-		console.error(error);
-	}
+	await User.findAll()
+		.then(async users => {
+			const members = await User.getMembers(users, guild.members);
+			return Promise.all(users.map(async user => {
+				if (members.has(user.id)) return;
+				console.log(`Removing missing member with ID ${user.id} from database.`);
+				return user.destroy();
+			}));
+		})
+		.catch(error => console.error(error));
+
 	// remove predictions without threads
-	try {
-		const models = await Prediction.findAll();
-		await Promise.all(models.map(async model => {
-			await model.isOrphaned(guild.channels)
-				.then(orphaned => {
-					if (orphaned) {
-						console.log(`Cancelled orphaned prediction with ID ${model.id} from database.`);
-						return model.cancel();
-					}
-				});
-		}));
-	} catch (error) {
-		console.error(error);
-	}
+	await Prediction.findAll()
+		.then(predictions => Promise.all(predictions.map(async prediction => {
+			return prediction.isOrphaned(guild.channels).then(orphaned => {
+				if (!orphaned) return;
+				console.log(`Cancelled orphaned prediction with ID ${prediction.id}.`);
+				return prediction.cancel();
+			});
+		})))
+		.catch(error => console.error(error));
 }
 
 module.exports = {

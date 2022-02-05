@@ -1,6 +1,10 @@
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
 const { configKV } = require('../../db/keyv');
 const { Command } = require('../../models/Command');
+/**
+ * @typedef {import('discord.js').CommandInteraction} CommandInteraction
+ * @typedef {import('discord.js').GuildMember} GuildMember
+ */
 
 const operations = [
 	'add',
@@ -21,32 +25,26 @@ const data = new SlashCommandSubcommandBuilder()
 		.setDescription('User to add or remove'));
 
 /**
- * @param {import('discord.js').CommandInteraction} interaction
+ * @param {CommandInteraction} interaction
  */
 async function execute(interaction) {
+	/** @type {GuildMember} */
 	const target = interaction.options.getMember('user');
 	const operation = interaction.options.getString('operation');
 
-	switch (operation) {
-		case 'add':
-		case 'delete': {
-			if (!target) throw new Error('No target provided.');
-			await configKV.get('hitlist')
-				.then(value => {
-					const hitlist = new Set(value ?? []);
-					hitlist[operation](target.id);
-					return configKV.set('hitlist', Array.from(hitlist));
-				})
-				.then(() => interaction.reply(
-					`${operation == 'add' ? 'Added' : 'Removed'} ${target.user.tag} to/from hitlist.`,
-				));
-			break;
-		}
-		case 'clear': {
-			await configKV.set('hitlist', [])
-				.then(() => interaction.reply('Removed all users from hitlist.'));
-			break;
-		}
+	if (operation == 'add' || operation == 'delete') {
+		if (!target) throw new Error('No target provided.');
+		await configKV.get('hitlist')
+			.then(value => configKV.set(
+				'hitlist',
+				Array.from(new Set(value ?? [])[operation](target.id)),
+			))
+			.then(() => interaction.reply(
+				`${operation == 'add' ? 'Added' : 'Removed'} ${target.user.tag} to/from hitlist.`,
+			));
+	} else if (operation == 'clear') {
+		await configKV.set('hitlist', [])
+			.then(() => interaction.reply('Removed all users from hitlist.'));
 	}
 }
 

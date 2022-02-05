@@ -1,6 +1,7 @@
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
 const { pricesKV } = require('../../db/keyv');
 const { Command } = require('../../models/Command');
+/** @typedef {import('discord.js').CommandInteraction} CommandInteraction */
 
 const data = new SlashCommandSubcommandBuilder()
 	.setName('price')
@@ -15,12 +16,11 @@ const data = new SlashCommandSubcommandBuilder()
 		.setRequired(true));
 
 /**
- * @param {import('discord.js').CommandInteraction} interaction
+ * @param {CommandInteraction} interaction
  */
 async function execute(interaction) {
 	const item = interaction.options.getString('item');
 	const price = interaction.options.getInteger('price');
-
 	await pricesKV.set(item, price)
 		.then(() => interaction.reply(`Updated price of \`/${item}\` to ${price}.`));
 }

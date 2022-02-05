@@ -5,13 +5,14 @@ const { Command } = require('../../models/Command');
 const { updateStarterEmbed, colors } = require('../../utils/embeds');
 const { threadOnlyMsg } = require('../../utils/messages');
 const { requireThreaded } = require('../../utils/threads');
+/** @typedef {import('discord.js').CommandInteraction} CommandInteraction */
 
 const data = new SlashCommandSubcommandBuilder()
 	.setName('cancel')
 	.setDescription('Cancels this prediction and refunds all bets placed');
 
 /**
- * @param {import('discord.js').CommandInteraction} interaction
+ * @param {CommandInteraction} interaction
  */
 async function execute(interaction) {
 	if (!requireThreaded(interaction)) throw new Error(threadOnlyMsg);
@@ -22,15 +23,14 @@ async function execute(interaction) {
 	});
 
 	await Prediction.findOne({ where: { id: interaction.channel.id } })
-		.then(prediction => prediction.cancel());
-
-	await updateStarterEmbed(interaction, embed => embed
-		.setDescription(replyEmbed.title)
-		.setColor(colors.cancelled))
-		.then(starter => starter.unpin())
-		.then(() => interaction.reply({ embeds: [replyEmbed] }))
-		.then(() => interaction.channel.setLocked(true))
-		.then(() => interaction.channel.setArchived(true));
+		.then(prediction => prediction.cancel())
+		.then(() => updateStarterEmbed(interaction, embed => embed
+			.setDescription(replyEmbed.title)
+			.setColor(colors.cancelled))
+			.then(starter => starter.unpin())
+			.then(() => interaction.reply({ embeds: [replyEmbed] }))
+			.then(() => interaction.channel.setLocked(true))
+			.then(() => interaction.channel.setArchived(true)));
 }
 
 module.exports = new Command(data, execute);

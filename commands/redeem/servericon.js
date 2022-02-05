@@ -1,5 +1,6 @@
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
 const { RedemptionCommand } = require('../../models/Command');
+/** @typedef {import('discord.js').CommandInteraction} CommandInteraction */
 
 const data = new SlashCommandSubcommandBuilder()
 	.setName('servericon')
@@ -10,7 +11,7 @@ const data = new SlashCommandSubcommandBuilder()
 		.setRequired(true));
 
 /**
- * @param {import('discord.js').CommandInteraction} interaction
+ * @param {CommandInteraction} interaction
  */
 async function execute(interaction) {
 	const attachment = interaction.options.getString('attachment');
