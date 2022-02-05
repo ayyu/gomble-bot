@@ -42,10 +42,15 @@ const openStrings = {
 	false: '🔴 closed',
 };
 
+const choiceStrings = {
+	true: '🟦 true',
+	false: '🟥 false',
+};
+
 module.exports = {
 	paymentMessage,
 	formatPairs,
-	groupNames, openStrings,
+	groupNames, openStrings, choiceStrings,
 	openBetMsg: `Betting is ${openStrings[true]}. Place bets in the thread with \`/bet\`.`,
 	closeBetMsg: `Betting is ${openStrings[false]}.`,
 	channelOnlyMsg: 'You can only use this command outside of a thread.',

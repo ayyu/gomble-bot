@@ -1,7 +1,7 @@
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
 const { User, Bet } = require('../../db/models');
 const { Command } = require('../../models/Command');
-const { unregisteredMsg, formatPairs } = require('../../utils/messages');
+const { unregisteredMsg, formatPairs, choiceStrings } = require('../../utils/messages');
 /** @typedef {import('discord.js').CommandInteraction} CommandInteraction */
 
 const data = new SlashCommandSubcommandBuilder()
@@ -23,7 +23,7 @@ async function execute(interaction) {
 		})
 		.then(model => model.bets.map(bet => [
 			`<#${bet.predictionId}>`,
-			`${bet.amount} on ${bet.choice}`,
+			`${bet.amount} on ${choiceStrings[bet.choice]}`,
 		]))
 		.then(pairs => interaction.reply(formatPairs(
 			'Active bets',

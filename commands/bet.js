@@ -3,7 +3,7 @@ const { wagesKV } = require('../db/keyv');
 const { Bet, User, Prediction } = require('../db/models');
 const { Command } = require('../models/Command');
 const { buildBetFields, updateStarterEmbed } = require('../utils/embeds');
-const { paymentMessage, closeBetMsg, unregisteredMsg } = require('../utils/messages');
+const { paymentMessage, closeBetMsg, unregisteredMsg, choiceStrings } = require('../utils/messages');
 const { requireThreaded } = require('../utils/threads');
 /** @typedef {import('discord.js').CommandInteraction} CommandInteraction */
 
@@ -68,7 +68,7 @@ async function execute(interaction) {
 
 	if (amount == null && choice == null) {
 		return interaction.reply(bet
-			? `You have a bet of **${bet.amount}** on **${bet.choice}**`
+			? `You have a bet of **${bet.amount}** on **${choiceStrings[bet.choice]}**`
 			: 'No bet placed yet. Place a bet by specifying a choice and amount.');
 	}
 
@@ -82,10 +82,10 @@ async function execute(interaction) {
 			: Bet.create({ userId, predictionId, choice, amount }))
 		.then(
 			model => model.reload()
-				.then(() => (bet)
-					? interaction.reply(`Bet raised on **${model.choice}** by **${amount}** to **${model.amount}**`)
-					: interaction.reply(`New bet placed on **${model.choice}** for **${amount}**`),
-				)
+				.then(() => interaction.reply(bet
+					? `Bet raised on **${choiceStrings[model.choice]}** by **${amount}** to **${model.amount}**`
+					: `New bet placed on **${choiceStrings[model.choice]}** for **${amount}**`,
+				))
 				.then(() => buildBetFields(prediction)
 					.then(embeds => updateStarterEmbed(interaction, embed => embed.setFields(embeds)))
 					.then(() => interaction.followUp(paymentMessage(amount, user.balance)))),
