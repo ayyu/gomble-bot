@@ -44,7 +44,7 @@ function requireUnthreaded(interaction) {
 	if (!checkUnthreaded(interaction)) throw new Error(channelOnlyMsg);
 }
 
-const reEmoji = /<:(\w+):[0-9]+>/;
+const reEmoji = /<a?:(\w+):[0-9]+>/;
 
 /**
  * Filter out Discord emote tag from thread name.
