@@ -1,6 +1,7 @@
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
 const { MessageEmbed } = require('discord.js');
 const { Prediction } = require('../../db/models');
+const { Command } = require('../../models/Command');
 const { updateStarterEmbed, colors } = require('../../utils/embeds');
 const { threadOnlyMsg } = require('../../utils/messages');
 const { requireThreaded } = require('../../utils/threads');
@@ -32,7 +33,4 @@ async function execute(interaction) {
 		.then(() => interaction.channel.setArchived(true));
 }
 
-module.exports = {
-	data,
-	execute,
-};
+module.exports = new Command(data, execute);

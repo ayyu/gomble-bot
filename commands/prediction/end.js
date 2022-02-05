@@ -1,6 +1,7 @@
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
 const { MessageEmbed } = require('discord.js');
 const { Prediction } = require('../../db/models');
+const { Command } = require('../../models/Command');
 const { updateStarterEmbed, colors } = require('../../utils/embeds');
 const { threadOnlyMsg, getGroupName } = require('../../utils/messages');
 const { requireThreaded } = require('../../utils/threads');
@@ -31,13 +32,9 @@ async function execute(interaction) {
 		: 'No winning bets placed. Refunding all bets.';
 	await interaction.reply({ embeds: [replyEmbed] })
 		.then(() => Promise.all(payouts.map(async (amount, payee) => {
-			/** @type {import('discord.js').GuildMember|string} */
-			try {
-				await interaction.guild.members.fetch(payee)
-					.then(member => interaction.followUp(`${member} won **${amount}**.`));
-			} catch (error) {
-				console.error(error);
-			}
+			await interaction.guild.members.fetch(payee)
+				.then(member => interaction.followUp(`${member} won **${amount}**.`))
+				.catch(error => console.error(error));
 		})));
 
 	await updateStarterEmbed(interaction, embed => embed
@@ -48,7 +45,4 @@ async function execute(interaction) {
 		.then(() => interaction.channel.setArchived(true));
 }
 
-module.exports = {
-	data,
-	execute,
-};
+module.exports = new Command(data, execute);

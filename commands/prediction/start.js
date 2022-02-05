@@ -1,5 +1,6 @@
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
 const { Prediction } = require('../../db/models');
+const { Command } = require('../../models/Command');
 const { startMessageEmbed } = require('../../utils/embeds');
 const { channelOnlyMsg } = require('../../utils/messages');
 const { requireUnthreaded } = require('../../utils/threads');
@@ -27,7 +28,4 @@ async function execute(interaction) {
 			.then(embed => reply.edit({ embeds: [embed] })));
 }
 
-module.exports = {
-	data,
-	execute,
-};
+module.exports = new Command(data, execute);
