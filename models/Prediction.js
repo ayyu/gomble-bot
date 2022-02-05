@@ -52,8 +52,8 @@ module.exports = (sequelize) => {
 					return Promise.all(bets.map(async bet => {
 						const userId = bet.userId;
 						const payout = bet.amount / winningPool * totalPool;
-						bet.payout(payout);
-						payouts.set(userId, payout);
+						return bet.payout(payout)
+							.then(() => payouts.set(userId, payout));
 					}))
 						.then(() => this.destroy())
 						.then(() => payouts);
