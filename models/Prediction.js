@@ -40,19 +40,23 @@ module.exports = (sequelize) => {
 		 * @returns {Promise<Collection<string, number>>} Collection of payouts
 		 */
 		async end(choice) {
-			return this.getBets()
+			await this.getBets()
 				.then(bets => {
 					const winningBets = bets.filter(bet => bet.choice == choice);
 					const totalPool = bets.reduce((total, bet) => total + bet.amount, 0);
 					const winningPool = winningBets.reduce((total, bet) => total + bet.amount, 0);
 
 					if (!winningBets.length) return this.cancel();
-					return new Collection(
-						Promise.all(bets.map(async bet => {
-							const payout = bet.amount / winningPool * totalPool;
-							return bet.payout(payout).then(() => [bet.userId, payout]);
-						}))
-							.then(payouts => this.destroy().then(() => payouts)));
+
+					const payouts = new Collection();
+					return Promise.all(bets.map(async bet => {
+						const userId = bet.userId;
+						const payout = bet.amount / winningPool * totalPool;
+						bet.payout(payout);
+						payouts.set(userId, payout);
+					}))
+						.then(() => this.destroy())
+						.then(() => payouts);
 				});
 		}
 	}
