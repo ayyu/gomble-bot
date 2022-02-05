@@ -29,6 +29,8 @@ async function payWages(guild) {
 	const interval = await wagesKV.get('interval') ?? '1 min';
 	setTimeout(payWages, ms(interval), guild);
 	console.log(`Next payment is in ${interval}.`);
+
+	return guild;
 }
 
 /**
@@ -58,6 +60,8 @@ async function prune(guild) {
 			});
 		})))
 		.catch(error => console.error(error));
+
+	return guild;
 }
 
 module.exports = {
