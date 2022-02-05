@@ -11,15 +11,22 @@ const { paymentMessage, cantTargetSelfMsg } = require('../utils/messages');
  * @typedef {import('fs').PathLike} PathLike
  */
 
+/**
+ * @callback CommandCallback
+ * @param {CommandInteraction} interaction
+ * @returns {Promise<void>}
+ */
+
 class Command {
 	/**
 	 * @param {SlashCommandBuilder|SlashCommandSubcommandBuilder} data
-	 * @param {Function} execute - callback
+	 * @param {CommandCallback} execute - callback
 	 */
 	constructor(data, execute = null) {
 		this.data = data;
 		this._execute = execute;
 	}
+
 	/**
 	 * @param {CommandInteraction} interaction
 	 */
@@ -47,19 +54,21 @@ class ParentCommand extends Command {
 	/**
 	 * @param {SlashCommandBuilder|SlashCommandSubcommandBuilder} data
 	 * @param {PathLike} directory - directory of this command
-	 * @param {Function} execute - callback
+	 * @param {CommandCallback} execute - callback
 	 */
 	constructor(data, directory, execute = null) {
 		super(data, execute);
+		/** @type {Collection<string, Command>} */
 		this._subcommands = new Collection();
 		absForEach(path.resolve(directory, this.data.name), /\.js$/, (dir, file) => {
+			/** @type {Command} */
 			const command = require(`${dir}/${file}`);
 			this.data.addSubcommand(command.data);
 			this._subcommands.set(command.data.name, command);
 		});
 	}
 	/**
-	 * @param {import('discord.js').CommandInteraction} interaction
+	 * @param {CommandInteraction} interaction
 	 */
 	async execute(interaction) {
 		if (interaction.options.getSubcommand(false)) {
@@ -75,7 +84,7 @@ class ParentCommand extends Command {
 class RedemptionCommand extends Command {
 	/**
 	 * @param {SlashCommandBuilder|SlashCommandSubcommandBuilder} data
-	 * @param {Function} execute - callback
+	 * @param {CommandCallback} execute - callback
 	 */
 	constructor(data, execute = null) {
 		super(data, execute);
@@ -107,10 +116,6 @@ class RedemptionCommand extends Command {
 				));
 	}
 
-	/**
-	 * @param {CommandInteraction} _interaction
-	 */
-	// eslint-disable-next-line no-unused-vars
 	async getPrice() {
 		return pricesKV.get(this.data.name);
 	}
@@ -119,7 +124,7 @@ class RedemptionCommand extends Command {
 class RateRedemptionCommand extends RedemptionCommand {
 	/**
 	 * @param {SlashCommandBuilder|SlashCommandSubcommandBuilder} data
-	 * @param {Function} execute - callback
+	 * @param {CommandCallback} execute - callback
 	 * @param {string} amountOption - name of builder option to use as amount
 	 * @param {number} denominator - amount to divide total price by
 	 */
@@ -129,7 +134,7 @@ class RateRedemptionCommand extends RedemptionCommand {
 		this.denominator = denominator;
 	}
 
-	async getPrice(interaction = null) {
+	async getPrice(interaction) {
 		return super.getPrice()
 			.then(pricePerUnit =>
 				pricePerUnit
