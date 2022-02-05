@@ -3,7 +3,7 @@ const { MessageEmbed } = require('discord.js');
 const { Prediction } = require('../../db/models');
 const { Command } = require('../../models/Command');
 const { updateStarterEmbed, colors } = require('../../utils/embeds');
-const { threadOnlyMsg, getGroupName } = require('../../utils/messages');
+const { getGroupName } = require('../../utils/messages');
 const { requireThreaded } = require('../../utils/threads');
 /** @typedef {import('discord.js').CommandInteraction} CommandInteraction */
 
@@ -19,7 +19,7 @@ const data = new SlashCommandSubcommandBuilder()
  * @param {CommandInteraction} interaction
  */
 async function execute(interaction) {
-	if (!requireThreaded(interaction)) throw new Error(threadOnlyMsg);
+	requireThreaded(interaction);
 
 	const choice = interaction.options.getBoolean('result');
 	const replyEmbed = new MessageEmbed({ title: `${getGroupName(choice)} win!` });

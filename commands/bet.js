@@ -3,7 +3,7 @@ const { wagesKV } = require('../db/keyv');
 const { Bet, User, Prediction } = require('../db/models');
 const { Command } = require('../models/Command');
 const { buildBetFields, updateStarterEmbed } = require('../utils/embeds');
-const { paymentMessage, closeBetMsg, unregisteredMsg, threadOnlyMsg } = require('../utils/messages');
+const { paymentMessage, closeBetMsg, unregisteredMsg } = require('../utils/messages');
 const { requireThreaded } = require('../utils/threads');
 /** @typedef {import('discord.js').CommandInteraction} CommandInteraction */
 
@@ -35,17 +35,22 @@ function validateBetOptions(amount, choice, bet) {
  * @returns {number}
  * @throws {Error}
  */
-function parseAmount(amount, user) {
-	if (amount == 'all') return user.balance;
-	if (isNaN(amount)) throw new Error('You can only use `all` or integers as amounts.');
-	return parseInt(amount);
+function parseAmount(amount, user, minbet) {
+	if (amount == 'all') {
+		amount = user.balance;
+	} else {
+		if (isNaN(amount)) throw new Error('You can only use `all` or integers as amounts.');
+		amount = parseInt(amount);
+	}
+	if (amount < (minbet ?? 1)) throw new Error(`Your bet must be at least ${minbet}.`);
+	return amount;
 }
 
 /**
  * @param {CommandInteraction} interaction
  */
 async function execute(interaction) {
-	if (!requireThreaded(interaction)) throw new Error(threadOnlyMsg);
+	requireThreaded(interaction);
 
 	let amount = interaction.options.getString('amount');
 	const choice = interaction.options.getBoolean('choice');
@@ -54,7 +59,7 @@ async function execute(interaction) {
 	const predictionId = interaction.channel.id;
 
 	const prediction = await Prediction.findOne({ where: { id: predictionId } });
-	if (!prediction.open) throw new Error(closeBetMsg);
+	if (!prediction || !prediction.open) throw new Error(closeBetMsg);
 
 	const user = await User.findOne({ where: { id: userId } });
 	if (!user) throw new Error(unregisteredMsg);
@@ -64,15 +69,13 @@ async function execute(interaction) {
 	if (amount == null && choice == null) {
 		return interaction.reply(bet
 			? `You have a bet of **${bet.amount}** on **${bet.choice}**`
-			: 'No bet placed yet.');
+			: 'No bet placed yet. Place a bet by specifying a choice and amount.');
 	}
 
 	validateBetOptions(amount, choice, bet);
-	amount = parseAmount(amount, user);
 
-	await wagesKV.get('minbet').then(minbet => {
-		if (amount < (minbet ?? 1)) throw new Error(`Your bet must be at least ${minbet}.`);
-	});
+	const minbet = await wagesKV.get('minbet') ?? 1;
+	amount = parseAmount(amount, user, minbet);
 
 	await user.spend(amount)
 		.then(() => (bet)

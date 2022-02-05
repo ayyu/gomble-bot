@@ -2,7 +2,7 @@ const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
 const { Prediction } = require('../../db/models');
 const { Command } = require('../../models/Command');
 const { updateStarterEmbed, colors } = require('../../utils/embeds');
-const { closeBetMsg, threadOnlyMsg } = require('../../utils/messages');
+const { closeBetMsg } = require('../../utils/messages');
 const { requireThreaded } = require('../../utils/threads');
 /** @typedef {import('discord.js').CommandInteraction} CommandInteraction */
 
@@ -14,7 +14,7 @@ const data = new SlashCommandSubcommandBuilder()
  * @param {CommandInteraction} interaction
  */
 async function execute(interaction) {
-	if (!requireThreaded(interaction)) throw new Error(threadOnlyMsg);
+	requireThreaded(interaction);
 
 	await Prediction.findOne({ where: { id: interaction.channel.id } })
 		.then(prediction => prediction.update({ 'open': false }))

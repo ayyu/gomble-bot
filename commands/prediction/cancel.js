@@ -3,7 +3,6 @@ const { MessageEmbed } = require('discord.js');
 const { Prediction } = require('../../db/models');
 const { Command } = require('../../models/Command');
 const { updateStarterEmbed, colors } = require('../../utils/embeds');
-const { threadOnlyMsg } = require('../../utils/messages');
 const { requireThreaded } = require('../../utils/threads');
 /** @typedef {import('discord.js').CommandInteraction} CommandInteraction */
 
@@ -15,7 +14,7 @@ const data = new SlashCommandSubcommandBuilder()
  * @param {CommandInteraction} interaction
  */
 async function execute(interaction) {
-	if (!requireThreaded(interaction)) throw new Error(threadOnlyMsg);
+	requireThreaded(interaction);
 
 	const replyEmbed = new MessageEmbed({
 		title: 'This prediction has been cancelled',
