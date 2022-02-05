@@ -40,24 +40,20 @@ module.exports = (sequelize) => {
 		 * @returns {Promise<Collection<string, number>>} Collection of payouts
 		 */
 		async end(choice) {
-			await this.getBets()
-				.then(bets => {
-					const winningBets = bets.filter(bet => bet.choice == choice);
-					const totalPool = bets.reduce((total, bet) => total + bet.amount, 0);
-					const winningPool = winningBets.reduce((total, bet) => total + bet.amount, 0);
+			const bets = await this.getBets();
+			const winningBets = bets.filter(bet => bet.choice == choice);
+			const totalPool = bets.reduce((total, bet) => total + bet.amount, 0);
+			const winningPool = winningBets.reduce((total, bet) => total + bet.amount, 0);
 
-					if (!winningBets.length) return this.cancel();
+			if (!winningBets.length) return this.cancel();
 
-					const payouts = new Collection();
-					return Promise.all(bets.map(async bet => {
-						const userId = bet.userId;
-						const payout = bet.amount / winningPool * totalPool;
-						return bet.payout(payout)
-							.then(() => payouts.set(userId, payout));
-					}))
-						.then(() => this.destroy())
-						.then(() => payouts);
-				});
+			const payouts = new Collection();
+			for (const bet of winningBets) {
+				const payout = bet.amount / winningPool * totalPool;
+				payouts.set(bet.userId, payout);
+				await bet.payout(payout);
+			}
+			return this.destroy().then(() => payouts);
 		}
 	}
 	Prediction.init({
