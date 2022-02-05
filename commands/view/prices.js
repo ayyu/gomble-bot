@@ -20,7 +20,7 @@ async function execute(interaction) {
 
 	await store.query(`SELECT * FROM ${store.opts.table} WHERE key LIKE '${prefix}%'`)
 		.then(rows => rows.map(row => ({
-			name: `/redeem ${row.key.replace(prefix, '')}`,
+			name: `${row.key.replace(prefix, '')}`,
 			value: `\`\`\`${JSONB.parse(row.value).value} points\`\`\``,
 			inline: true,
 		})).sort((a, b) => {
@@ -30,7 +30,7 @@ async function execute(interaction) {
 			return (nameA > nameB) ? 1 : -1;
 		}))
 		.then(pricelist => new MessageEmbed({
-			title: '🛒 Redemption prices',
+			title: '🛒 /redeem prices',
 			fields: pricelist,
 			inline: true,
 		}))
