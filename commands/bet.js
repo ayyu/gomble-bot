@@ -76,8 +76,8 @@ async function execute(interaction) {
 
 	await user.spend(amount)
 		.then(() => (bet)
-			? Bet.create({ userId, predictionId, choice, amount })
-			: bet.increment({ amount }))
+			? bet.increment({ amount })
+			: Bet.create({ userId, predictionId, choice, amount }))
 		.then(
 			model => model.reload()
 				.then(() => (bet)
