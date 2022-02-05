@@ -1,6 +1,6 @@
 const { MessageEmbed } = require('discord.js');
 const { Bet } = require('../db/models');
-const { openBetMsg, closeBetMsg, getGroupName } = require('./messages');
+const { openBetMsg, closeBetMsg, groupNames } = require('./messages');
 
 /**
  * Statistics for a Bet choice.
@@ -45,7 +45,7 @@ async function buildBetFields(prediction) {
 				chosenBets,
 				bets.reduce((total, bet) => total + bet.amount, 0),
 			);
-			const name = getGroupName(choice);
+			const name = groupNames[choice];
 			const value = `💰 ${pool}\n🏆 1:${ratio.toFixed(2)}\n🧍 ${count}\n💪 ${max}`;
 			/** @type {EmbedField} */
 			const field = { name, value, inline: true };

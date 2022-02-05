@@ -1,7 +1,7 @@
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
 const { Prediction } = require('../../db/models');
 const { Command } = require('../../models/Command');
-const { formatPairs } = require('../../utils/messages');
+const { openStrings, formatPairs } = require('../../utils/messages');
 /** @typedef {import('discord.js').CommandInteraction} CommandInteraction */
 
 const data = new SlashCommandSubcommandBuilder()
@@ -15,7 +15,7 @@ async function execute(interaction) {
 	return Prediction.findAll()
 		.then(predictions => predictions.map(prediction => [
 			`<#${prediction.id}>`,
-			`${prediction.open ? 'Open' : 'Closed'} for betting`,
+			`${openStrings[prediction.open]} for betting`,
 		]))
 		.then(pairs => interaction.reply(formatPairs(
 			'Active predictions',

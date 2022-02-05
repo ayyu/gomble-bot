@@ -3,7 +3,7 @@ const { MessageEmbed } = require('discord.js');
 const { Prediction } = require('../../db/models');
 const { Command } = require('../../models/Command');
 const { updateStarterEmbed, colors } = require('../../utils/embeds');
-const { getGroupName } = require('../../utils/messages');
+const { groupNames } = require('../../utils/messages');
 const { requireThreaded } = require('../../utils/threads');
 /** @typedef {import('discord.js').CommandInteraction} CommandInteraction */
 
@@ -22,7 +22,7 @@ async function execute(interaction) {
 	requireThreaded(interaction);
 
 	const choice = interaction.options.getBoolean('result');
-	const replyEmbed = new MessageEmbed({ title: `${getGroupName(choice)} win!` });
+	const replyEmbed = new MessageEmbed({ title: `${groupNames[choice]} win!` });
 
 	return Prediction.findOne({ where: { id: interaction.channel.id } })
 		.then(prediction => prediction.end(choice))

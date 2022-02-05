@@ -32,21 +32,22 @@ function formatPairs(title, pairs, empty) {
 	return response;
 }
 
-/**
- * Returns the name of the group for a Bet's choice.
- * @param {boolean} choice
- * @returns {string} group name
- */
-function getGroupName(choice) {
-	return choice ? '✔ Believers' : '✖ Doubters';
-}
+const groupNames = {
+	true: '🟦 Believers',
+	false: '🟥 Doubters',
+};
+
+const openStrings = {
+	true: '🟢 open',
+	false: '🔴 closed',
+};
 
 module.exports = {
 	paymentMessage,
 	formatPairs,
-	getGroupName,
-	openBetMsg: 'Betting is open. Place bets in the thread with `/bet`.',
-	closeBetMsg: 'Betting is closed for this prediction.',
+	groupNames, openStrings,
+	openBetMsg: `Betting is ${openStrings[true]}. Place bets in the thread with \`/bet\`.`,
+	closeBetMsg: `Betting is ${openStrings[false]}.`,
 	channelOnlyMsg: 'You can only use this command outside of a thread.',
 	threadOnlyMsg: 'You can only use this command in a betting thread.',
 	registeredMsg: 'This user is already registered.',
