@@ -64,31 +64,31 @@ async function execute(interaction) {
 	const user = await User.findOne({ where: { id: userId } });
 	if (!user) throw new Error(unregisteredMsg);
 
-	const bet = await Bet.findOne({ where: { userId, predictionId } });
+	const existingBet = await Bet.findOne({ where: { userId, predictionId } });
 
 	if (amount == null && choice == null) {
-		return interaction.reply(bet
-			? `You have a bet of **${bet.amount}** on **${choiceStrings[bet.choice]}**`
+		return interaction.reply(existingBet
+			? `You have a bet of **${existingBet.amount}** on **${choiceStrings[existingBet.choice]}**`
 			: 'No bet placed yet. Place a bet by specifying a choice and amount.');
 	}
 
-	validateBetOptions(amount, choice, bet);
+	validateBetOptions(amount, choice, existingBet);
 	const minbet = await wagesKV.get('minbet') ?? 1;
 	amount = parseAmount(amount, user, minbet);
 
 	return user.spend(amount)
-		.then(() => (bet)
-			? bet.increment({ amount })
+		.then(() => (existingBet)
+			? existingBet.increment({ amount })
 			: Bet.create({ userId, predictionId, choice, amount }))
 		.then(
-			model => model.reload()
-				.then(() => interaction.reply(bet
-					? `Bet raised on **${choiceStrings[model.choice]}** by **${amount}** to **${model.amount}**`
-					: `New bet placed on **${choiceStrings[model.choice]}** for **${amount}**`,
-				))
+			bet => bet.reload().then(() => interaction.reply(existingBet
+				? `Bet raised on **${choiceStrings[bet.choice]}** by **${amount}** to **${bet.amount}**`
+				: `New bet placed on **${choiceStrings[bet.choice]}** for **${amount}**`))
 				.then(() => buildBetFields(prediction)
-					.then(embeds => updateStarterEmbed(interaction, embed => embed.setFields(embeds)))
-					.then(() => interaction.followUp(paymentMessage(amount, user.balance)))),
+					.then(embeds => updateStarterEmbed(
+						interaction, embed => embed.setFields(embeds)))
+					.then(() => interaction.followUp(
+						paymentMessage(amount, user.balance)))),
 			error => user.earn(amount).then(() => { throw error; }),
 		);
 }
