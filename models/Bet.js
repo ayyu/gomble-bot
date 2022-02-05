@@ -4,16 +4,18 @@ module.exports = (sequelize) => {
 	class Bet extends Model {
 		/**
 		 * Refunds this Bet and destroys it.
+		 * @returns {Promise<void>}
 		 */
 		async refund() {
-			return await this.payout(this.amount);
+			return this.payout(this.amount);
 		}
 		/**
 		 * Pays the User of this Bet and destroys this Bet.
 		 * @param {number} amount - Amount to pay to User
+		 * @returns {Promise<void>}
 		 */
 		async payout(amount) {
-			return await this.getUser()
+			return this.getUser()
 				.then(user => user.earn(amount))
 				.then(() => this.destroy());
 		}

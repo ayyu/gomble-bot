@@ -4,10 +4,16 @@ const { configKV, pricesKV, wagesKV } = require('../db/keyv');
 const { User } = require('../db/models');
 const { absForEach } = require('../utils/fs');
 const { paymentMessage, cantTargetSelfMsg } = require('../utils/messages');
+/**
+ * @typedef {import('@discordjs/builders').SlashCommandBuilder} SlashCommandBuilder
+ * @typedef {import('@discordjs/builders').SlashCommandSubcommandBuilder} SlashCommandSubcommandBuilder
+ * @typedef {import('discord.js').CommandInteraction} CommandInteraction
+ * @typedef {import('fs').PathLike} PathLike
+ */
 
 class Command {
 	/**
-	 * @param {import('@discordjs/builders').SlashCommandBuilder|import('@discordjs/builders').SlashCommandSubcommandBuilder} data
+	 * @param {SlashCommandBuilder|SlashCommandSubcommandBuilder} data
 	 * @param {Function} execute - callback
 	 */
 	constructor(data, execute = null) {
@@ -15,22 +21,22 @@ class Command {
 		this._execute = execute;
 	}
 	/**
-	 * @param {import('discord.js').CommandInteraction} interaction
+	 * @param {CommandInteraction} interaction
 	 */
 	async execute(interaction) {
 		if (this._execute) {
-			await this._execute(interaction)
-				.catch(async error => await this.error(error, interaction));
+			return this._execute(interaction)
+				.catch(error => this.error(error, interaction));
 		}
 	}
 
 	/**
 	 * @param {Error} error
-	 * @param {import('discord.js').CommandInteraction} interaction
+	 * @param {CommandInteraction} interaction
 	 */
 	async error(error, interaction) {
 		console.error(error);
-		await interaction.reply({
+		return interaction.reply({
 			content: error.message,
 			ephemeral: true,
 		});
@@ -39,8 +45,8 @@ class Command {
 
 class ParentCommand extends Command {
 	/**
-	 * @param {import('@discordjs/builders').SlashCommandBuilder|import('@discordjs/builders').SlashCommandSubcommandBuilder} data
-	 * @param {import('fs').PathLike} directory - directory of this command
+	 * @param {SlashCommandBuilder|SlashCommandSubcommandBuilder} data
+	 * @param {PathLike} directory - directory of this command
 	 * @param {Function} execute - callback
 	 */
 	constructor(data, directory, execute = null) {
@@ -59,8 +65,8 @@ class ParentCommand extends Command {
 		if (interaction.options.getSubcommand(false)) {
 			const subcommand = this._subcommands.get(interaction.options.getSubcommand());
 			if (subcommand) {
-				await subcommand.execute(interaction)
-					.catch(async error => await this.error(error, interaction));
+				return subcommand.execute(interaction)
+					.catch(error => this.error(error, interaction));
 			}
 		}
 	}
@@ -68,7 +74,7 @@ class ParentCommand extends Command {
 
 class RedemptionCommand extends Command {
 	/**
-	 * @param {import('@discordjs/builders').SlashCommandBuilder|import('@discordjs/builders').SlashCommandSubcommandBuilder} data
+	 * @param {SlashCommandBuilder|SlashCommandSubcommandBuilder} data
 	 * @param {Function} execute - callback
 	 */
 	constructor(data, execute = null) {
@@ -76,7 +82,7 @@ class RedemptionCommand extends Command {
 	}
 
 	/**
-	 * @param {import('discord.js').CommandInteraction} interaction
+	 * @param {CommandInteraction} interaction
 	 */
 	async execute(interaction) {
 		const member = interaction.member;
@@ -88,36 +94,31 @@ class RedemptionCommand extends Command {
 			if (member.id == target.id) throw new Error(cantTargetSelfMsg);
 			if (!target.moderatable) throw new Error(`${target.user.tag} is not a valid target.`);
 			const hitlist = await configKV.get('hitlist') ?? [];
-			const discountRate = await wagesKV.get('discount') ?? 0.5;
-			if (hitlist.includes(target.id)) price *= discountRate;
+			const discount = await wagesKV.get('discount') ?? 0.5;
+			if (hitlist.includes(target.id)) price *= discount;
 		}
 
-		const user = await User.findOne({ where: { id: member.id } })
-			.then(model => model.spend(price));
-
-		if (this._execute) {
-			this._execute(interaction)
-				.then(() => interaction.followUp(paymentMessage(price, user.balance)))
-				.catch(async error => {
-					await user.earn(price);
-					await super.error(error, interaction);
-				});
-		}
+		return User.findOne({ where: { id: member.id } })
+			.then(user => user.spend(price)
+				.then(() => this._execute(interaction))
+				.then(
+					() => interaction.followUp(paymentMessage(price, user.balance)),
+					error => user.earn(price).then(() => super.error(error, interaction)),
+				));
 	}
 
 	/**
-	 * @param {import('discord.js').CommandInteraction} interaction
+	 * @param {CommandInteraction} _interaction
 	 */
 	// eslint-disable-next-line no-unused-vars
-	async getPrice(interaction = null) {
-		const price = await pricesKV.get(this.data.name) ?? 0;
-		return price;
+	async getPrice() {
+		return pricesKV.get(this.data.name);
 	}
 }
 
 class RateRedemptionCommand extends RedemptionCommand {
 	/**
-	 * @param {import('@discordjs/builders').SlashCommandBuilder|import('@discordjs/builders').SlashCommandSubcommandBuilder} data
+	 * @param {SlashCommandBuilder|SlashCommandSubcommandBuilder} data
 	 * @param {Function} execute - callback
 	 * @param {string} amountOption - name of builder option to use as amount
 	 * @param {number} denominator - amount to divide total price by
@@ -129,8 +130,11 @@ class RateRedemptionCommand extends RedemptionCommand {
 	}
 
 	async getPrice(interaction = null) {
-		return await super.getPrice(interaction)
-			.then(pricePerUnit => pricePerUnit * interaction.options.getNumber(this.amountOption) / this.denominator);
+		return super.getPrice()
+			.then(pricePerUnit =>
+				pricePerUnit
+				* interaction.options.getNumber(this.amountOption)
+				/ this.denominator);
 	}
 }
 

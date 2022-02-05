@@ -1,4 +1,9 @@
 const { Model, DataTypes } = require('sequelize');
+/**
+ * @typedef {import('discord.js').GuildMemberManager} GuildMemberManager
+ * @typedef {import('discord.js').Member} Member
+ * @typedef {import('discord.js').Collection} Collection
+ */
 
 module.exports = (sequelize) => {
 	class User extends Model {
@@ -11,9 +16,10 @@ module.exports = (sequelize) => {
 		 */
 		async spend(amount) {
 			amount = Math.ceil(amount);
-			if (amount > this.balance) throw new Error(`Insufficient balance. ${this.balance} available, ${amount} needed.`);
-			return await this.decrement({ balance: amount })
-				.then(model => model.reload());
+			if (amount > this.balance) {
+				throw new Error(`Insufficient balance. ${this.balance} available, ${amount} needed.`);
+			}
+			return this.decrement({ balance: amount }).then(model => model.reload());
 		}
 
 		/**
@@ -24,28 +30,26 @@ module.exports = (sequelize) => {
 		 */
 		async earn(amount) {
 			amount = Math.ceil(amount);
-			return await this.increment({ balance: amount })
-				.then(model => model.reload());
+			return this.increment({ balance: amount }).then(model => model.reload());
 		}
 
 		/**
 		 * Fetches the GuildMember corresponding to this instance.
-		 * @param {import('discord.js').GuildMemberManager} members
-		 * @returns {Promise<import('discord.js').Member>}
+		 * @param {GuildMemberManager} members
+		 * @returns {Promise<Member>}
 		 */
 		async getMember(members) {
-			return await (members.fetch(this.id))
-				.catch(() => null);
+			return members.fetch(this.id).catch(() => null);
 		}
 
 		/**
 		 * Fetches all GuildMembers represented in the array of User instances.
 		 * @param {Array} models
-		 * @param {import('discord.js').GuildMemberManager} members
-		 * @returns {import('discord.js').Collection<string, import('discord.js').Member>}
+		 * @param {GuildMemberManager} members
+		 * @returns {Collection<string, Member>}
 		 */
 		static async getMembers(models, members) {
-			return await members.fetch({ user: models.map(model => model.id) })
+			return members.fetch({ user: models.map(model => model.id) })
 				.catch(() => null);
 		}
 	}

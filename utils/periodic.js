@@ -23,10 +23,8 @@ async function payWages(guild) {
 				return user.earn(member.premiumSinceTimestamp ? boostAmount : amount);
 			}));
 		})
-		.then(
-			() => console.log(`Paid ${boostAmount} to boosters and ${amount} to all other users.`),
-			error => console.error(error),
-		);
+		.then(() => console.log(`Paid ${boostAmount} to boosters and ${amount} to all other users.`))
+		.catch(error => console.error(error));
 
 	const interval = await wagesKV.get('interval') ?? '1 min';
 	setTimeout(payWages, ms(interval), guild);
