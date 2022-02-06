@@ -1,3 +1,3 @@
-const { sequelize } = require('../db/models');
+const { sequelize } = require('../app/db/models');
 
 sequelize.sync();
