@@ -23,7 +23,8 @@ async function execute(interaction) {
 		.then(prediction => prediction.update({ 'prompt': prompt }))
 		.then(() => updateStarterEmbed(interaction, embed => embed
 			.setTitle(prompt)))
-		.then(() => interaction.reply('Edited prediction prompt.'));
+		.then(() => interaction.reply({ content:'Edited prediction prompt.', fetchReply: true }))
+		.then(reply => reply.channel.setName(prompt));
 }
 
 module.exports = new Command(data, execute);
