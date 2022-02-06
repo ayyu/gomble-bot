@@ -10,7 +10,7 @@ const data = new SlashCommandSubcommandBuilder()
 	.setDescription('Edit prediction prompt')
 	.addStringOption(option => option
 		.setName('prompt')
-		.setDescription('new prompt to use')
+		.setDescription('New prompt to use')
 		.setRequired(true));
 
 /**
@@ -22,7 +22,8 @@ async function execute(interaction) {
 	return Prediction.findOne({ where: { id: interaction.channel.id } })
 		.then(prediction => prediction.update({ 'prompt': prompt }))
 		.then(() => updateStarterEmbed(interaction, embed => embed
-			.setDescription(prompt)));
+			.setTitle(prompt)))
+		.then(() => interaction.reply('Edited prediction prompt.'));
 }
 
 module.exports = new Command(data, execute);
