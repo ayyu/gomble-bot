@@ -2,7 +2,7 @@ const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
 const { Prediction } = require('../../db/models');
 const { Command } = require('../../models/Command');
 const { updateStarterEmbed } = require('../../utils/embeds');
-const { requireThreaded } = require('../../utils/threads');
+const { requireThreaded, sanitizeThreadName } = require('../../utils/threads');
 /** @typedef {import('discord.js').CommandInteraction} CommandInteraction */
 
 const data = new SlashCommandSubcommandBuilder()
@@ -24,7 +24,7 @@ async function execute(interaction) {
 		.then(() => updateStarterEmbed(interaction, embed => embed
 			.setTitle(prompt)))
 		.then(() => interaction.reply({ content:'Edited prediction prompt.', fetchReply: true }))
-		.then(reply => reply.channel.setName(prompt));
+		.then(reply => reply.channel.setName(sanitizeThreadName(prompt)));
 }
 
 module.exports = new Command(data, execute);
