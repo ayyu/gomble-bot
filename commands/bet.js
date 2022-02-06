@@ -4,7 +4,7 @@ const { Bet, User, Prediction } = require('../db/models');
 const { Command } = require('../models/Command');
 const { buildBetFields, updateStarterEmbed } = require('../utils/embeds');
 const { paymentMessage, toggleMessages } = require('../utils/messages');
-const { choiceNames } = require('../utils/enums');
+const { choiceNames, sanitizeOption } = require('../utils/enums');
 const { requireThreaded } = require('../utils/threads');
 /** @typedef {import('discord.js').CommandInteraction} CommandInteraction */
 
@@ -17,7 +17,8 @@ const data = new SlashCommandBuilder()
 	.addIntegerOption(option => option
 		.setName('choice')
 		.setDescription('The outcome you want to bet on.')
-		.addChoices(choiceNames.map((name, value) => [name, value])));
+		.addChoices(choiceNames.map(
+			(name, value) => [sanitizeOption(name), value])));
 
 /**
  * @param {number} amount

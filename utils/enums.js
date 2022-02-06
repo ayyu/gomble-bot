@@ -45,8 +45,17 @@ const currencySettings = {
 	},
 };
 
+/**
+ * @param {string} input
+ * @returns {string}
+ */
+function sanitizeOption(input) {
+	return input.replace(/[^a-zA-Z]/gu, '');
+}
+
 module.exports = {
 	groupNames, betStatusNames, choiceNames,
 	currencySettings,
 	permissionModes,
+	sanitizeOption,
 };

@@ -3,7 +3,7 @@ const { MessageEmbed } = require('discord.js');
 const { Prediction } = require('../../db/models');
 const { Command } = require('../../models/Command');
 const { updateStarterEmbed, colors } = require('../../utils/embeds');
-const { groupNames, choiceNames } = require('../../utils/enums');
+const { choiceNames, groupNames, sanitizeOption } = require('../../utils/enums');
 const { requireThreaded } = require('../../utils/threads');
 /** @typedef {import('discord.js').CommandInteraction} CommandInteraction */
 
@@ -12,9 +12,10 @@ const data = new SlashCommandSubcommandBuilder()
 	.setDescription('Ends the prediction and pays out to winners')
 	.addIntegerOption(option => option
 		.setName('result')
-		.addChoices(choiceNames.map((name, value) => [name, value]))
 		.setDescription('The correct result of the prediction')
-		.setRequired(true));
+		.setRequired(true)
+		.addChoices(choiceNames.map(
+			(name, value) => [sanitizeOption(name), value])));
 
 /**
  * @param {CommandInteraction} interaction
