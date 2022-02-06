@@ -10,7 +10,7 @@
   "scripts": {
     "test": "jest",
     "start": "node app/index.js",
-    "prestart": "node scripts/deploy-commands.js",
+    "prestart": "node register-commands.js",
     "postinstall": "node scripts/deploy-database.js"
   },
   "keywords": [
