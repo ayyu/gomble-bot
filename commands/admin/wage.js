@@ -1,7 +1,7 @@
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
 const { wagesKV } = require('../../db/keyv');
 const { Command } = require('../../models/Command');
-const { currencySettings } = require('../../utils/currency');
+const { currencySettings } = require('../../utils/enums');
 /** @typedef {import('discord.js').CommandInteraction} CommandInteraction */
 
 const data = new SlashCommandSubcommandBuilder()

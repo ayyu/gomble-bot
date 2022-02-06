@@ -1,13 +1,9 @@
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
 const { permsKV } = require('../../db/keyv');
 const { Command } = require('../../models/Command');
+const { permissionModes } = require('../../utils/enums');
 const { getBasePrivatePerms, getBasePublicPerms, updateCommandPerms } = require('../../utils/permissions');
 /** @typedef {import('discord.js').CommandInteraction} CommandInteraction */
-
-const modes = [
-	'public',
-	'private',
-];
 
 const data = new SlashCommandSubcommandBuilder()
 	.setName('perms')
@@ -19,7 +15,7 @@ const data = new SlashCommandSubcommandBuilder()
 	.addIntegerOption(option => option
 		.setName('mode')
 		.setDescription('Public or private')
-		.addChoices(modes.map((value, index) => [value, index]))
+		.addChoices(permissionModes.map((value, index) => [value, index]))
 		.setRequired(true))
 	.addRoleOption(option => option
 		.setName('role')
@@ -41,7 +37,7 @@ async function execute(interaction) {
 	if (role) perms.push({ id: role.id, type: 'ROLE', permission: true });
 
 	return permsKV.set(command, perms)
-		.then(() => interaction.reply(`Saved command \`/${command}\` as ${modes[mode]}.`))
+		.then(() => interaction.reply(`Saved command \`/${command}\` as ${permissionModes[mode]}.`))
 		.then(() => updateCommandPerms(guild))
 		.then(() => interaction.followUp('Updated command permissions.'));
 }

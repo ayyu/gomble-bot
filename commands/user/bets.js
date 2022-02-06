@@ -1,7 +1,8 @@
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
 const { User, Bet } = require('../../db/models');
 const { Command } = require('../../models/Command');
-const { unregisteredMsg, formatPairs, choiceStrings } = require('../../utils/messages');
+const { formatPairs, toggleMessages } = require('../../utils/messages');
+const { choiceNames } = require('../../utils/enums');
 /** @typedef {import('discord.js').CommandInteraction} CommandInteraction */
 
 const data = new SlashCommandSubcommandBuilder()
@@ -18,12 +19,12 @@ async function execute(interaction) {
 	const target = interaction.options.getMember('user') ?? interaction.member;
 	return User.findOne({ where: { id: target.id }, include: Bet })
 		.then(model => {
-			if (!model) throw new Error(unregisteredMsg);
+			if (!model) throw new Error(toggleMessages.registered[+false]);
 			return model;
 		})
 		.then(model => model.bets.map(bet => [
 			`<#${bet.predictionId}>`,
-			`${bet.amount} on ${choiceStrings[bet.choice]}`,
+			`${bet.amount} on ${choiceNames[+bet.choice]}`,
 		]))
 		.then(pairs => interaction.reply(formatPairs(
 			'Active bets',

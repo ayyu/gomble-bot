@@ -7,10 +7,12 @@ const { RateRedemptionCommand } = require('../../models/Command');
  */
 
 const durations = [
-	'1 minute',
 	'5 minutes',
 	'15 minutes',
+	'30 minutes',
 	'1 hour',
+	'6 hours',
+	'12 hours',
 ];
 
 const amountOption = 'duration';

@@ -3,15 +3,16 @@ const { MessageEmbed } = require('discord.js');
 const { Prediction } = require('../../db/models');
 const { Command } = require('../../models/Command');
 const { updateStarterEmbed, colors } = require('../../utils/embeds');
-const { groupNames } = require('../../utils/messages');
+const { groupNames, choiceNames } = require('../../utils/enums');
 const { requireThreaded } = require('../../utils/threads');
 /** @typedef {import('discord.js').CommandInteraction} CommandInteraction */
 
 const data = new SlashCommandSubcommandBuilder()
 	.setName('end')
 	.setDescription('Ends the prediction and pays out to winners')
-	.addBooleanOption(option => option
+	.addIntegerOption(option => option
 		.setName('result')
+		.addChoices(choiceNames.map((name, value) => [name, value]))
 		.setDescription('The correct result of the prediction')
 		.setRequired(true));
 
@@ -21,11 +22,11 @@ const data = new SlashCommandSubcommandBuilder()
 async function execute(interaction) {
 	requireThreaded(interaction);
 
-	const choice = interaction.options.getBoolean('result');
+	const choice = interaction.options.getInteger('result');
 	const replyEmbed = new MessageEmbed({ title: `${groupNames[choice]} win!` });
 
 	return Prediction.findOne({ where: { id: interaction.channel.id } })
-		.then(prediction => prediction.end(choice))
+		.then(prediction => prediction.end(!!choice))
 		.then(payouts => {
 			const totalPool = payouts.reduce((total, amount) => total + amount, 0);
 			replyEmbed.description = payouts.size

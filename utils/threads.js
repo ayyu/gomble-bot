@@ -1,5 +1,5 @@
 const dotenv = require('dotenv');
-const { threadOnlyMsg, channelOnlyMsg } = require('./messages');
+const { toggleMessages } = require('./messages');
 
 dotenv.config();
 
@@ -13,8 +13,8 @@ dotenv.config();
  * @returns {boolean}
  */
 function checkThreaded(interaction) {
-	return (interaction.channel.isThread()
-			&& interaction.channel.ownerId == process.env.CLIENT_ID);
+	return interaction.channel.isThread()
+		&& interaction.channel.ownerId == process.env.CLIENT_ID;
 }
 
 /**
@@ -23,7 +23,7 @@ function checkThreaded(interaction) {
  * @throws {Error}
  */
 function requireThreaded(interaction) {
-	if (!checkThreaded(interaction)) throw new Error(threadOnlyMsg);
+	if (!checkThreaded(interaction)) throw new Error(toggleMessages.threaded[+true]);
 }
 
 /**
@@ -41,7 +41,7 @@ function checkUnthreaded(interaction) {
  * @throws {Error}
  */
 function requireUnthreaded(interaction) {
-	if (!checkUnthreaded(interaction)) throw new Error(channelOnlyMsg);
+	if (!checkUnthreaded(interaction)) throw new Error(toggleMessages.threaded[+false]);
 }
 
 const reEmoji = /<a?:(\w+):[0-9]+>/;

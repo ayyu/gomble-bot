@@ -1,6 +1,5 @@
-/**
- * @typedef {import("discord.js").MessageOptions} MessageOptions
- */
+/** @typedef {import("discord.js").MessageOptions} MessageOptions */
+const { betStatusNames } = require('./enums');
 
 /**
  * Returns a formatted ephemeral response to be sent in a Message.
@@ -32,30 +31,27 @@ function formatPairs(title, pairs, empty) {
 	return response;
 }
 
-const groupNames = {
-	true: '🟦 Believers',
-	false: '🟥 Doubters',
+const toggleMessages = {
+	betStatus: [
+		`Betting is ${betStatusNames[+false]}.`,
+		`Betting is ${betStatusNames[+true]}. Place bets in the thread with \`/bet\`.`,
+	],
+	threaded: [
+		'You can only use this command outside of a thread.',
+		'You can only use this command in a betting thread.',
+	],
+	registered: [
+		'User isn\'t registered. Use `/user register` first.',
+		'This user is already registered.',
+	],
 };
 
-const openStrings = {
-	true: '🟢 open',
-	false: '🔴 closed',
-};
-
-const choiceStrings = {
-	true: '🟦 true',
-	false: '🟥 false',
+const errorMessages = {
+	targetSelf: 'Can\'t target yourself',
 };
 
 module.exports = {
 	paymentMessage,
 	formatPairs,
-	groupNames, openStrings, choiceStrings,
-	openBetMsg: `Betting is ${openStrings[true]}. Place bets in the thread with \`/bet\`.`,
-	closeBetMsg: `Betting is ${openStrings[false]}.`,
-	channelOnlyMsg: 'You can only use this command outside of a thread.',
-	threadOnlyMsg: 'You can only use this command in a betting thread.',
-	registeredMsg: 'This user is already registered.',
-	unregisteredMsg: 'User isn\'t registered. Use `/user register` first.',
-	cantTargetSelfMsg: 'Can\'t target yourself',
+	toggleMessages, errorMessages,
 };

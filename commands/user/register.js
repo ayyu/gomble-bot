@@ -2,7 +2,7 @@ const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
 const { wagesKV } = require('../../db/keyv');
 const { User } = require('../../db/models');
 const { Command } = require('../../models/Command');
-const { registeredMsg } = require('../../utils/messages');
+const { toggleMessages } = require('../../utils/messages');
 /** @typedef {import('discord.js').CommandInteraction} CommandInteraction */
 
 const data = new SlashCommandSubcommandBuilder()
@@ -20,7 +20,7 @@ async function execute(interaction) {
 		defaults: { balance: initialBalance },
 	})
 		.then((_user, created) => {
-			if (!created) throw new Error(registeredMsg);
+			if (!created) throw new Error(toggleMessages.registered[+true]);
 		})
 		.then(() => interaction.reply(`**Registered ${member.user.tag}** for predictions.`));
 }

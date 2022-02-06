@@ -1,3 +1,23 @@
+const groupNames = [
+	'🟥 Doubters',
+	'🟦 Believers',
+];
+
+const betStatusNames = [
+	'🔴 closed',
+	'🟢 open',
+];
+
+const choiceNames = [
+	'🟥 no',
+	'🟦 yes',
+];
+
+const permissionModes = [
+	'public',
+	'private',
+];
+
 const currencySettings = {
 	interval: {
 		type: 'String',
@@ -26,5 +46,7 @@ const currencySettings = {
 };
 
 module.exports = {
+	groupNames, betStatusNames, choiceNames,
 	currencySettings,
+	permissionModes,
 };

@@ -2,7 +2,7 @@ const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
 const { MessageEmbed } = require('discord.js');
 const { wagesKV } = require('../../db/keyv');
 const { Command } = require('../../models/Command');
-const { currencySettings } = require('../../utils/currency');
+const { currencySettings } = require('../../utils/enums');
 /**
  * @typedef {import('discord.js').CommandInteraction} CommandInteraction
  * @typedef {import('discord.js').EmbedFieldData} EmbedFieldData

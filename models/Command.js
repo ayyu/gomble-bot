@@ -3,7 +3,7 @@ const { Collection } = require('discord.js');
 const { configKV, pricesKV, wagesKV } = require('../db/keyv');
 const { User } = require('../db/models');
 const { absForEach } = require('../utils/fs');
-const { paymentMessage, cantTargetSelfMsg } = require('../utils/messages');
+const { paymentMessage, errorMessages } = require('../utils/messages');
 /**
  * @typedef {import('@discordjs/builders').SlashCommandBuilder} SlashCommandBuilder
  * @typedef {import('@discordjs/builders').SlashCommandSubcommandBuilder} SlashCommandSubcommandBuilder
@@ -100,7 +100,7 @@ class RedemptionCommand extends Command {
 		let price = await this.getPrice(interaction);
 
 		if (target) {
-			if (member.id == target.id) throw new Error(cantTargetSelfMsg);
+			if (member.id == target.id) throw new Error(errorMessages.targetSelf);
 			if (!target.moderatable) throw new Error(`${target.user.tag} is not a valid target.`);
 			const hitlist = await configKV.get('hitlist') ?? [];
 			const discount = await wagesKV.get('discount') ?? 0.5;

@@ -1,6 +1,7 @@
 const { MessageEmbed } = require('discord.js');
 const { Bet } = require('../db/models');
-const { openBetMsg, closeBetMsg, groupNames } = require('./messages');
+const { toggleMessages } = require('./messages');
+const { groupNames } = require('./enums');
 
 /**
  * Statistics for a Bet choice.
@@ -45,7 +46,7 @@ async function buildBetFields(prediction) {
 				chosenBets,
 				bets.reduce((total, bet) => total + bet.amount, 0),
 			);
-			const name = groupNames[choice];
+			const name = groupNames[+choice];
 			const value = `💰 ${pool}\n🏆 1:${ratio.toFixed(2)}\n🧍 ${count}\n💪 ${max}`;
 			/** @type {EmbedField} */
 			const field = { name, value, inline: true };
@@ -65,7 +66,7 @@ async function startMessageEmbed(prediction, description = null) {
 		.then((fields) => new MessageEmbed({
 			title: prediction.prompt,
 			color: colors.open,
-			description: description ?? (prediction.open) ? openBetMsg : closeBetMsg,
+			description: description ?? toggleMessages.betStatus[+prediction.open],
 			fields,
 		}));
 }
