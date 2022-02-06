@@ -2,7 +2,7 @@ const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
 const { Prediction } = require('../../db/models');
 const { Command } = require('../../models/Command');
 const { updateStarterEmbed, colors } = require('../../utils/embeds');
-const { betStatusNames } = require('../../utils/enums');
+const { betStatusNames, sanitizeOption } = require('../../utils/enums');
 const { toggleMessages } = require('../../utils/messages');
 const { requireThreaded } = require('../../utils/threads');
 /** @typedef {import('discord.js').CommandInteraction} CommandInteraction */
@@ -13,7 +13,7 @@ const data = new SlashCommandSubcommandBuilder()
 	.addIntegerOption(option => option
 		.setName('status')
 		.setDescription('Open or closed')
-		.addChoices(betStatusNames.map((name, value) => [name, value]))
+		.addChoices(betStatusNames.map((name, value) => [sanitizeOption(name), value]))
 		.setRequired(true));
 
 /**
