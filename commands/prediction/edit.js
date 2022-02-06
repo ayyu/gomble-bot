@@ -10,6 +10,7 @@ const data = new SlashCommandSubcommandBuilder()
 	.setDescription('Edit prediction prompt')
 	.addStringOption(option => option
 		.setName('prompt')
+		.setDescription('new prompt to use')
 		.setRequired(true));
 
 /**
