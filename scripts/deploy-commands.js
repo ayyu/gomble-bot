@@ -5,7 +5,7 @@ const dotenv = require('dotenv');
 
 dotenv.config();
 
-const commandDirectory = './commands';
+const commandDirectory = '../app/commands';
 const commands = [];
 const commandFiles = fs
 	.readdirSync(commandDirectory)
