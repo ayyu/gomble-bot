@@ -3,6 +3,11 @@ const dotenv = require('dotenv');
 
 dotenv.config();
 
+const deleteTypes = [
+	'CHANNEL_PINNED_MESSAGE',
+	'CHANNEL_NAME_CHANGE',
+];
+
 module.exports = {
 	name: 'messageCreate',
 	/**
@@ -10,7 +15,7 @@ module.exports = {
 	 */
 	async execute(message) {
 		if (message.author.id == process.env.CLIENT_ID
-			&& message.type == 'CHANNEL_PINNED_MESSAGE') {
+			&& deleteTypes.includes(message.type)) {
 			await message.delete();
 		}
 	},
