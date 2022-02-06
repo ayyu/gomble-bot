@@ -16,7 +16,7 @@ module.exports = {
 	async execute(message) {
 		if (message.author.id == process.env.CLIENT_ID
 			&& deleteTypes.includes(message.type)) {
-			await message.delete();
+			return message.delete();
 		}
 	},
 };
