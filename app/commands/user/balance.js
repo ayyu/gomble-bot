@@ -21,13 +21,13 @@ async function execute(interaction) {
 		where: { id: target.id },
 		attributes: [
 			'balance',
-			[Sequelize.fn('SUM', Sequelize.col('Bets.amount')), 'activeBetTotal'],
+			[Sequelize.fn('SUM', Sequelize.col('bets.amount')), 'activeBetTotal'],
 		],
 		include: [{ model: Bet, attributes: []}],
 	})
+		.then(user => { if (!user) throw new Error(toggleMessages.registered[+false]); return user; })
 		.then(user => interaction.reply(
-			`**${target.user.tag}'s balance:** ${user.balance} + ${user.activeBetTotal} on active bets.`))
-		.catch(() => new Error(toggleMessages.registered[+false]));
+			`**${target.user.tag}'s balance:** ${user.balance} + ${user.activeBetTotal} on active bets.`));
 }
 
 module.exports = new Command(data, execute);
