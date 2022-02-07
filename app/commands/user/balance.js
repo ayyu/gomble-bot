@@ -20,10 +20,10 @@ async function execute(interaction) {
 	return User.findOne({
 		where: { id: target.id },
 		attributes: [
-			'id',
 			'balance',
 			[Sequelize.fn('SUM', Sequelize.col('bets.amount')), 'activeBetTotal'],
 		],
+		group: ['id'],
 		include: [{ model: Bet, attributes: []}],
 	})
 		.then(user => { if (!user) throw new Error(toggleMessages.registered[+false]); return user; })
