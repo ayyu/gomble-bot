@@ -49,7 +49,7 @@ module.exports = (sequelize) => {
 
 			const payouts = new Collection();
 			for (const bet of winningBets) {
-				const payout = bet.amount / winningPool * totalPool;
+				const payout = Math.ceil(bet.amount / winningPool * totalPool);
 				payouts.set(bet.userId, payout);
 				await bet.payout(payout);
 			}
