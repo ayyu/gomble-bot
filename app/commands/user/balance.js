@@ -27,9 +27,9 @@ async function execute(interaction) {
 		group: ['id'],
 	})
 		.then(user => { if (!user) throw new Error(toggleMessages.registered[+false]); return user; })
+		.then(user => { console.log(user); return user; })
 		.then(user => interaction.reply(
 			`**${target.user.tag}'s balance:** ${user.balance} + ${user.activeBetTotal} on active bets.`))
-		.then(console.log);
 }
 
 module.exports = new Command(data, execute);
