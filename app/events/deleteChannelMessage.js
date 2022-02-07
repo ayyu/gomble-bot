@@ -5,7 +5,6 @@ dotenv.config();
 
 const deleteTypes = [
 	'CHANNEL_PINNED_MESSAGE',
-	'CHANNEL_NAME_CHANGE',
 ];
 
 module.exports = {
