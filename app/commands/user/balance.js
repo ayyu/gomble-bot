@@ -20,6 +20,7 @@ async function execute(interaction) {
 	return User.findOne({
 		where: { id: target.id },
 		attributes: [
+			'id',
 			'balance',
 			[Sequelize.fn('SUM', Sequelize.col('bets.amount')), 'activeBetTotal'],
 		],
